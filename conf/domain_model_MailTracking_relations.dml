@@ -1,0 +1,19 @@
+class module.mailtracking.domain.Document extends module.fileSupport.domain.GenericFile {
+	String description;
+}
+
+relation MyOrgCorrespondenceEntry {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntries {
+		multiplicity *;
+	}
+}
+
+
+relation CorrepondenceEntryDocument {
+	module.mailtracking.domain.Document playsRole documents {
+		multiplicity *;
+	}
+	
+	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
+}

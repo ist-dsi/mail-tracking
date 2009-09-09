@@ -1,0 +1,66 @@
+<schema name="module.mailtracking.correspondence.entries.view" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="sender" key="label.sender" />
+	<slot name="recipient" key="label.recipient" />
+	<slot name="subject" key="label.subject" />
+	<slot name="whenReceived" key="label.whenReceived" />
+</schema>
+
+<schema name="module.mailtracking.correspondence.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="sender" key="label.sender">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="100" />
+		</validator>
+	</slot>
+	<slot name="recipient" key="label.recipient">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="100" />
+		</validator>	
+	</slot>
+	<slot name="subject" key="label.subject" >
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="255" />
+		</validator>
+		<property name="size" value="70" />
+	</slot>
+	<slot name="whenReceived" key="label.whenReceived" >
+		<property name="dateFormat" value="dd/MM/yyyy" />
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator">
+			<property name="dateFormat" value="dd/MM/yyyy" />
+		</validator>
+	</slot>
+</schema>
+
+<schema name="module.mailtracking.simple.search.edit" type="module.mailtracking.presentationTier.MailTrackingAction$SearchParametersBean" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="allStringFieldsFilter" key="label.empty" />
+</schema>
+
+<schema name="module.mailtracking.extended.search.edit" type="module.mailtracking.presentationTier.MailTrackingAction$SearchParametersBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="sender" key="label.sender" />
+	<slot name="recipient" key="label.recipient" />
+	<slot name="subject" key="label.subject" />
+	<slot name="whenReceivedBegin" key="label.whenReceivedBegin" />
+	<slot name="whenReceivedEnd" key="label.whenReceivedEnd" />
+</schema>
+
+<schema name="module.mailtracking.associate.document.edit" type="module.mailtracking.presentationTier.MailTrackingAction$AssociateDocumentBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="stream" key="label.document" >
+		<property name="fileNameSlot" value="filename" />
+		<property name="fileSizeSlot" value="filesize" />
+		<property name="fileContentTypeSlot" value="mimetype" />
+	</slot>
+	<slot name="description" key="label.description" >
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="50" />
+		</validator>	
+	</slot>
+</schema>
+
+<schema name="module.mailtracking.associated.document.view" type="module.mailtracking.domain.Document" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="filename" key="label.filename" />
+	<slot name="description" key="label.description" />
+</schema>

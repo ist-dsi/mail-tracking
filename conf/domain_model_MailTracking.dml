@@ -1,0 +1,11 @@
+package module.mailtracking.domain;
+
+enum CorrespondenceEntryState as CorrespondenceEntryStateState;
+
+class CorrespondenceEntry {
+	String sender;
+	String recipient;
+	String subject;
+	DateTime whenReceived;
+	CorrespondenceEntryStateState state;
+}
