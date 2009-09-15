@@ -2,6 +2,8 @@ package module.mailtracking.presentationTier;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,7 @@ import myorg.domain.contents.Node;
 import myorg.domain.groups.UserGroup;
 import myorg.presentationTier.actions.ContextBaseAction;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -22,6 +25,7 @@ import org.apache.struts.action.ActionMapping;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
+import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
@@ -117,7 +121,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletResponse response) throws Exception {
 	CorrespondenceEntry.createNewEntry(getCorrespondenceEntryBean(request));
 
-	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntry());
+	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean());
 
 	return prepare(mapping, form, request, response);
     }
@@ -197,6 +201,144 @@ public class MailTrackingAction extends ContextBaseAction {
     private CorrespondenceEntry getCorrespondenceEntryWithExternalId(final HttpServletRequest request) {
 	String entryId = this.getAttribute(request, "entryId");
 	return CorrespondenceEntry.fromExternalId(entryId);
+    }
+
+    private static final java.util.Map<String, Object> CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
+
+    static {
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "sender");
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "recipient");
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "subject");
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "whenReceived");
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
+	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
+    }
+
+    public ActionForward ajaxFilterCorrespondence(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+	String sEcho = request.getParameter("sEcho");
+	Integer iSortingCols = Integer.valueOf(request.getParameter("iSortingCols"));
+	String sSearch = request.getParameter("sSearch");
+	Integer iDisplayStart = Integer.valueOf(request.getParameter("iDisplayStart"));
+	Integer iDisplayLength = Integer.valueOf(request.getParameter("iDisplayLength"));
+
+	String[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols);
+	Integer[] orderToUse = getOrdering(request, iSortingCols);
+
+	java.util.List<CorrespondenceEntry> entries = null;
+	if (StringUtils.isEmpty(sSearch)) {
+	    entries = CorrespondenceEntry.getActiveEntries();
+	} else {
+	    entries = CorrespondenceEntry.simpleSearch(sSearch);
+	}
+
+	Integer numberOfRecordsMatched = entries.size();
+	java.util.List<CorrespondenceEntry> limitedEntries = limitAndOrderSearchedEntries(entries, propertiesToCompare,
+		orderToUse, iDisplayStart, iDisplayLength);
+
+	String jsonResponseString = serializeAjaxFilterResponse(sEcho, CorrespondenceEntry.getActiveEntries().size(),
+		numberOfRecordsMatched, limitedEntries, request);
+
+	final byte[] jsonResponsePayload = jsonResponseString.getBytes();
+
+	response.setContentType("application/json");
+	response.setContentLength(jsonResponsePayload.length);
+	response.getOutputStream().write(jsonResponsePayload);
+	response.getOutputStream().flush();
+	response.getOutputStream().close();
+
+	return null;
+    }
+
+    private String serializeAjaxFilterResponse(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
+	    java.util.List<CorrespondenceEntry> limitedEntries, HttpServletRequest request) {
+	StringBuilder stringBuilder = new StringBuilder("{");
+	stringBuilder.append("\"sEcho\": ").append(sEcho).append(", \n");
+	stringBuilder.append("\"iTotalRecords\": ").append(iTotalRecords).append(", \n");
+	stringBuilder.append("\"iTotalDisplayRecords\": ").append(iTotalDisplayRecords).append(", \n");
+	stringBuilder.append("\"aaData\": ").append("[ \n");
+
+	for (CorrespondenceEntry entry : limitedEntries) {
+	    stringBuilder.append("[ \"").append(entry.getSender()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
+	    stringBuilder.append("\"").append(generateLinkForCorrespondenceEntryEdition(request, entry)).append(",").append(
+		    generateLinkForCorrespondenceEntryRemoval(request, entry)).append("\" ], ");
+
+	}
+
+	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+	stringBuilder.append(" ]\n }");
+
+	return stringBuilder.toString();
+    }
+
+    private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry) {
+	String contextPath = request.getContextPath();
+	String realLink = contextPath + String.format("/mailtracking.do?entryId=%s&method=deleteEntry", entry.getExternalId());
+	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
+		.calculateChecksum(realLink));
+
+	return realLink;
+    }
+
+    private String generateLinkForCorrespondenceEntryEdition(HttpServletRequest request, CorrespondenceEntry entry) {
+	String contextPath = request.getContextPath();
+	String realLink = contextPath
+		+ String.format("/mailtracking.do?entryId=%s&method=prepareEditEntry", entry.getExternalId());
+	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
+		.calculateChecksum(realLink));
+
+	return realLink;
+    }
+
+    private java.util.List<CorrespondenceEntry> limitAndOrderSearchedEntries(java.util.List searchedEntries,
+	    final String[] propertiesToCompare, final Integer[] orderToUse, Integer iDisplayStart, Integer iDisplayLength) {
+	Collections.sort(searchedEntries, new Comparator<CorrespondenceEntry>() {
+
+	    @Override
+	    public int compare(CorrespondenceEntry oLeft, CorrespondenceEntry oRight) {
+		for (int i = 0; i < propertiesToCompare.length; i++) {
+		    try {
+			Comparable propLeft = (Comparable) PropertyUtils.getProperty(oLeft, propertiesToCompare[i]);
+			Comparable propRight = (Comparable) PropertyUtils.getProperty(oRight, propertiesToCompare[i]);
+
+			if (propLeft.compareTo(propRight) != 0) {
+			    return orderToUse[i] * propLeft.compareTo(propRight);
+			}
+		    } catch (Exception e) {
+			throw new RuntimeException(e);
+		    }
+		}
+
+		return 0;
+	    }
+	});
+
+	return searchedEntries.subList(iDisplayStart, Math.min(iDisplayStart + iDisplayLength, searchedEntries.size()));
+    }
+
+    private Integer[] getOrdering(HttpServletRequest request, Integer iSortingCols) {
+	java.util.List<Integer> order = new java.util.ArrayList<Integer>();
+
+	for (int i = 0; i < iSortingCols; i++) {
+	    String iSortingColDir = request.getParameter("iSortDir_" + i);
+	    order.add((Integer) CORRESPONDENCE_TABLE_COLUMNS_MAP.get(iSortingColDir));
+	}
+
+	return order.toArray(new Integer[] {});
+    }
+
+    private String[] getPropertiesToCompare(HttpServletRequest request, Integer iSortingCols) {
+	java.util.List<String> properties = new java.util.ArrayList<String>();
+	for (int i = 0; i < iSortingCols; i++) {
+	    String iSortingColIdx = request.getParameter("iSortCol_" + i);
+	    properties.add((String) CORRESPONDENCE_TABLE_COLUMNS_MAP.get(iSortingColIdx));
+	}
+
+	return properties.toArray(new String[] {});
     }
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -361,4 +503,5 @@ public class MailTrackingAction extends ContextBaseAction {
 	    return content;
 	}
     }
+
 }
