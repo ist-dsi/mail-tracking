@@ -48,6 +48,15 @@
 	</slot>
 </schema>
 
+<schema name="module.mailtracking.associate.document.create" type="module.mailtracking.presentationTier.MailTrackingAction$AssociateDocumentBean" bundle="MAIL_TRACKING_RESOURCES" extends="module.mailtracking.associate.document.edit">
+	<slot name="description" key="label.description" >
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="50" />
+		</validator>	
+	</slot>
+</schema>
+
+
 <schema name="module.mailtracking.associated.document.view" type="module.mailtracking.domain.Document" bundle="MAIL_TRACKING_RESOURCES" >
 	<slot name="filename" key="label.filename" />
 	<slot name="description" key="label.description" />

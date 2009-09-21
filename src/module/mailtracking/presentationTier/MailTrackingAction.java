@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.Document;
+import module.mailtracking.domain.DocumentType;
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import myorg.applicationTier.Authenticate.UserView;
@@ -158,7 +159,25 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public final ActionForward addNewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	readMailTracking(request).createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request));
+	Document document = null;
+	try {
+	    AssociateDocumentBean documentBean = getAssociateDocumentBean(request);
+
+	    document = createDocument(request, documentBean.getStream(), documentBean.getFilesize(), documentBean
+		    .getDescription(), documentBean.getFilename(), DocumentType.MAIN_DOCUMENT);
+	} catch (DocumentUploadException e) {
+	    if (!DOCUMENT_NOT_SPECIFIED_MESSAGE.equals(e.getMessage())) {
+		addMessage(request, e.getMessage());
+
+		RenderUtils.invalidateViewState("associate.document.bean");
+		setAssociateDocumentBean(request, null);
+
+		return prepareCreateNewEntry(mapping, form, request, response);
+	    }
+	}
+
+	readMailTracking(request).createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request),
+		document);
 	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean());
 
 	return prepare(mapping, form, request, response);
@@ -199,25 +218,39 @@ public class MailTrackingAction extends ContextBaseAction {
 	AssociateDocumentBean bean = getAssociateDocumentBean(request);
 	request.setAttribute("entryId", bean.getEntry().getExternalId());
 
-	if (bean.getStream() == null || bean.getFilesize() == 0) {
-	    addMessage(request, "error.correspondence.entry.document.not.specified");
-	    return prepareEditEntry(mapping, form, request, response);
+	try {
+	    Document document = createDocument(request, bean.getStream(), bean.getFilesize(), bean.getDescription(), bean
+		    .getFilename(), bean.getType());
+	    bean.getEntry().associateDocument(document);
+	} catch (DocumentUploadException e) {
+	    addMessage(request, e.getMessage());
 	}
-
-	if (bean.getFilesize() > Document.MAX_DOCUMENT_FILE_SIZE) {
-	    addMessage(request, "error.correspondence.entry.document.file.size.exceeded");
-	    return prepareEditEntry(mapping, form, request, response);
-	}
-
-	byte[] content = bean.consumeStream();
-	Document document = Document.saveDocument(bean.getDescription(), bean.getFilename(), content, bean.getDescription());
-	bean.getEntry().associateDocument(document);
-
-	setAssociateDocumentBean(request, bean.getEntry());
 
 	RenderUtils.invalidateViewState("associate.document.bean");
+	setAssociateDocumentBean(request, bean.getEntry());
 
 	return prepareEditEntry(mapping, form, request, response);
+    }
+
+    private static final String DOCUMENT_NOT_SPECIFIED_MESSAGE = "error.correspondence.entry.document.not.specified";
+    private static final String DOCUMENT_DESCRIPTION_MANDATORY_MESSAGE = "error.correspondence.entry.document.description.mandatory";
+    private static final String MAX_FILE_EXCEEDED_MESSAGE = "error.correspondence.entry.document.file.size.exceeded";
+
+    private Document createDocument(HttpServletRequest request, InputStream stream, Long fileSize, String description,
+	    String fileName, DocumentType type) throws IOException, DocumentUploadException {
+
+	if (stream == null || fileSize == 0)
+	    throw new DocumentUploadException(DOCUMENT_NOT_SPECIFIED_MESSAGE);
+
+	if (stream != null && StringUtils.isEmpty(description))
+	    throw new DocumentUploadException(DOCUMENT_DESCRIPTION_MANDATORY_MESSAGE);
+
+	if (fileSize > Document.MAX_DOCUMENT_FILE_SIZE)
+	    throw new DocumentUploadException(MAX_FILE_EXCEEDED_MESSAGE);
+
+	byte[] content = consumeStream(fileSize, stream);
+	Document document = Document.saveDocument(description, fileName, content, description, type);
+	return document;
     }
 
     public AssociateDocumentBean getAssociateDocumentBean(final HttpServletRequest request) {
@@ -296,6 +329,7 @@ public class MailTrackingAction extends ContextBaseAction {
     public ActionForward prepareCreateNewEntry(ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 	readCorrespondenceEntryBean(request);
+	setAssociateDocumentBean(request, null);
 
 	return forward(request, "/mailtracking/createNewEntry.jsp");
     }
@@ -327,7 +361,11 @@ public class MailTrackingAction extends ContextBaseAction {
 
     private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry) {
 	String contextPath = request.getContextPath();
-	String realLink = contextPath + String.format("/mailtracking.do?entryId=%s&method=deleteEntry", entry.getExternalId());
+	String realLink = contextPath
+		+ String.format(
+			"/mailtracking.do?entryId=%s&amp;method=deleteEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s",
+			entry.getExternalId(), readCorrespondenceTypeView(request).name(), readMailTracking(request)
+				.getExternalId());
 	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
 		.calculateChecksum(realLink));
 
@@ -337,7 +375,11 @@ public class MailTrackingAction extends ContextBaseAction {
     private String generateLinkForCorrespondenceEntryEdition(HttpServletRequest request, CorrespondenceEntry entry) {
 	String contextPath = request.getContextPath();
 	String realLink = contextPath
-		+ String.format("/mailtracking.do?entryId=%s&method=prepareEditEntry", entry.getExternalId());
+		+ String
+			.format(
+				"/mailtracking.do?entryId=%s&amp;method=prepareEditEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s",
+				entry.getExternalId(), readCorrespondenceTypeView(request).name(), readMailTracking(request)
+					.getExternalId());
 	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
 		.calculateChecksum(realLink));
 
@@ -488,6 +530,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	private Long filesize;
 	private InputStream stream;
 	private String description;
+	private DocumentType type;
 
 	private CorrespondenceEntry entry;
 
@@ -547,12 +590,32 @@ public class MailTrackingAction extends ContextBaseAction {
 	    this.description = description;
 	}
 
-	public byte[] consumeStream() throws IOException {
-	    byte[] content = new byte[this.getFilesize().intValue()];
-	    this.getStream().read(content);
-
-	    return content;
+	public DocumentType getType() {
+	    return type;
 	}
+
+	public void setType(DocumentType type) {
+	    this.type = type;
+	}
+
+    }
+
+    private static class DocumentUploadException extends java.lang.Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public DocumentUploadException(String message) {
+	    super(message);
+	}
+    }
+
+    private byte[] consumeStream(Long fileSize, InputStream stream) throws IOException {
+	byte[] content = new byte[fileSize.intValue()];
+	stream.read(content);
+
+	return content;
     }
 
 }

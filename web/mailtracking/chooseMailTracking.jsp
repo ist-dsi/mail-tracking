@@ -8,7 +8,6 @@
 
 <h3><bean:message key="label.last.correspondence.entries" bundle="MAIL_TRACKING_RESOURCES" /> </h3>
 
-
 <logic:empty name="mailTrackings" >
 	<p><em><bean:message key="message.not.operator.in.any.mail.tracking" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 </logic:empty>

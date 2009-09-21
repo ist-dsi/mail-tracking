@@ -155,8 +155,16 @@ public class MailTracking extends MailTracking_Base {
     }
 
     @Service
-    public CorrespondenceEntry createNewEntry(CorrespondenceEntryBean bean, CorrespondenceType type) {
-	return createNewEntry(bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceived(), type);
+    public CorrespondenceEntry createNewEntry(CorrespondenceEntryBean bean, CorrespondenceType type, Document mainDocument)
+	    throws Exception {
+	CorrespondenceEntry entry = createNewEntry(bean.getSender(), bean.getRecipient(), bean.getSubject(), bean
+		.getWhenReceived(), type);
+
+	if (mainDocument != null) {
+	    entry.addDocuments(mainDocument);
+	}
+
+	return entry;
     }
 
     protected CorrespondenceEntry createNewEntry(String sender, String recipient, String subject, DateTime whenReceived,
