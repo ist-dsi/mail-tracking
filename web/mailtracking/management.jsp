@@ -22,7 +22,7 @@ $(document).ready(function() {
 			$("#correspondenceTypeSpan").visible = false;
 			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
 
-			$(".display").dataTable({
+			$(".display-sent").dataTable({
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": ajaxPostUrl,
@@ -38,10 +38,60 @@ $(document).ready(function() {
 					})
 				},
 				"aoColumns": [
-					/* Sender */ null,
+					/* Entry Number */ null,
+					/* whenSent */ null,
 					/* Recipient */ null,
 					/* Subject */ null,
+					/* Sender */ null,
 					/* whenReceived */ null,
+					/* links */ { "bSortable": false,
+						"fnRender": function(oObj) {
+							var links = "<" + "a href=\"" + oObj.aData[4].split(",")[0] + "\">Editar</a>,";
+							links += "<" + "a href=\"" + oObj.aData[4].split(",")[1] + "\">Remover</a>";
+							
+							return links;
+						} 
+					}
+				]
+			}); 
+	    } 
+	); 
+
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+			$("#link.ajax.filter.correspondence > a").visible = false;
+			var ajaxPostUrl = $("#filterCorrespondence > a").attr("href");
+
+			$("#correspondenceTypeSpan").visible = false;
+			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
+
+			$(".display-received").dataTable({
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": ajaxPostUrl,
+				"fnServerData": function(sSource, aoData, fnCallback){
+					aoData.push({"name" : "correspondenceType", "value" : correspondenceTypeValue });
+					
+					$.ajax({
+						"dataType": 'json',
+						"type": "POST",
+						"url": sSource,
+						"data": aoData,
+						"success": fnCallback
+					})
+				},
+				"aoColumns": [
+					/* Entry Number */ null,
+					/* whenReceived */ null,
+					/* Sender */ null,
+					/* whenSent */ null,
+					/* senderLetterNumber */ null,
+					/* Subject */ null,
+					/* dispatch */ null,
+					/* dispatchToWhom */ null,
 					/* links */ { "bSortable": false,
 						"fnRender": function(oObj) {
 							var links = "<" + "a href=\"" + oObj.aData[4].split(",")[0] + "\">Editar</a>,";
@@ -62,7 +112,6 @@ $(document).ready(function() {
 <span id="filterCorrespondence"><html:link page='<%= "/mailtracking.do?method=ajaxFilterCorrespondence&amp;mailTrackingId=" + mailTrackingId %>'></html:link></span>
 
 <bean:define id="correspondenceType" name="correspondenceType" />
-<span id="correspondenceTypeSpan"><bean:write name="correspondenceType" /></span>
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
@@ -92,10 +141,12 @@ $(document).ready(function() {
 	<bean:message key="message.searched.correspondence.entries.empty" bundle="MAIL_TRACKING_RESOURCES" /> 
 </logic:empty>
 
+
 <logic:notEmpty name="searchEntries">
-<fr:view name="searchEntries" schema="module.mailtracking.correspondence.entries.view" >
+<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
+<fr:view name="searchEntries" schema="module.mailtracking.correspondence.sent.entries.view" >
 	<fr:layout name="tabular">
-		<fr:property name="classes" value="table display"/>
+		<fr:property name="classes" value="table display-sent"/>
 		<fr:property name="renderCompliantTable" value="true" />
 
 		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
@@ -111,6 +162,28 @@ $(document).ready(function() {
 		<fr:property name="order(delete)" value="3" />
 	</fr:layout>
 </fr:view>
+</logic:equal>
+
+<logic:equal name="correspondenceType" value="<%= CorrespondenceType.RECEIVED.name() %>">
+<fr:view name="searchEntries" schema="module.mailtracking.correspondence.received.entries.view" >
+	<fr:layout name="tabular">
+		<fr:property name="classes" value="table display-received"/>
+		<fr:property name="renderCompliantTable" value="true" />
+
+		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
+		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
+		<fr:property name="key(edit)" value="link.edit"/>
+		<fr:property name="order(edit)" value="2" />		
+
+		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
+		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
+		<fr:property name="key(delete)" value="link.delete"/>
+		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
+		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
+		<fr:property name="order(delete)" value="3" />
+	</fr:layout>
+</fr:view>
+</logic:equal>
 
 </logic:notEmpty>
 

@@ -46,33 +46,28 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	setWhenReceived(whenReceived);
 	setType(type);
 	setMailTracking(mailTracking);
+	setEntryNumber(mailTracking.getNextEntryNumber(type));
     }
 
     private void checkParameters(MailTracking mailTracking, String sender, String recipient, String subject,
 	    DateTime whenReceived, CorrespondenceType type) {
-	if (StringUtils.isEmpty(sender)) {
+	if (StringUtils.isEmpty(sender))
 	    throw new DomainException("error.correspondence.entry.sender.cannot.be.empty");
-	}
 
-	if (StringUtils.isEmpty(recipient)) {
+	if (StringUtils.isEmpty(recipient))
 	    throw new DomainException("error.correspondence.entry.recipient.cannot.be.empty");
-	}
 
-	if (StringUtils.isEmpty(subject)) {
+	if (StringUtils.isEmpty(subject))
 	    throw new DomainException("error.correspondence.entry.subject.cannot.be.empty");
-	}
 
-	if (whenReceived == null) {
+	if (whenReceived == null)
 	    throw new DomainException("error.correspondence.entry.when.received.cannot.be.empty");
-	}
 
-	if (type == null) {
+	if (type == null)
 	    throw new DomainException("error.correspondence.entry.type.cannot.be.empty");
-	}
 
-	if (mailTracking == null) {
+	if (mailTracking == null)
 	    throw new DomainException("error.correspondence.entry.mail.tracking.cannot.be.empty");
-	}
     }
 
     public static java.util.List<CorrespondenceEntry> getLastActiveEntriesSortedByDate(Integer numberOfEntries) {
@@ -126,6 +121,9 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	private String recipient;
 	private String subject;
 	private DateTime whenReceived;
+	private DateTime whenSent;
+	private String senderLetterNumber;
+	private String dispathToWhom;
 
 	private CorrespondenceEntry entry;
 
@@ -179,6 +177,30 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	public void setEntry(CorrespondenceEntry entry) {
 	    this.entry = entry;
+	}
+
+	public DateTime getWhenSent() {
+	    return whenSent;
+	}
+
+	public void setWhenSent(DateTime whenSent) {
+	    this.whenSent = whenSent;
+	}
+
+	public String getSenderLetterNumber() {
+	    return senderLetterNumber;
+	}
+
+	public void setSenderLetterNumber(String senderLetterNumber) {
+	    this.senderLetterNumber = senderLetterNumber;
+	}
+
+	public String getDispathToWhom() {
+	    return dispathToWhom;
+	}
+
+	public void setDispathToWhom(String dispathToWhom) {
+	    this.dispathToWhom = dispathToWhom;
 	}
 
     }

@@ -274,15 +274,29 @@ public class MailTrackingAction extends ContextBaseAction {
 	return CorrespondenceEntry.fromExternalId(entryId);
     }
 
-    private static final java.util.Map<String, Object> CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
-
+    private static final java.util.Map<String, Object> SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
     static {
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "sender");
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "recipient");
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "subject");
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "whenReceived");
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
-	CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "entryNumber");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "whenSent");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "recipient");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "subject");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", "sender");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
+    }
+
+    private static final java.util.Map<String, Object> RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
+    static {
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "entryNumber");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "whenReceived");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "sender");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "whenSent");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", "senderLetterNumber");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", "subject");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("6", "recipient");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("7", "dispatchToWhom");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }
 
     public ActionForward ajaxFilterCorrespondence(final ActionMapping mapping, final ActionForm form,
@@ -293,8 +307,8 @@ public class MailTrackingAction extends ContextBaseAction {
 	Integer iDisplayStart = Integer.valueOf(request.getParameter("iDisplayStart"));
 	Integer iDisplayLength = Integer.valueOf(request.getParameter("iDisplayLength"));
 
-	String[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols);
-	Integer[] orderToUse = getOrdering(request, iSortingCols);
+	String[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols, readCorrespondenceTypeView(request));
+	Integer[] orderToUse = getOrdering(request, iSortingCols, readCorrespondenceTypeView(request));
 
 	if (propertiesToCompare.length == 0) {
 	    propertiesToCompare = new String[] { "whenReceived" };
@@ -413,22 +427,29 @@ public class MailTrackingAction extends ContextBaseAction {
 	return searchedEntries.subList(iDisplayStart, Math.min(iDisplayStart + iDisplayLength, searchedEntries.size()));
     }
 
-    private Integer[] getOrdering(HttpServletRequest request, Integer iSortingCols) {
+    private Integer[] getOrdering(HttpServletRequest request, Integer iSortingCols, CorrespondenceType type) {
 	java.util.List<Integer> order = new java.util.ArrayList<Integer>();
+
+	java.util.Map<String, Object> mapToUse = CorrespondenceType.SENT.equals(type) ? SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP
+		: RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP;
 
 	for (int i = 0; i < iSortingCols; i++) {
 	    String iSortingColDir = request.getParameter("iSortDir_" + i);
-	    order.add((Integer) CORRESPONDENCE_TABLE_COLUMNS_MAP.get(iSortingColDir));
+	    order.add((Integer) mapToUse.get(iSortingColDir));
 	}
 
 	return order.toArray(new Integer[] {});
     }
 
-    private String[] getPropertiesToCompare(HttpServletRequest request, Integer iSortingCols) {
+    private String[] getPropertiesToCompare(HttpServletRequest request, Integer iSortingCols, CorrespondenceType type) {
 	java.util.List<String> properties = new java.util.ArrayList<String>();
+
+	java.util.Map<String, Object> mapToUse = CorrespondenceType.SENT.equals(type) ? SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP
+		: RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP;
+
 	for (int i = 0; i < iSortingCols; i++) {
 	    String iSortingColIdx = request.getParameter("iSortCol_" + i);
-	    properties.add((String) CORRESPONDENCE_TABLE_COLUMNS_MAP.get(iSortingColIdx));
+	    properties.add((String) mapToUse.get(iSortingColIdx));
 	}
 
 	return properties.toArray(new String[] {});

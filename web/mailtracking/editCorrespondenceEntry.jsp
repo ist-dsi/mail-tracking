@@ -4,6 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
+<%@ page import="module.mailtracking.domain.CorrespondenceType" %>
+
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
@@ -15,8 +17,8 @@
 
 <h3><bean:message key="title.mail.tracking.correspondence.entry.edit" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
-<fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>">
-	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" schema="module.mailtracking.correspondence.entry.edit" />
+<fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
+	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.equals(correspondenceType) ? "module.mailtracking.correspondence.received,entry.edit" : "module.mailtracking.correspondence.sent,entry.edit" %>" />
 	
 	<html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
 </fr:form>

@@ -4,12 +4,16 @@ enum CorrespondenceEntryState as CorrespondenceEntryStateState;
 enum CorrespondenceType as CorrespondenceType;
 
 class CorrespondenceEntry {
+	Long entryNumber;
 	String sender;
 	String recipient;
 	String subject;
 	DateTime whenReceived;
 	CorrespondenceEntryStateState state;
 	CorrespondenceType type;
+	String senderLetterNumber;
+	DateTime whenSent;
+	String dispatchedToWhom;
 }
 
 class MailTracking {

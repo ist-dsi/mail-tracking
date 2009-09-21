@@ -1,5 +1,8 @@
 package module.mailtracking.domain;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.organization.domain.Unit;
 import myorg.applicationTier.Authenticate.UserView;
@@ -78,6 +81,18 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public java.util.List<CorrespondenceEntry> getActiveEntries(final CorrespondenceType type) {
+	return this.getEntries(CorrespondenceEntryState.ACTIVE, type);
+    }
+
+    public java.util.List<CorrespondenceEntry> getDeletedEntries(final CorrespondenceType type) {
+	return this.getEntries(CorrespondenceEntryState.DELETED, type);
+    }
+
+    public java.util.List<CorrespondenceEntry> getAnyStateEntries(final CorrespondenceType type) {
+	return this.getEntries(null, type);
+    }
+
+    public java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
 	java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
 	CollectionUtils.select(this.getEntries(), new Predicate() {
@@ -85,7 +100,7 @@ public class MailTracking extends MailTracking_Base {
 	    @Override
 	    public boolean evaluate(Object arg0) {
 		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		return CorrespondenceEntryState.ACTIVE.equals(entry.getState()) && (type == null || type.equals(entry.getType()));
+		return (state == null || state.equals(entry.getState())) && (type == null || type.equals(entry.getType()));
 	    }
 
 	}, activeEntries);
@@ -217,5 +232,21 @@ public class MailTracking extends MailTracking_Base {
 
     public MailTrackingBean createBean() {
 	return new MailTrackingBean(this);
+    }
+
+    public static final Comparator<CorrespondenceEntry> SORT_BY_ENTRY_NUMBER = new Comparator<CorrespondenceEntry>() {
+
+	@Override
+	public int compare(CorrespondenceEntry entryLeft, CorrespondenceEntry entryRight) {
+	    return entryLeft.getEntryNumber().compareTo(entryRight.getEntryNumber());
+	}
+
+    };
+
+    public Long getNextEntryNumber(CorrespondenceType type) {
+	java.util.List<CorrespondenceEntry> entries = this.getAnyStateEntries(type);
+	Collections.sort(entries, SORT_BY_ENTRY_NUMBER);
+
+	return entries.get(entries.size() - 1).getEntryNumber();
     }
 }
