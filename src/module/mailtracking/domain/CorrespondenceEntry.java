@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
@@ -25,27 +24,32 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     };
 
-    public CorrespondenceEntry() {
+    CorrespondenceEntry() {
 	super();
 	setMyOrg(MyOrg.getInstance());
     }
 
-    public CorrespondenceEntry(String sender, String recipient, String subject, DateTime whenReceived) {
+    CorrespondenceEntry(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
+	    CorrespondenceType type) {
 	this();
-	init(sender, recipient, subject, whenReceived);
+	init(mailTracking, sender, recipient, subject, whenReceived, type);
     }
 
-    protected void init(String sender, String recipient, String subject, DateTime whenReceived) {
-	checkParameters(sender, recipient, subject, whenReceived);
+    protected void init(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
+	    CorrespondenceType type) {
+	checkParameters(mailTracking, sender, recipient, subject, whenReceived, type);
 
 	setState(CorrespondenceEntryState.ACTIVE);
 	setSender(sender);
 	setRecipient(recipient);
 	setSubject(subject);
 	setWhenReceived(whenReceived);
+	setType(type);
+	setMailTracking(mailTracking);
     }
 
-    private void checkParameters(String sender, String recipient, String subject, DateTime whenReceived) {
+    private void checkParameters(MailTracking mailTracking, String sender, String recipient, String subject,
+	    DateTime whenReceived, CorrespondenceType type) {
 	if (StringUtils.isEmpty(sender)) {
 	    throw new DomainException("error.correspondence.entry.sender.cannot.be.empty");
 	}
@@ -60,6 +64,14 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	if (whenReceived == null) {
 	    throw new DomainException("error.correspondence.entry.when.received.cannot.be.empty");
+	}
+
+	if (type == null) {
+	    throw new DomainException("error.correspondence.entry.type.cannot.be.empty");
+	}
+
+	if (mailTracking == null) {
+	    throw new DomainException("error.correspondence.entry.mail.tracking.cannot.be.empty");
 	}
     }
 
@@ -87,79 +99,21 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return activeEntries;
     }
 
-    private static CorrespondenceEntry createNewEntry(String sender, String recipient, String subject, DateTime whenReceived) {
-	return new CorrespondenceEntry(sender, recipient, subject, whenReceived);
-    }
+    public static java.util.List<CorrespondenceEntry> getActiveEntries(final CorrespondenceType type) {
+	java.util.List<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntries();
+	java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
-    @Service
-    public static CorrespondenceEntry createNewEntry(final CorrespondenceEntryBean bean) {
-	return createNewEntry(bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceived());
-    }
-
-    @Service
-    public void markEntryAsDeleted() {
-	this.setState(CorrespondenceEntryState.DELETED);
-    }
-
-    public static java.util.List<CorrespondenceEntry> find(final String sender, final String recipient, final String subject,
-	    final DateTime whenReceivedBegin, final DateTime whenReceivedEnd) {
-	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
-
-	final String normalizedSender = StringNormalizer.normalize(sender);
-	final String normalizedRecipient = StringNormalizer.normalize(recipient);
-	final String normalizedSubject = StringNormalizer.normalize(subject);
-
-	if (StringUtils.isEmpty(sender) && StringUtils.isEmpty(recipient) && whenReceivedBegin == null && whenReceivedEnd == null)
-	    return entries;
-
-	CollectionUtils.select(getActiveEntries(), new Predicate() {
+	CollectionUtils.select(allEntries, new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
 		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		String normalizedEntrySender = StringNormalizer.normalize(entry.getSender());
-		String normalizedEntryRecipient = StringNormalizer.normalize(entry.getRecipient());
-		String normalizedEntrySubject = StringNormalizer.normalize(entry.getSubject());
-
-		DateTime whenReceivedEntry = entry.getWhenReceived();
-
-		return (StringUtils.isEmpty(sender) || normalizedEntrySender.indexOf(normalizedSender) > -1)
-			&& (StringUtils.isEmpty(normalizedRecipient) || normalizedEntryRecipient.indexOf(normalizedRecipient) > -1)
-			&& (StringUtils.isEmpty(normalizedSubject) || normalizedEntrySubject.indexOf(normalizedSubject) > -1)
-			&& (whenReceivedBegin == null || !whenReceivedEntry.isBefore(whenReceivedBegin))
-			&& (whenReceivedEnd == null || !whenReceivedEntry.isAfter(whenReceivedEnd));
+		return CorrespondenceEntryState.ACTIVE.equals(entry.getState()) && (type == null || type.equals(entry.getType()));
 	    }
 
-	}, entries);
+	}, activeEntries);
 
-	return entries;
-    }
-
-    public static java.util.List<CorrespondenceEntry> simpleSearch(final String key) {
-	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
-
-	if (StringUtils.isEmpty(key)) {
-	    return entries;
-	}
-
-	final String normalizedKey = StringNormalizer.normalize(key);
-
-	CollectionUtils.select(getActiveEntries(), new Predicate() {
-
-	    @Override
-	    public boolean evaluate(Object arg0) {
-		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		String normalizedEntrySender = StringNormalizer.normalize(entry.getSender());
-		String normalizedEntryRecipient = StringNormalizer.normalize(entry.getRecipient());
-		String normalizedSubject = StringNormalizer.normalize(entry.getSubject());
-
-		return normalizedEntrySender.indexOf(normalizedKey) > -1 || normalizedEntryRecipient.indexOf(normalizedKey) > -1
-			|| normalizedSubject.indexOf(normalizedKey) > -1;
-	    }
-
-	}, entries);
-
-	return entries;
+	return activeEntries;
     }
 
     public static class CorrespondenceEntryBean implements java.io.Serializable {
@@ -231,7 +185,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     @Service
     public void edit(CorrespondenceEntryBean bean) {
-	checkParameters(bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceived());
+	checkParameters(this.getMailTracking(), bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceived(),
+		this.getType());
 
 	this.setSender(bean.getSender());
 	this.setRecipient(bean.getRecipient());

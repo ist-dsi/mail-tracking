@@ -9,11 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import module.mailtracking.domain.CorrespondenceEntry;
+import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.Document;
+import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import myorg.applicationTier.Authenticate.UserView;
+import myorg.domain.RoleType;
+import myorg.domain.User;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
+import myorg.domain.groups.Role;
 import myorg.domain.groups.UserGroup;
 import myorg.presentationTier.actions.ContextBaseAction;
 
@@ -35,28 +41,69 @@ public class MailTrackingAction extends ContextBaseAction {
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	    throws Exception {
+
+	readCorrespondenceTypeView(request);
+	readMailTracking(request);
+
 	return super.execute(mapping, form, request, response);
     }
 
-    @CreateNodeAction(bundle = "MAIL_TRACKING_RESOURCES", key = "option.create.new.mail.tracking.page", groupKey = "label.module.contents")
+    private MailTracking readMailTracking(HttpServletRequest request) {
+	MailTracking mailTracking = (MailTracking) request.getAttribute("mailTracking");
+
+	if (mailTracking == null) {
+	    String mailTrackingId = request.getParameter("mailTrackingId");
+	    mailTracking = MailTracking.fromExternalId(mailTrackingId);
+	}
+
+	request.setAttribute("mailTracking", mailTracking);
+	return mailTracking;
+    }
+
+    private CorrespondenceType readCorrespondenceTypeView(HttpServletRequest request) {
+	String typeValue = request.getParameter("correspondenceType");
+	CorrespondenceType type = StringUtils.isEmpty(typeValue) ? null : CorrespondenceType.valueOf(typeValue);
+
+	if (type == null)
+	    type = CorrespondenceType.SENT;
+
+	request.setAttribute("correspondenceType", type.name());
+	return type;
+    }
+
+    @CreateNodeAction(bundle = "MAIL_TRACKING_RESOURCES", key = "mail.tracking.interface", groupKey = "label.module.contents")
     public final ActionForward prepareCreateNewPage(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 	final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
 	final Node node = getDomainObject(request, "parentOfNodesToManageId");
 
-	ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare", "resources.MailTrackingResources",
-		"link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
+	final Node mainNode = ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare",
+		"resources.MailTrackingResources", "link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
+
+	final Node mailTrackingManagerNode = ActionNode.createActionNode(virtualHost, mainNode, "/manageMailTracking", "prepare",
+		"resources.MailTrackingResources", "link.sideBar.mailtracking.manage", Role.getRole(RoleType.MANAGER));
 
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }
 
     public final ActionForward prepare(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	getEntries(request);
+	User currentUser = UserView.getCurrentUser();
+	MailTracking mailTracking = readMailTracking(request);
 
-	getCorrespondenceEntryBean(request);
+	if (mailTracking != null) {
+	    if (!mailTracking.isUserOperator(currentUser))
+		return forward(request, "/mailtracking/permissionDenied.jsp");
 
-	return forward(request, "/mailtracking/management.jsp");
+	    getEntries(request);
+	    return forward(request, "/mailtracking/management.jsp");
+	}
+
+	java.util.List<MailTracking> mailTrackings = currentUser.getMailTrackingsWhereUserIsOperator();
+
+	request.setAttribute("mailTrackings", mailTrackings);
+
+	return forward(request, "/mailtracking/chooseMailTracking.jsp");
     }
 
     private java.util.List<CorrespondenceEntry> getEntries(HttpServletRequest request) {
@@ -64,10 +111,12 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	java.util.List<CorrespondenceEntry> searchedEntries;
 	if (searchBean.isExtendedSearchActive()) {
-	    searchedEntries = CorrespondenceEntry.find(searchBean.getSender(), searchBean.getRecipient(),
-		    searchBean.getSubject(), searchBean.getWhenReceivedBegin(), searchBean.getWhenReceivedEnd());
+	    searchedEntries = readMailTracking(request).find(readCorrespondenceTypeView(request), searchBean.getSender(),
+		    searchBean.getRecipient(), searchBean.getSubject(), searchBean.getWhenReceivedBegin(),
+		    searchBean.getWhenReceivedEnd());
 	} else if (searchBean.isSimpleSearchActive()) {
-	    searchedEntries = CorrespondenceEntry.simpleSearch(searchBean.getAllStringFieldsFilter());
+	    searchedEntries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request),
+		    searchBean.getAllStringFieldsFilter());
 	} else {
 	    searchedEntries = CorrespondenceEntry.getActiveEntries();
 	}
@@ -77,7 +126,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return searchedEntries;
     }
 
-    private CorrespondenceEntryBean getCorrespondenceEntryBean(HttpServletRequest request) {
+    private CorrespondenceEntryBean readCorrespondenceEntryBean(HttpServletRequest request) {
 	CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getAttribute("correspondenceEntryBean");
 
 	if (entryBean == null)
@@ -107,20 +156,9 @@ public class MailTrackingAction extends ContextBaseAction {
 	return searchBean;
     }
 
-    private static final Integer NUMBER_LAST_ENTRIES = 10;
-
-    private java.util.List<CorrespondenceEntry> getLastEntries(HttpServletRequest request) {
-	java.util.List<CorrespondenceEntry> lastEntries = CorrespondenceEntry
-		.getLastActiveEntriesSortedByDate(NUMBER_LAST_ENTRIES);
-	request.setAttribute("lastEntries", lastEntries);
-
-	return lastEntries;
-    }
-
     public final ActionForward addNewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	CorrespondenceEntry.createNewEntry(getCorrespondenceEntryBean(request));
-
+	readMailTracking(request).createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request));
 	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean());
 
 	return prepare(mapping, form, request, response);
@@ -141,7 +179,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public final ActionForward editEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	CorrespondenceEntryBean bean = getCorrespondenceEntryBean(request);
+	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 
 	bean.getEntry().edit(bean);
 	return prepare(mapping, form, request, response);
@@ -225,19 +263,24 @@ public class MailTrackingAction extends ContextBaseAction {
 	String[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols);
 	Integer[] orderToUse = getOrdering(request, iSortingCols);
 
+	if (propertiesToCompare.length == 0) {
+	    propertiesToCompare = new String[] { "whenReceived" };
+	    orderToUse = new Integer[] { -1 };
+	}
+
 	java.util.List<CorrespondenceEntry> entries = null;
 	if (StringUtils.isEmpty(sSearch)) {
-	    entries = CorrespondenceEntry.getActiveEntries();
+	    entries = readMailTracking(request).getActiveEntries(readCorrespondenceTypeView(request));
 	} else {
-	    entries = CorrespondenceEntry.simpleSearch(sSearch);
+	    entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch);
 	}
 
 	Integer numberOfRecordsMatched = entries.size();
 	java.util.List<CorrespondenceEntry> limitedEntries = limitAndOrderSearchedEntries(entries, propertiesToCompare,
 		orderToUse, iDisplayStart, iDisplayLength);
 
-	String jsonResponseString = serializeAjaxFilterResponse(sEcho, CorrespondenceEntry.getActiveEntries().size(),
-		numberOfRecordsMatched, limitedEntries, request);
+	String jsonResponseString = serializeAjaxFilterResponse(sEcho, readMailTracking(request).getActiveEntries(
+		readCorrespondenceTypeView(request)).size(), numberOfRecordsMatched, limitedEntries, request);
 
 	final byte[] jsonResponsePayload = jsonResponseString.getBytes();
 
@@ -248,6 +291,13 @@ public class MailTrackingAction extends ContextBaseAction {
 	response.getOutputStream().close();
 
 	return null;
+    }
+
+    public ActionForward prepareCreateNewEntry(ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	readCorrespondenceEntryBean(request);
+
+	return forward(request, "/mailtracking/createNewEntry.jsp");
     }
 
     private String serializeAjaxFilterResponse(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
@@ -296,6 +346,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     private java.util.List<CorrespondenceEntry> limitAndOrderSearchedEntries(java.util.List searchedEntries,
 	    final String[] propertiesToCompare, final Integer[] orderToUse, Integer iDisplayStart, Integer iDisplayLength) {
+
 	Collections.sort(searchedEntries, new Comparator<CorrespondenceEntry>() {
 
 	    @Override

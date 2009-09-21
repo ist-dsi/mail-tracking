@@ -1,6 +1,7 @@
 package module.mailtracking.domain;
 
 enum CorrespondenceEntryState as CorrespondenceEntryStateState;
+enum CorrespondenceType as CorrespondenceType;
 
 class CorrespondenceEntry {
 	String sender;
@@ -8,4 +9,13 @@ class CorrespondenceEntry {
 	String subject;
 	DateTime whenReceived;
 	CorrespondenceEntryStateState state;
+	CorrespondenceType type;
 }
+
+class MailTracking {
+	MultiLanguageString name;
+	Boolean active;
+}
+
+
+

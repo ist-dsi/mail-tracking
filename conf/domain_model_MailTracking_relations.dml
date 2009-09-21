@@ -1,5 +1,8 @@
+enum module.mailtracking.domain.DocumentType as DocumentType;
+
 class module.mailtracking.domain.Document extends module.fileSupport.domain.GenericFile {
 	String description;
+	DocumentType type;
 }
 
 relation MyOrgCorrespondenceEntry {
@@ -9,7 +12,6 @@ relation MyOrgCorrespondenceEntry {
 	}
 }
 
-
 relation CorrepondenceEntryDocument {
 	module.mailtracking.domain.Document playsRole documents {
 		multiplicity *;
@@ -17,3 +19,29 @@ relation CorrepondenceEntryDocument {
 	
 	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
 }
+
+relation MyOrgMailTracking {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.MailTracking playsRole mailTrackings {
+		multiplicity *;
+	}
+}
+
+relation MailTrackingUnit {
+	module.organization.domain.Unit playsRole unit;
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+}
+
+relation MailTrackingPersistenceGroup {
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	myorg.domain.groups.PersistentGroup playsRole operatorsGroup;
+}
+
+
+relation MaiTrackingCorrespondenceEntry {
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+}
+

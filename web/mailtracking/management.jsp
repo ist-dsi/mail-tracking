@@ -4,6 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
+<%@ page import="module.mailtracking.domain.CorrespondenceType" %>
+
 <script type="text/javascript" src="<%= request.getContextPath() + "/javaScript/dataTables/media/js/jquery.dataTables.js"%>"></script>
 
 <style type="text/css" title="currentStyle">
@@ -17,11 +19,16 @@ $(document).ready(function() {
 			$("#link.ajax.filter.correspondence > a").visible = false;
 			var ajaxPostUrl = $("#filterCorrespondence > a").attr("href");
 
+			$("#correspondenceTypeSpan").visible = false;
+			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
+
 			$(".display").dataTable({
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": ajaxPostUrl,
 				"fnServerData": function(sSource, aoData, fnCallback){
+					aoData.push({"name" : "correspondenceType", "value" : correspondenceTypeValue });
+					
 					$.ajax({
 						"dataType": 'json',
 						"type": "POST",
@@ -50,7 +57,12 @@ $(document).ready(function() {
 
 </script>
 
-<span id="filterCorrespondence"><html:link page="/mailtracking.do?method=ajaxFilterCorrespondence" ></html:link></span>
+<bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
+
+<span id="filterCorrespondence"><html:link page='<%= "/mailtracking.do?method=ajaxFilterCorrespondence&amp;mailTrackingId=" + mailTrackingId %>'></html:link></span>
+
+<bean:define id="correspondenceType" name="correspondenceType" />
+<span id="correspondenceTypeSpan"><bean:write name="correspondenceType" /></span>
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
@@ -58,18 +70,24 @@ $(document).ready(function() {
 
 <fr:form id="search.parameters.simple.form" action="/mailtracking.do?method=prepare">
 	<fr:edit id="search.parameters.simple.bean" name="searchParametersBean" visible="false" />
-<%-- 	<fr:edit id="search.parameters.simple.bean.slot" name="searchParametersBean" slot="allStringFieldsFilter" />
-	<html:submit><bean:message key="label.filter" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>--%>
 </fr:form>
-<%-- 
-<div>
-<fr:form id="search.parameters.extended.form" action="/mailtracking.do?method=prepare">
-	<fr:edit id="search.parameters.extended.bean" name="searchParametersBean" schema="module.mailtracking.extended.search.edit" />
-	<html:submit><bean:message key="label.filter" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
-</fr:form>
-</div>
---%>
 
+<p>
+<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
+	<bean:message key="label.mail.tracking.sent.correspondence" bundle="MAIL_TRACKING_RESOURCES" />
+	<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.mail.tracking.received.correspondence" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
+</logic:equal>
+<logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
+	<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.mail.tracking.sent.correspondence" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
+	<bean:message key="label.mail.tracking.received.correspondence" bundle="MAIL_TRACKING_RESOURCES" />
+</logic:equal> 
+</p>
+
+<p>
+	<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+		<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
+	</html:link>
+</p>
 <logic:empty name="searchEntries">
 	<bean:message key="message.searched.correspondence.entries.empty" bundle="MAIL_TRACKING_RESOURCES" /> 
 </logic:empty>
@@ -80,12 +98,12 @@ $(document).ready(function() {
 		<fr:property name="classes" value="table display"/>
 		<fr:property name="renderCompliantTable" value="true" />
 
-		<fr:property name="linkFormat(edit)" value="/mailtracking.do?method=prepareEditEntry&entryId=${externalId}"/>
+		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
 		<fr:property name="order(edit)" value="2" />		
 
-		<fr:property name="linkFormat(delete)" value="/mailtracking.do?method=deleteEntry&entryId=${externalId}"/>
+		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
 		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
@@ -96,10 +114,3 @@ $(document).ready(function() {
 
 </logic:notEmpty>
 
-<h3><bean:message key="label.add.new.entry" bundle="MAIL_TRACKING_RESOURCES" /></h3>
-
-<fr:form id="add.new.entry.form" action="/mailtracking.do?method=addNewEntry">
-	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" schema="module.mailtracking.correspondence.entry.edit" />
-	
-	<html:submit><bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
-</fr:form>
