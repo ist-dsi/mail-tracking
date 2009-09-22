@@ -100,7 +100,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    return forward(request, "/mailtracking/management.jsp");
 	}
 
-	java.util.List<MailTracking> mailTrackings = currentUser.getMailTrackingsWhereUserIsOperator();
+	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserIsOperator(currentUser);
 
 	request.setAttribute("mailTrackings", mailTrackings);
 

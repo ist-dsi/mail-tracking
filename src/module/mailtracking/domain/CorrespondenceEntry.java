@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -29,45 +30,56 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	setMyOrg(MyOrg.getInstance());
     }
 
-    CorrespondenceEntry(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
-	    CorrespondenceType type) {
+    CorrespondenceEntry(MailTracking mailTracking, CorrespondenceEntryBean bean) {
 	this();
-	init(mailTracking, sender, recipient, subject, whenReceived, type);
+	init(mailTracking, bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceivedAsDateTime(), bean
+		.getWhenSentAsDateTime(), bean.getSenderLetterNumber(), bean.getDispathToWhom(), this.getType());
     }
 
     protected void init(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
-	    CorrespondenceType type) {
-	checkParameters(mailTracking, sender, recipient, subject, whenReceived, type);
-
+	    DateTime whenSent, String senderLetterNumber, String dispatchedToWhom, CorrespondenceType type) {
 	setState(CorrespondenceEntryState.ACTIVE);
 	setSender(sender);
 	setRecipient(recipient);
 	setSubject(subject);
 	setWhenReceived(whenReceived);
+	setWhenSent(whenSent);
+	setSenderLetterNumber(senderLetterNumber);
+	setDispatchedToWhom(dispatchedToWhom);
 	setType(type);
 	setMailTracking(mailTracking);
 	setEntryNumber(mailTracking.getNextEntryNumber(type));
+
+	this.checkParameters();
+
     }
 
-    private void checkParameters(MailTracking mailTracking, String sender, String recipient, String subject,
-	    DateTime whenReceived, CorrespondenceType type) {
-	if (StringUtils.isEmpty(sender))
+    private void checkParameters() {
+	if (StringUtils.isEmpty(this.getSender()))
 	    throw new DomainException("error.correspondence.entry.sender.cannot.be.empty");
 
-	if (StringUtils.isEmpty(recipient))
+	if (StringUtils.isEmpty(this.getRecipient()))
 	    throw new DomainException("error.correspondence.entry.recipient.cannot.be.empty");
 
-	if (StringUtils.isEmpty(subject))
+	if (StringUtils.isEmpty(this.getSubject()))
 	    throw new DomainException("error.correspondence.entry.subject.cannot.be.empty");
 
-	if (whenReceived == null)
-	    throw new DomainException("error.correspondence.entry.when.received.cannot.be.empty");
-
-	if (type == null)
+	if (this.getType() == null)
 	    throw new DomainException("error.correspondence.entry.type.cannot.be.empty");
 
-	if (mailTracking == null)
+	if (this.getMailTracking() == null)
 	    throw new DomainException("error.correspondence.entry.mail.tracking.cannot.be.empty");
+
+	if (CorrespondenceType.SENT.equals(this.getType())) {
+	    if (this.getWhenSent() == null)
+		throw new DomainException("error.correspondence.entry.when.sent.cannot.be.empty");
+	}
+
+	if (CorrespondenceType.RECEIVED.equals(this.getType())) {
+	    if (this.getWhenReceived() == null)
+		throw new DomainException("error.correspondence.entry.when.received.cannot.be.empty");
+
+	}
     }
 
     public static java.util.List<CorrespondenceEntry> getLastActiveEntriesSortedByDate(Integer numberOfEntries) {
@@ -120,8 +132,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	private String sender;
 	private String recipient;
 	private String subject;
-	private DateTime whenReceived;
-	private DateTime whenSent;
+	private LocalDate whenReceived;
+	private LocalDate whenSent;
 	private String senderLetterNumber;
 	private String dispathToWhom;
 
@@ -135,7 +147,12 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setSender(entry.getSender());
 	    this.setRecipient(entry.getRecipient());
 	    this.setSubject(entry.getSubject());
-	    this.setWhenReceived(entry.getWhenReceived());
+	    this.setWhenReceived(new LocalDate(entry.getWhenReceived().getYear(), entry.getWhenReceived().getMonthOfYear(), entry
+		    .getWhenReceived().getDayOfMonth()));
+	    this.setWhenSent(new LocalDate(entry.getWhenReceived().getYear(), entry.getWhenReceived().getMonthOfYear(), entry
+		    .getWhenReceived().getDayOfMonth()));
+	    this.setDispathToWhom(entry.getDispatchedToWhom());
+	    this.setSenderLetterNumber(this.getSenderLetterNumber());
 	    this.setEntry(entry);
 	}
 
@@ -163,11 +180,11 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.subject = subject;
 	}
 
-	public DateTime getWhenReceived() {
+	public LocalDate getWhenReceived() {
 	    return whenReceived;
 	}
 
-	public void setWhenReceived(DateTime whenReceived) {
+	public void setWhenReceived(LocalDate whenReceived) {
 	    this.whenReceived = whenReceived;
 	}
 
@@ -179,11 +196,11 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.entry = entry;
 	}
 
-	public DateTime getWhenSent() {
+	public LocalDate getWhenSent() {
 	    return whenSent;
 	}
 
-	public void setWhenSent(DateTime whenSent) {
+	public void setWhenSent(LocalDate whenSent) {
 	    this.whenSent = whenSent;
 	}
 
@@ -203,17 +220,36 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.dispathToWhom = dispathToWhom;
 	}
 
+	public DateTime getWhenReceivedAsDateTime() {
+	    return this.getWhenReceived() != null ? new DateTime(this.getWhenReceived().getYear(), this.getWhenReceived()
+		    .getMonthOfYear(), this.getWhenReceived().getDayOfMonth(), 0, 0, 0, 0) : null;
+	}
+
+	public DateTime getWhenSentAsDateTime() {
+	    return this.getWhenSent() != null ? new DateTime(this.getWhenSent().getYear(), this.getWhenSent().getMonthOfYear(),
+		    this.getWhenReceived().getDayOfMonth(), 0, 0, 0, 0) : null;
+	}
+
     }
 
     @Service
     public void edit(CorrespondenceEntryBean bean) {
-	checkParameters(this.getMailTracking(), bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceived(),
-		this.getType());
+	if (CorrespondenceType.SENT.equals(this.getType())) {
+	    this.setSender(bean.getSender());
+	    this.setRecipient(bean.getRecipient());
+	    this.setSubject(bean.getSubject());
+	    this.setWhenSent(bean.getWhenSentAsDateTime());
+	} else if (CorrespondenceType.RECEIVED.equals(this.getType())) {
+	    this.setWhenReceived(bean.getWhenReceivedAsDateTime());
+	    this.setSender(bean.getSender());
+	    this.setWhenSent(bean.getWhenSentAsDateTime());
+	    this.setSenderLetterNumber(bean.getSenderLetterNumber());
+	    this.setSubject(bean.getSubject());
+	    this.setRecipient(bean.getRecipient());
+	    this.setDispatchedToWhom(bean.getDispathToWhom());
+	}
 
-	this.setSender(bean.getSender());
-	this.setRecipient(bean.getRecipient());
-	this.setSubject(bean.getSubject());
-	this.setWhenReceived(bean.getWhenReceived());
+	checkParameters();
     }
 
     public CorrespondenceEntryBean createBean() {

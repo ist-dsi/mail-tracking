@@ -7,6 +7,7 @@ import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.organization.domain.Unit;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
+import myorg.domain.RoleType;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 import myorg.domain.groups.NamedGroup;
@@ -172,19 +173,13 @@ public class MailTracking extends MailTracking_Base {
     @Service
     public CorrespondenceEntry createNewEntry(CorrespondenceEntryBean bean, CorrespondenceType type, Document mainDocument)
 	    throws Exception {
-	CorrespondenceEntry entry = createNewEntry(bean.getSender(), bean.getRecipient(), bean.getSubject(), bean
-		.getWhenReceived(), type);
+	CorrespondenceEntry entry = new CorrespondenceEntry(this, bean);
 
 	if (mainDocument != null) {
 	    entry.addDocuments(mainDocument);
 	}
 
 	return entry;
-    }
-
-    protected CorrespondenceEntry createNewEntry(String sender, String recipient, String subject, DateTime whenReceived,
-	    CorrespondenceType type) {
-	return new CorrespondenceEntry(this, sender, recipient, subject, whenReceived, type);
     }
 
     public static class MailTrackingBean implements java.io.Serializable {
@@ -249,4 +244,27 @@ public class MailTracking extends MailTracking_Base {
 
 	return entries.get(entries.size() - 1).getEntryNumber();
     }
+
+    public static java.util.List<MailTracking> getMailTrackingsWhereUserIsOperator(final User user) {
+	java.util.List<MailTracking> mailTrackingList = new java.util.ArrayList<MailTracking>();
+
+	if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER))
+	    return MyOrg.getInstance().getMailTrackings();
+
+	CollectionUtils.select(user.getPerson().getAncestorUnits(), new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		return MailTracking.isUserOperatorOfMailTracking((Unit) arg0, user);
+	    }
+
+	}, mailTrackingList);
+
+	return mailTrackingList;
+    }
+
+    public static Boolean isUserOperatorOfMailTracking(Unit unit, User user) {
+	return unit.getMailTracking() != null && unit.getMailTracking().isUserOperator(user);
+    }
+
 }
