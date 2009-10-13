@@ -1,7 +1,8 @@
 package module.mailtracking.domain;
 
-enum CorrespondenceEntryState as CorrespondenceEntryStateState;
+enum CorrespondenceEntryState as CorrespondenceEntryState;
 enum CorrespondenceType as CorrespondenceType;
+enum CorrespondenceEntryVisibility as CorrespondenceEntryVisibility;
 
 class CorrespondenceEntry {
 	Long entryNumber;
@@ -9,11 +10,17 @@ class CorrespondenceEntry {
 	String recipient;
 	String subject;
 	DateTime whenReceived;
-	CorrespondenceEntryStateState state;
+	CorrespondenceEntryState state;
 	CorrespondenceType type;
 	String senderLetterNumber;
 	DateTime whenSent;
 	String dispatchedToWhom;
+	Boolean privateEntry;
+	CorrespondenceEntryVisibility visibility;
+	DateTime creationDate;
+	DateTime editionDate;
+	DateTime deletionDate;
+	String deletionReason;
 }
 
 class MailTracking {

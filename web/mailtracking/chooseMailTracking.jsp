@@ -6,8 +6,6 @@
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
-<h3><bean:message key="label.last.correspondence.entries" bundle="MAIL_TRACKING_RESOURCES" /> </h3>
-
 <logic:empty name="mailTrackings" >
 	<p><em><bean:message key="message.not.operator.in.any.mail.tracking" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 </logic:empty>
@@ -19,7 +17,7 @@
 			<fr:property name="classes" value="tabular" />
 			
 			<fr:property name="linkFormat(manage)" value="/mailtracking.do?method=prepare&mailTrackingId=${externalId}" />
-			<fr:property name="key(manage)" value="label.manage" />
+			<fr:property name="key(manage)" value="label.view" />
 			<fr:property name="bundle(manage)" value="MAIL_TRACKING_RESOURCES" />
 		</fr:layout>		
 	</fr:view>

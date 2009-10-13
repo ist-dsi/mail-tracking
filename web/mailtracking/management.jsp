@@ -6,13 +6,16 @@
 
 <%@ page import="module.mailtracking.domain.CorrespondenceType" %>
 
+<bean:define id="correspondenceType" name="correspondenceType" />
+
+
 <script type="text/javascript" src="<%= request.getContextPath() + "/javaScript/dataTables/media/js/jquery.dataTables.js"%>"></script>
 
 <style type="text/css" title="currentStyle">
 	@import "<%= request.getContextPath() + "/javaScript/dataTables/media/css/demo_table.css" %>";
 </style>
 
-
+<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -43,11 +46,10 @@ $(document).ready(function() {
 					/* Recipient */ null,
 					/* Subject */ null,
 					/* Sender */ null,
-					/* whenReceived */ null,
 					/* links */ { "bSortable": false,
 						"fnRender": function(oObj) {
-							var links = "<" + "a href=\"" + oObj.aData[4].split(",")[0] + "\">Editar</a>,";
-							links += "<" + "a href=\"" + oObj.aData[4].split(",")[1] + "\">Remover</a>";
+							var links = "<" + "a href=\"" + oObj.aData[5].split(",")[0] + "\">Editar</a>,";
+							links += "<" + "a href=\"" + oObj.aData[5].split(",")[1] + "\">Remover</a>";
 							
 							return links;
 						} 
@@ -58,6 +60,9 @@ $(document).ready(function() {
 	); 
 
 </script>
+</logic:equal>
+
+<logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
 
 <script type="text/javascript">
 
@@ -107,11 +112,12 @@ $(document).ready(function() {
 
 </script>
 
+</logic:equal>
+
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 
-<span id="filterCorrespondence"><html:link page='<%= "/mailtracking.do?method=ajaxFilterCorrespondence&amp;mailTrackingId=" + mailTrackingId %>'></html:link></span>
+<span id="filterCorrespondence"><html:link page='<%= "/mailtracking.do?method=ajaxFilterCorrespondence&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>'></html:link></span>
 
-<bean:define id="correspondenceType" name="correspondenceType" />
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
@@ -173,7 +179,8 @@ $(document).ready(function() {
 		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
-		<fr:property name="order(edit)" value="2" />		
+		<fr:property name="order(edit)" value="2" />
+		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
 
 		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
@@ -181,6 +188,7 @@ $(document).ready(function() {
 		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
 		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
 		<fr:property name="order(delete)" value="3" />
+		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
 	</fr:layout>
 </fr:view>
 </logic:equal>

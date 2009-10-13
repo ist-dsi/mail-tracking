@@ -24,19 +24,42 @@
 	</fr:form>
 	
 	<bean:define id="mailTrackingId" name="mailTrackingBean" property="mailTracking.externalId" />
+
+	<p><strong><bean:message key="label.viewers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
+	<logic:empty name="mailTrackingBean" property="mailTracking.viewersGroup.members">
+		<bean:message key="message.mail.tracking.viewers.empty" bundle="MAIL_TRACKING_RESOURCES" />
+	</logic:empty>
+	<logic:notEmpty name="mailTrackingBean" property="mailTracking.viewersGroup.members" >
+		<fr:view name="mailTrackingBean" property="mailTracking.viewersGroup.members" schema="module.mailtracking.manage.viewers.view">
+			<fr:layout name="tabular">
+				<fr:property name="classes" value="table" />
+				
+				<fr:property name="linkFormat(remove)" value="<%=  "/manageMailTracking.do?method=removeViewer&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
+				<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
+				<fr:property name="key(remove)" value="label.remove" />
+				<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
+				<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
+			</fr:layout>	
+		</fr:view>
+	</logic:notEmpty>
 	
 	<p><strong><bean:message key="label.operators" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-	<fr:view name="mailTrackingBean" property="mailTracking.operatorsGroup.members" schema="module.mailtracking.manage.operators.view">
-		<fr:layout name="tabular">
-			<fr:property name="classes" value="table" />
-			
-			<fr:property name="linkFormat(remove)" value="<%=  "/manageMailTracking.do?method=removeOperator&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
-			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
-			<fr:property name="key(remove)" value="label.remove" />
-			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
-			<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
-		</fr:layout>
-	</fr:view>
+	<logic:empty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
+		<bean:message key="message.mail.tracking.operators.empty" bundle="MAIL_TRACKING_RESOURCES" />
+	</logic:empty>
+	<logic:notEmpty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
+		<fr:view name="mailTrackingBean" property="mailTracking.operatorsGroup.members" schema="module.mailtracking.manage.operators.view">
+			<fr:layout name="tabular">
+				<fr:property name="classes" value="table" />
+				
+				<fr:property name="linkFormat(remove)" value="<%=  "/manageMailTracking.do?method=removeOperator&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
+				<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
+				<fr:property name="key(remove)" value="label.remove" />
+				<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
+				<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
+			</fr:layout>
+		</fr:view>
+	</logic:notEmpty>
 	
 	<p><em><bean:message key="message.mail.tracking.add.operator.explanation" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 	
@@ -49,12 +72,19 @@
 		<fr:view name="searchResults" schema="module.mailtracking.manage.operators.view" >
 			<fr:layout name="tabular">
 				<fr:property name="classes" value="table" />
+
+				<fr:property name="linkFormat(addViewer)" value="<%=  "/manageMailTracking.do?method=addViewer&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
+				<fr:property name="bundle(addViewer)" value="MAIL_TRACKING_RESOURCES" />
+				<fr:property name="key(addViewer)" value="label.add.user.as.viewer" />
 				
-				<fr:property name="linkFormat(add)" value="<%= "/manageMailTracking.do?method=addOperator&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
-				<fr:property name="bundle(add)" value="MAIL_TRACKING_RESOURCES" />
-				<fr:property name="key(add)" value="label.add.user" />
+				<fr:property name="linkFormat(addOperator)" value="<%= "/manageMailTracking.do?method=addOperator&amp;partyOid=" + partyOid + "&amp;userId=${externalId}" %>" />
+				<fr:property name="bundle(addOperator)" value="MAIL_TRACKING_RESOURCES" />
+				<fr:property name="key(addOperator)" value="label.add.user.as.operator" />				
 			</fr:layout>
 		</fr:view>
 	</logic:notEmpty>
+	
+	
+	
 </logic:equal>
 

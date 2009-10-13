@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,14 +94,14 @@ public class MailTrackingAction extends ContextBaseAction {
 	MailTracking mailTracking = readMailTracking(request);
 
 	if (mailTracking != null) {
-	    if (!mailTracking.isUserOperator(currentUser))
+	    if (!mailTracking.isUserOperator(currentUser) && !mailTracking.isUserViewer(currentUser))
 		return forward(request, "/mailtracking/permissionDenied.jsp");
 
 	    getEntries(request);
 	    return forward(request, "/mailtracking/management.jsp");
 	}
 
-	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserIsOperator(currentUser);
+	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserIsOperatorOrViewer(currentUser);
 
 	request.setAttribute("mailTrackings", mailTrackings);
 
@@ -134,7 +135,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    entryBean = this.getRenderedObject("correspondence.entry.bean");
 
 	if (entryBean == null)
-	    entryBean = new CorrespondenceEntryBean();
+	    entryBean = new CorrespondenceEntryBean(readMailTracking(request));
 
 	request.setAttribute("correspondenceEntryBean", entryBean);
 	return entryBean;
@@ -178,7 +179,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	readMailTracking(request).createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request),
 		document);
-	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean());
+	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean(readMailTracking(request)));
 
 	return prepare(mapping, form, request, response);
     }
@@ -200,15 +201,24 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletResponse response) throws Exception {
 	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 
-	bean.getEntry().edit(bean);
+	readMailTracking(request).editEntry(bean);
 	return prepare(mapping, form, request, response);
+    }
+
+    public final ActionForward prepareDeleteEntry(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+	CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
+
+	CorrespondenceEntryBean bean = entry.createBean();
+	request.setAttribute("correspondenceEntryBean", bean);
+
+	return forward(request, "/mailtracking/deleteCorrespondenceEntry.jsp");
     }
 
     public final ActionForward deleteEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
-
-	entry.delete();
+	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
+	bean.getEntry().delete(bean.getDeletionReason());
 
 	return prepare(mapping, form, request, response);
     }
@@ -317,7 +327,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	java.util.List<CorrespondenceEntry> entries = null;
 	if (StringUtils.isEmpty(sSearch)) {
-	    entries = readMailTracking(request).getActiveEntries(readCorrespondenceTypeView(request));
+	    entries = readMailTracking(request).getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
 	} else {
 	    entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch);
 	}
@@ -326,8 +336,14 @@ public class MailTrackingAction extends ContextBaseAction {
 	java.util.List<CorrespondenceEntry> limitedEntries = limitAndOrderSearchedEntries(entries, propertiesToCompare,
 		orderToUse, iDisplayStart, iDisplayLength);
 
-	String jsonResponseString = serializeAjaxFilterResponse(sEcho, readMailTracking(request).getActiveEntries(
-		readCorrespondenceTypeView(request)).size(), numberOfRecordsMatched, limitedEntries, request);
+	String jsonResponseString = null;
+	if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
+	    jsonResponseString = serializeAjaxFilterResponseForSentMail(sEcho, readMailTracking(request).getActiveEntries(
+		    readCorrespondenceTypeView(request)).size(), numberOfRecordsMatched, limitedEntries, request);
+	} else if (CorrespondenceType.RECEIVED.equals(readCorrespondenceTypeView(request))) {
+	    jsonResponseString = serializeAjaxFilterResponseForReceivedMail(sEcho, readMailTracking(request).getActiveEntries(
+		    readCorrespondenceTypeView(request)).size(), numberOfRecordsMatched, limitedEntries, request);
+	}
 
 	final byte[] jsonResponsePayload = jsonResponseString.getBytes();
 
@@ -348,7 +364,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return forward(request, "/mailtracking/createNewEntry.jsp");
     }
 
-    private String serializeAjaxFilterResponse(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
+    private String serializeAjaxFilterResponseForSentMail(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
 	    java.util.List<CorrespondenceEntry> limitedEntries, HttpServletRequest request) {
 	StringBuilder stringBuilder = new StringBuilder("{");
 	stringBuilder.append("\"sEcho\": ").append(sEcho).append(", \n");
@@ -357,13 +373,13 @@ public class MailTrackingAction extends ContextBaseAction {
 	stringBuilder.append("\"aaData\": ").append("[ \n");
 
 	for (CorrespondenceEntry entry : limitedEntries) {
-	    stringBuilder.append("[ \"").append(entry.getSender()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
+	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getWhenSent().toString("dd/MM/yyyy")).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
+	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
 	    stringBuilder.append("\"").append(generateLinkForCorrespondenceEntryEdition(request, entry)).append(",").append(
 		    generateLinkForCorrespondenceEntryRemoval(request, entry)).append("\" ], ");
-
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -373,13 +389,43 @@ public class MailTrackingAction extends ContextBaseAction {
 	return stringBuilder.toString();
     }
 
+    private String serializeAjaxFilterResponseForReceivedMail(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
+	    List<CorrespondenceEntry> limitedEntries, HttpServletRequest request) {
+	StringBuilder stringBuilder = new StringBuilder("{");
+	stringBuilder.append("\"sEcho\": ").append(sEcho).append(", \n");
+	stringBuilder.append("\"iTotalRecords\": ").append(iTotalRecords).append(", \n");
+	stringBuilder.append("\"iTotalDisplayRecords\": ").append(iTotalDisplayRecords).append(", \n");
+	stringBuilder.append("\"aaData\": ").append("[ \n");
+
+	for (CorrespondenceEntry entry : limitedEntries) {
+	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getWhenSent().toString("dd/MM/yyyy")).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSenderLetterNumber()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getDispatchedToWhom()).append("\", ");
+	    stringBuilder.append("\"").append(generateLinkForCorrespondenceEntryEdition(request, entry)).append(",").append(
+		    generateLinkForCorrespondenceEntryRemoval(request, entry)).append("\" ], ");
+	}
+
+	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+	stringBuilder.append(" ]\n }");
+
+	return stringBuilder.toString();
+
+    }
+
     private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry) {
 	String contextPath = request.getContextPath();
 	String realLink = contextPath
-		+ String.format(
-			"/mailtracking.do?entryId=%s&amp;method=deleteEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s",
-			entry.getExternalId(), readCorrespondenceTypeView(request).name(), readMailTracking(request)
-				.getExternalId());
+		+ String
+			.format(
+				"/mailtracking.do?entryId=%s&amp;method=prepareDeleteEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s",
+				entry.getExternalId(), readCorrespondenceTypeView(request).name(), readMailTracking(request)
+					.getExternalId());
 	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
 		.calculateChecksum(realLink));
 

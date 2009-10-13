@@ -34,6 +34,8 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
 	request.setAttribute("myorg", getMyOrg());
 	request.setAttribute("config", OrganizationViewConfiguration.defaultConfiguration());
+
+	request.setAttribute("mailTrackings", getMyOrg().getMailTrackings());
 	return forward(request, "/mailtracking/showOrgStructure.jsp");
     }
 
@@ -80,6 +82,15 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	MailTrackingBean mailTrackingBean = readMailTrackingBean(request);
 
 	mailTrackingBean.getMailTracking().addOperator(user);
+	return manageMailTracking(mapping, form, request, response);
+    }
+
+    public ActionForward addViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    HttpServletResponse response) {
+	User user = readUser(request);
+	MailTrackingBean mailTrackingBean = readMailTrackingBean(request);
+
+	mailTrackingBean.getMailTracking().addViewer(user);
 	return manageMailTracking(mapping, form, request, response);
     }
 

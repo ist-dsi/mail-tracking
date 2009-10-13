@@ -18,17 +18,37 @@
 <h3><bean:message key="title.mail.tracking.correspondence.entry.edit" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
-	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.equals(correspondenceType) ? "module.mailtracking.correspondence.received,entry.edit" : "module.mailtracking.correspondence.sent,entry.edit" %>" />
+	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
+	
+	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>" />
+	
+	<p><bean:message key="message.correspondence.sent.entry.visibility" bundle="MAIL_TRACKING_RESOURCES" /></p>
+	
+	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" />	
 	
 	<html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
 </fr:form>
 
+<script type="text/javascript">
+	$('document').ready(function() {
+		var value = $('form').find("input[name$='owner_text']").attr("value");
+		$('form').find("input[name$='owner']").attr("value", value);
+		
+		$('form').submit(function() {
+			if($('form').find("input[name$='owner']").attr("value").length == 0) {
+				var value = $('form').find("input[name$='owner_OldValue']").attr("value");
+				$('form').find("input[name$='owner']").attr("value", value);
+			}
+		})
+	});
+</script>
 
 <h3><bean:message key="title.associated.documents" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <logic:empty name="correspondenceEntryBean" property="entry.documents" >
 	<em><bean:message key="message.associated.documents.empty" bundle="MAIL_TRACKING_RESOURCES" /></em>
 </logic:empty>
+
 
 <logic:notEmpty name="correspondenceEntryBean" property="entry.documents" >
 

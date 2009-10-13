@@ -4,6 +4,7 @@
 	<slot name="recipient" key="label.recipient" />
 	<slot name="subject" key="label.subject" />
 	<slot name="sender" key="label.sender" />
+	
 </schema>
 
 
@@ -15,16 +16,16 @@
 	<slot name="senderLetterNumber" key="label.sender.letter.number" />
 	<slot name="subject" key="label.subject" /> 
 	<slot name="recipient" key="label.dispatch" />
-	<slot name="dispatchToWhom" key="label.dispatch.made.to" />
+	<slot name="dispatchedToWhom" key="label.dispatch.made.to" />
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" >
-	<slot name="whenSent" key="label.whenSent" layout="as-date" >
+	<slot name="whenSent" key="label.whenSent">
 		<property name="dateFormat" value="dd/MM/yyyy" />
-		<property name="dateSize" value="10" />
-		<property name="dateLength" value="10" />
+		<property name="size" value="10" />
+		<property name="maxLength" value="10" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.DateValidator">
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
@@ -41,7 +42,13 @@
 		</validator>
 		<property name="size" value="70" />
 	</slot>
-	<slot name="sender" key="label.sender">
+	<slot name="owner" key="label.sender" layout="autoComplete">
+		<property name="rawSlotName" value="sender" />
+        <property name="labelField" value="name"/>
+		<property name="format" value="${name}"/>
+		<property name="minChars" value="1"/>
+		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
+		<property name="classes" value="inputsize300px"/>	
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
@@ -50,10 +57,12 @@
 </schema>
 
 <schema name="module.mailtracking.correspondence.received.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="whenReceived" key="label.whenReceived" layout="as-date">
+	<slot name="whenReceived" key="label.whenReceived">
 		<property name="dateFormat" value="dd/MM/yyyy" />
+		<property name="size" value="10" />
+		<property name="maxLength" value="10" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.DateValidator">
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
@@ -63,10 +72,12 @@
 			<property name="length" value="100" />
 		</validator>
 	</slot>
-	<slot name="whenSent" key="label.correspondence.date" layout="as-date">
+	<slot name="whenSent" key="label.correspondence.date">
 		<property name="dateFormat" value="dd/MM/yyyy" />
+		<property name="size" value="10" />
+		<property name="maxLength" value="10" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.DateValidator">
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
@@ -81,18 +92,53 @@
 			<property name="length" value="255" />
 		</validator>
 		<property name="size" value="70" />
-	</slot>	
-	<slot name="recipient" key="label.dispatch">
+	</slot>
+	<slot name="owner" key="label.dispatch" layout="autoComplete">
+		<property name="rawSlotName" value="recipient" />
+        <property name="labelField" value="name"/>
+		<property name="format" value="${name}"/>
+		<property name="minChars" value="1"/>
+		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.RecipientAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
+		<property name="classes" value="inputsize300px"/>
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
-		</validator>	
+		</validator>		
 	</slot>
-	<slot name="dispatchToWhom" key="label.dispatch.made.to">
+	<slot name="dispatchedToWhom" key="label.dispatch.made.to">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="70" />
 		</validator>
 	</slot>
+</schema>
+
+<schema name="module.mailtracking.correspondence.sent.entry.visibility.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="visibility" key="label.visibility" layout="radio-select">
+		<property name="providerClass" value="module.mailtracking.presentationTier.renderers.providers.CorrespondenceEntryVisibilityProvider" />
+		<property name="eachSchema" value="module.mailtracking.correspondence.sent.entry.visibility.label" />
+		<property name="eachLayout" value="values" />
+		<property name="classes" value="nobullet"/>
+		<property name="saveOptions" value="true" />
+	</slot>
+</schema>
+
+<schema name="module.mailtracking.correspondence.sent.entry.visibility.label" type="module.mailtracking.domain.CorrespondenceEntryVisibility$CustomEnum" >
+	<slot name="visibilityDescriptionForSentEntry">
+	</slot>
+</schema>
+
+<schema name="module.mailtracking.correspondence.received.entry.visibility.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="visibility" key="label.visibility" layout="radio-select">
+		<property name="providerClass" value="module.mailtracking.presentationTier.renderers.providers.CorrespondenceEntryVisibilityProvider" />
+		<property name="eachSchema" value="module.mailtracking.correspondence.received.entry.visibility.label" />
+		<property name="eachLayout" value="values" />
+		<property name="classes" value="nobullet"/>
+		<property name="saveOptions" value="true" />
+	</slot>
+</schema>
+
+<schema name="module.mailtracking.correspondence.received.entry.visibility.label" type="module.mailtracking.domain.CorrespondenceEntryVisibility$CustomEnum" >
+	<slot name="visibilityDescriptionForReceivedEntry" />
 </schema>
 
 <schema name="module.mailtracking.associate.document.edit" type="module.mailtracking.presentationTier.MailTrackingAction$AssociateDocumentBean" bundle="MAIL_TRACKING_RESOURCES">
@@ -141,6 +187,9 @@
 	<slot name="active" key="label.isActive" />
 </schema>
 
+<schema name="module.mailtracking.manage.viewers.view" type="myorg.domain.User" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="presentationName" key="label.name" />
+</schema>
 
 <schema name="module.mailtracking.manage.operators.view" type="myorg.domain.User" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="presentationName" key="label.name" />
@@ -153,4 +202,14 @@
 
 <schema name="module.mail.tracking.choose" type="module.mailtracking.domain.MailTracking" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="name" key="label.name" />
+</schema>
+
+
+<schema name="module.mailtracking.correspondence.entry.delete" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="deletionReason" key="label.reason">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="100" />
+		</validator>	
+	</slot>
 </schema>

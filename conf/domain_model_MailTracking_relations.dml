@@ -33,10 +33,14 @@ relation MailTrackingUnit {
 }
 
 relation MailTrackingPersistenceGroup {
-	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForManagement;
 	myorg.domain.groups.PersistentGroup playsRole operatorsGroup;
 }
 
+relation MailTrackingViewers {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForView;
+	myorg.domain.groups.PersistentGroup playsRole viewersGroup;
+}
 
 relation MaiTrackingCorrespondenceEntry {
 	module.mailtracking.domain.MailTracking playsRole mailTracking;
@@ -45,3 +49,33 @@ relation MaiTrackingCorrespondenceEntry {
 	}
 }
 
+relation CorrespondenceEntryUserCreator {
+	module.mailtracking.domain.CorrespondenceEntry playsRole createdCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	myorg.domain.User playsRole creator;
+}
+
+relation CorrespondenceEntryLastEditor {
+	module.mailtracking.domain.CorrespondenceEntry playsRole editedCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	myorg.domain.User playsRole lastEditor;
+}
+
+relation CorrespondenceEntryDeletionResponsible {
+	module.mailtracking.domain.CorrespondenceEntry playsRole deletedCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	myorg.domain.User playsRole deletionResponsible;
+}
+
+relation CorrespondenceEntryOwner {
+	module.organization.domain.Person playsRole owner;
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+}
