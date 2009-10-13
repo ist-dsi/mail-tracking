@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.exception.PermissionDeniedException;
 import module.organization.domain.Unit;
 import module.organization.presentationTier.renderers.OrganizationViewConfiguration;
+import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.presentationTier.actions.ContextBaseAction;
 
@@ -54,6 +56,9 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward createMailTracking(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
+	if (!MailTracking.isManager(UserView.getCurrentUser()))
+	    throw new PermissionDeniedException();
+
 	Unit unit = readOrganizationalUnit(request);
 	MailTracking.createMailTracking(unit);
 
@@ -62,6 +67,9 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward editMailTrackingAttributes(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, HttpServletResponse response) {
+	if (!MailTracking.isManager(UserView.getCurrentUser()))
+	    throw new PermissionDeniedException();
+
 	MailTrackingBean bean = readMailTrackingBean(request);
 	bean.getMailTracking().edit(bean);
 

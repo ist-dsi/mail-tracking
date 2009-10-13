@@ -17,7 +17,7 @@
 
 <h3><bean:message key="title.mail.tracking.correspondence.entry.delete" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
-<p><bean:message key="messsage.mail.tracking.deletion.reason.necessary" /></p>
+<p><bean:message key="messsage.mail.tracking.deletion.reason.necessary" bundle="MAIL_TRACKING_RESOURCES"/></p>
 
 <fr:form id="delete.entry.form" action="<%= "/mailtracking.do?method=deleteEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />

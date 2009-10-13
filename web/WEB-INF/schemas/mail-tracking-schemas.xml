@@ -49,7 +49,6 @@
 		<property name="minChars" value="1"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
 		<property name="classes" value="inputsize300px"/>	
-		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
@@ -100,7 +99,6 @@
 		<property name="minChars" value="1"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.RecipientAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
 		<property name="classes" value="inputsize300px"/>
-		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>		
@@ -148,7 +146,7 @@
 		<property name="fileContentTypeSlot" value="mimetype" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.FileValidator" >
 			<property name="required" value="true" />
-			<property name="maxSize" value="145728" />
+			<property name="maxSize" value="3145728" />
 		</validator>
 	</slot>
 	<slot name="description" key="label.description" >

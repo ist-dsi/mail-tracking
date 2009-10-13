@@ -34,12 +34,11 @@
 		var value = $('form').find("input[name$='owner_text']").attr("value");
 		$('form').find("input[name$='owner']").attr("value", value);
 		
-		$('form').submit(function() {
-			if($('form').find("input[name$='owner']").attr("value").length == 0) {
-				var value = $('form').find("input[name$='owner_OldValue']").attr("value");
-				$('form').find("input[name$='owner']").attr("value", value);
-			}
-		})
+		$('document').ready(function() {
+			$("input[name$='owner_text']").change(function() {
+				$('form').find("input[name$='owner']").attr("value", $("input[name$='owner_text']").attr("value"));
+			});		
+		});
 	});
 </script>
 

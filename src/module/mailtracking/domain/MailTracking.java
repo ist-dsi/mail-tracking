@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
-import module.mailtracking.domain.exception.PermissionDeniedException;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
 import myorg.applicationTier.Authenticate.UserView;
@@ -54,9 +53,6 @@ public class MailTracking extends MailTracking_Base {
     @Service
     @Checked("xpto.ALTO")
     public static MailTracking createMailTracking(Unit unit) {
-	if (!isManager(UserView.getCurrentUser()))
-	    throw new PermissionDeniedException();
-
 	if (unit.hasMailTracking())
 	    throw new DomainException("error.mail.tracking.exists.for.unit");
 
@@ -111,8 +107,6 @@ public class MailTracking extends MailTracking_Base {
 
     @Service
     public void edit(MailTrackingBean bean) {
-	if (!isManager(UserView.getCurrentUser()))
-	    throw new PermissionDeniedException();
 
 	this.setName(bean.getName());
 	this.setActive(bean.getActive());
@@ -225,8 +219,6 @@ public class MailTracking extends MailTracking_Base {
     @Service
     public CorrespondenceEntry createNewEntry(CorrespondenceEntryBean bean, CorrespondenceType type, Document mainDocument)
 	    throws Exception {
-	if (!isUserOperator(UserView.getCurrentUser()))
-	    throw new PermissionDeniedException();
 
 	CorrespondenceEntry entry = new CorrespondenceEntry(this, bean, type, this.getNextEntryNumber(type));
 
@@ -238,8 +230,6 @@ public class MailTracking extends MailTracking_Base {
 
     @Service
     public CorrespondenceEntry editEntry(CorrespondenceEntryBean bean) {
-	if (!isUserOperator(UserView.getCurrentUser()))
-	    throw new PermissionDeniedException();
 	bean.getEntry().edit(bean);
 	return bean.getEntry();
     }

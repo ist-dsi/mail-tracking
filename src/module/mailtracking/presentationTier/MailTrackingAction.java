@@ -15,6 +15,7 @@ import module.mailtracking.domain.Document;
 import module.mailtracking.domain.DocumentType;
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import module.mailtracking.domain.exception.PermissionDeniedException;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.RoleType;
 import myorg.domain.User;
@@ -160,6 +161,17 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public final ActionForward addNewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
+	MailTracking mailTracking = readMailTracking(request);
+
+	if (!mailTracking.isUserOperator(UserView.getCurrentUser()))
+	    throw new PermissionDeniedException();
+
+	if (!preValidate(readCorrespondenceEntryBean(request), request)) {
+	    RenderUtils.invalidateViewState("associate.document.bean");
+	    setAssociateDocumentBean(request, null);
+	    return prepareCreateNewEntry(mapping, form, request, response);
+	}
+
 	Document document = null;
 	try {
 	    AssociateDocumentBean documentBean = getAssociateDocumentBean(request);
@@ -177,11 +189,46 @@ public class MailTrackingAction extends ContextBaseAction {
 	    }
 	}
 
-	readMailTracking(request).createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request),
-		document);
+	mailTracking.createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request), document);
 	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean(readMailTracking(request)));
 
 	return prepare(mapping, form, request, response);
+    }
+
+    public final ActionForward addNewEntryInvalid(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	readCorrespondenceEntryBean(request);
+
+	RenderUtils.invalidateViewState("associate.document.bean");
+	return prepareCreateNewEntry(mapping, form, request, response);
+    }
+
+    private static final Integer MAX_SENDER_SIZE = 50;
+    private static final Integer MAX_RECIPIENT_SIZE = 50;
+
+    private boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request) {
+	if (StringUtils.isEmpty(correspondenceEntryBean.getSender())) {
+	    addMessage(request, "error.mail.tracking.sender.is.required");
+	    return false;
+	}
+
+	if (correspondenceEntryBean.getSender().length() > MAX_SENDER_SIZE) {
+	    addMessage(request, "error.mail.tracking.sender.length.must.be.less.than",
+		    new String[] { MAX_SENDER_SIZE.toString() });
+	}
+
+	if (StringUtils.isEmpty(correspondenceEntryBean.getRecipient())) {
+	    addMessage(request, "error.mail.tracking.recipient.is.required");
+	    return false;
+	}
+
+	if (correspondenceEntryBean.getRecipient().length() > MAX_RECIPIENT_SIZE) {
+	    addMessage(request, "error.mail.tracking.recipient.length.must.be.less.than", new String[] { MAX_RECIPIENT_SIZE
+		    .toString() });
+	    return false;
+	}
+
+	return true;
     }
 
     public final ActionForward prepareEditEntry(final ActionMapping mapping, final ActionForm form,
@@ -199,9 +246,14 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public final ActionForward editEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
+	MailTracking mailTracking = readMailTracking(request);
+
+	if (!mailTracking.isUserOperator(UserView.getCurrentUser()))
+	    throw new PermissionDeniedException();
+
 	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 
-	readMailTracking(request).editEntry(bean);
+	mailTracking.editEntry(bean);
 	return prepare(mapping, form, request, response);
     }
 
@@ -375,11 +427,16 @@ public class MailTrackingAction extends ContextBaseAction {
 	for (CorrespondenceEntry entry : limitedEntries) {
 	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getWhenSent().toString("dd/MM/yyyy")).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
-	    stringBuilder.append("\"").append(generateLinkForCorrespondenceEntryEdition(request, entry)).append(",").append(
-		    generateLinkForCorrespondenceEntryRemoval(request, entry)).append("\" ], ");
+	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
+	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
+	    stringBuilder.append("\"").append(
+		    entry.isUserAbleToEdit(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryEdition(request, entry)
+			    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
+		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
+			    entry) : "permission_not_granted").append("\" ], ");
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());

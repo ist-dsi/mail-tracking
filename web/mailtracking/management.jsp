@@ -48,10 +48,14 @@ $(document).ready(function() {
 					/* Sender */ null,
 					/* links */ { "bSortable": false,
 						"fnRender": function(oObj) {
-							var links = "<" + "a href=\"" + oObj.aData[5].split(",")[0] + "\">Editar</a>,";
+						var links="";
+						if(oObj.aData[5].split(",")[0] != "permission_not_granted")
+							links = "<" + "a href=\"" + oObj.aData[5].split(",")[0] + "\">Editar</a>,";
+
+						if(oObj.aData[5].split(",")[1] != "permission_not_granted") 
 							links += "<" + "a href=\"" + oObj.aData[5].split(",")[1] + "\">Remover</a>";
-							
-							return links;
+						
+						return links;
 						} 
 					}
 				]
@@ -74,6 +78,13 @@ $(document).ready(function() {
 			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
 
 			$(".display-received").dataTable({
+				"oLanguage": {
+					"sLengthMenu": "Mostrar _MENU_ registos por página",
+					"sZeroRecords": "Não foram encontrados registos",
+					"sInfo": "Mostrar _START_ a _END_ de _TOTAL_ registos",
+					"sInfoEmtpy": "Mostrar 0 a 0 de 0 registos",
+					"sInfoFiltered": "(filtrados de _MAX_ total de registos)"
+				},				
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": ajaxPostUrl,
@@ -99,8 +110,12 @@ $(document).ready(function() {
 					/* dispatchToWhom */ null,
 					/* links */ { "bSortable": false,
 						"fnRender": function(oObj) {
-							var links = "<" + "a href=\"" + oObj.aData[4].split(",")[0] + "\">Editar</a>,";
-							links += "<" + "a href=\"" + oObj.aData[4].split(",")[1] + "\">Remover</a>";
+							var links="";
+							if(oObj.aData[8].split(",")[0] != "permission_not_granted")
+								links = "<" + "a href=\"" + oObj.aData[8].split(",")[0] + "\">Editar</a>,";
+
+							if(oObj.aData[8].split(",")[1] != "permission_not_granted") 
+								links += "<" + "a href=\"" + oObj.aData[8].split(",")[1] + "\">Remover</a>";
 							
 							return links;
 						} 
