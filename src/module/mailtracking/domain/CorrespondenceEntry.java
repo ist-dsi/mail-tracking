@@ -385,8 +385,16 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return this.getMailTracking().isUserViewer(user) && this.getVisibility().isUserAbleToView(this, user);
     }
 
+    public boolean isUserAbleToEdit() {
+	return isUserAbleToEdit(UserView.getCurrentUser());
+    }
+
     public boolean isUserAbleToEdit(User user) {
 	return this.getMailTracking().isUserOperator(user);
+    }
+
+    public boolean isUserAbleToDelete() {
+	return this.isUserAbleToDelete(UserView.getCurrentUser());
     }
 
     public boolean isUserAbleToDelete(User user) {

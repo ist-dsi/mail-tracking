@@ -248,6 +248,10 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletResponse response) throws Exception {
 	MailTracking mailTracking = readMailTracking(request);
 
+	if (!preValidate(readCorrespondenceEntryBean(request), request)) {
+	    return prepareEditEntry(mapping, form, request, response);
+	}
+
 	if (!mailTracking.isUserOperator(UserView.getCurrentUser()))
 	    throw new PermissionDeniedException();
 

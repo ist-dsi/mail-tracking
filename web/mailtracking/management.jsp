@@ -26,6 +26,22 @@ $(document).ready(function() {
 			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
 
 			$(".display-sent").dataTable({
+				"oLanguage": {
+					"sProcessing": "A processar...",
+					"sLengthMenu": "Mostrar _MENU_ registos",
+					"sZeroRecords": "Não foram encontrados registos",
+					"sInfo": "A mostrar _START_ a _END_ de _TOTAL_ registos",
+					"sInfoEmpty": "A mostrar 0 a 0 de 0 registos",
+					"sInfoFiltered": "(filtrado de _MAX_ total de registos)",
+					"sInfoPostFix": "",
+					"sSearch": "Procura:",
+					"oPaginate": {
+						"sFirst":    "Primeiro",
+						"sPrevious": "Anterior",
+						"sNext":     "Seguinte",
+						"sLast":     "Ultimo"
+					}
+				},				
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": ajaxPostUrl,
@@ -79,11 +95,20 @@ $(document).ready(function() {
 
 			$(".display-received").dataTable({
 				"oLanguage": {
-					"sLengthMenu": "Mostrar _MENU_ registos por página",
+					"sProcessing": "A processar...",
+					"sLengthMenu": "Mostrar _MENU_ registos",
 					"sZeroRecords": "Não foram encontrados registos",
-					"sInfo": "Mostrar _START_ a _END_ de _TOTAL_ registos",
-					"sInfoEmtpy": "Mostrar 0 a 0 de 0 registos",
-					"sInfoFiltered": "(filtrados de _MAX_ total de registos)"
+					"sInfo": "A mostrar _START_ a _END_ de _TOTAL_ registos",
+					"sInfoEmpty": "A mostrar 0 a 0 de 0 registos",
+					"sInfoFiltered": "(filtrado de _MAX_ total de registos)",
+					"sInfoPostFix": "",
+					"sSearch": "Procura:",
+					"oPaginate": {
+						"sFirst":    "Primeiro",
+						"sPrevious": "Anterior",
+						"sNext":     "Seguinte",
+						"sLast":     "Ultimo"
+					}
 				},				
 				"bProcessing": true,
 				"bServerSide": true,
@@ -203,7 +228,7 @@ $(document).ready(function() {
 		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
 		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
 		<fr:property name="order(delete)" value="3" />
-		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
+		<fr:property name="visibleIf(edit)" value="userAbleToDelete" />
 	</fr:layout>
 </fr:view>
 </logic:equal>
