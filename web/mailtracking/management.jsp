@@ -15,148 +15,8 @@
 	@import "<%= request.getContextPath() + "/javaScript/dataTables/media/css/demo_table.css" %>";
 </style>
 
-<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
-<script type="text/javascript">
-
-$(document).ready(function() {
-			$("#link.ajax.filter.correspondence > a").visible = false;
-			var ajaxPostUrl = $("#filterCorrespondence > a").attr("href");
-
-			$("#correspondenceTypeSpan").visible = false;
-			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
-
-			$(".display-sent").dataTable({
-				"oLanguage": {
-					"sProcessing": "A processar...",
-					"sLengthMenu": "Mostrar _MENU_ registos",
-					"sZeroRecords": "Não foram encontrados registos",
-					"sInfo": "A mostrar _START_ a _END_ de _TOTAL_ registos",
-					"sInfoEmpty": "A mostrar 0 a 0 de 0 registos",
-					"sInfoFiltered": "(filtrado de _MAX_ total de registos)",
-					"sInfoPostFix": "",
-					"sSearch": "Procura:",
-					"oPaginate": {
-						"sFirst":    "Primeiro",
-						"sPrevious": "Anterior",
-						"sNext":     "Seguinte",
-						"sLast":     "Ultimo"
-					}
-				},				
-				"bProcessing": true,
-				"bServerSide": true,
-				"sAjaxSource": ajaxPostUrl,
-				"fnServerData": function(sSource, aoData, fnCallback){
-					aoData.push({"name" : "correspondenceType", "value" : correspondenceTypeValue });
-					
-					$.ajax({
-						"dataType": 'json',
-						"type": "POST",
-						"url": sSource,
-						"data": aoData,
-						"success": fnCallback
-					})
-				},
-				"aoColumns": [
-					/* Entry Number */ null,
-					/* whenSent */ null,
-					/* Recipient */ null,
-					/* Subject */ null,
-					/* Sender */ null,
-					/* links */ { "bSortable": false,
-						"fnRender": function(oObj) {
-						var links="";
-						if(oObj.aData[5].split(",")[0] != "permission_not_granted")
-							links = "<" + "a href=\"" + oObj.aData[5].split(",")[0] + "\">Editar</a>,";
-
-						if(oObj.aData[5].split(",")[1] != "permission_not_granted") 
-							links += "<" + "a href=\"" + oObj.aData[5].split(",")[1] + "\">Remover</a>";
-						
-						return links;
-						} 
-					}
-				]
-			}); 
-	    } 
-	); 
-
-</script>
-</logic:equal>
-
-<logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
-
-<script type="text/javascript">
-
-$(document).ready(function() {
-			$("#link.ajax.filter.correspondence > a").visible = false;
-			var ajaxPostUrl = $("#filterCorrespondence > a").attr("href");
-
-			$("#correspondenceTypeSpan").visible = false;
-			var correspondenceTypeValue = $("#correspondenceTypeSpan").text();
-
-			$(".display-received").dataTable({
-				"oLanguage": {
-					"sProcessing": "A processar...",
-					"sLengthMenu": "Mostrar _MENU_ registos",
-					"sZeroRecords": "Não foram encontrados registos",
-					"sInfo": "A mostrar _START_ a _END_ de _TOTAL_ registos",
-					"sInfoEmpty": "A mostrar 0 a 0 de 0 registos",
-					"sInfoFiltered": "(filtrado de _MAX_ total de registos)",
-					"sInfoPostFix": "",
-					"sSearch": "Procura:",
-					"oPaginate": {
-						"sFirst":    "Primeiro",
-						"sPrevious": "Anterior",
-						"sNext":     "Seguinte",
-						"sLast":     "Ultimo"
-					}
-				},				
-				"bProcessing": true,
-				"bServerSide": true,
-				"sAjaxSource": ajaxPostUrl,
-				"fnServerData": function(sSource, aoData, fnCallback){
-					aoData.push({"name" : "correspondenceType", "value" : correspondenceTypeValue });
-					
-					$.ajax({
-						"dataType": 'json',
-						"type": "POST",
-						"url": sSource,
-						"data": aoData,
-						"success": fnCallback
-					})
-				},
-				"aoColumns": [
-					/* Entry Number */ null,
-					/* whenReceived */ null,
-					/* Sender */ null,
-					/* whenSent */ null,
-					/* senderLetterNumber */ null,
-					/* Subject */ null,
-					/* dispatch */ null,
-					/* dispatchToWhom */ null,
-					/* links */ { "bSortable": false,
-						"fnRender": function(oObj) {
-							var links="";
-							if(oObj.aData[8].split(",")[0] != "permission_not_granted")
-								links = "<" + "a href=\"" + oObj.aData[8].split(",")[0] + "\">Editar</a>,";
-
-							if(oObj.aData[8].split(",")[1] != "permission_not_granted") 
-								links += "<" + "a href=\"" + oObj.aData[8].split(",")[1] + "\">Remover</a>";
-							
-							return links;
-						} 
-					}
-				]
-			}); 
-	    } 
-	); 
-
-</script>
-
-</logic:equal>
 
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
-
-<span id="filterCorrespondence"><html:link page='<%= "/mailtracking.do?method=ajaxFilterCorrespondence&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>'></html:link></span>
 
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
@@ -189,32 +49,10 @@ $(document).ready(function() {
 
 
 <logic:notEmpty name="searchEntries">
-<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
-<fr:view name="searchEntries" schema="module.mailtracking.correspondence.sent.entries.view" >
-	<fr:layout name="tabular">
+<fr:view name="searchEntries" schema="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "module.mailtracking.correspondence.sent.entries.view" : "module.mailtracking.correspondence.received.entries.view" %>" >
+	<fr:layout name="ajax-tabular">
 		<fr:property name="classes" value="table display-sent"/>
-		<fr:property name="renderCompliantTable" value="true" />
-
-		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
-		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
-		<fr:property name="key(edit)" value="link.edit"/>
-		<fr:property name="order(edit)" value="2" />		
-
-		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
-		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
-		<fr:property name="key(delete)" value="link.delete"/>
-		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
-		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
-		<fr:property name="order(delete)" value="3" />
-	</fr:layout>
-</fr:view>
-</logic:equal>
-
-<logic:equal name="correspondenceType" value="<%= CorrespondenceType.RECEIVED.name() %>">
-<fr:view name="searchEntries" schema="module.mailtracking.correspondence.received.entries.view" >
-	<fr:layout name="tabular">
-		<fr:property name="classes" value="table display-received"/>
-		<fr:property name="renderCompliantTable" value="true" />
+		<fr:property name="ajaxSourceUrl" value="<%= "/mailtracking.do?method=ajaxFilterCorrespondence&mailTrackingId=" + mailTrackingId + "&correspondenceType=" + correspondenceType %>" />
 
 		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
@@ -229,9 +67,10 @@ $(document).ready(function() {
 		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
 		<fr:property name="order(delete)" value="3" />
 		<fr:property name="visibleIf(edit)" value="userAbleToDelete" />
+		
+		<fr:property name="extraParameter(correspondenceType)" value="<%=  (String) correspondenceType %>" />
 	</fr:layout>
 </fr:view>
-</logic:equal>
 
 </logic:notEmpty>
 
