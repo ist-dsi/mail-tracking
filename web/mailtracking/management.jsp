@@ -38,37 +38,46 @@
 </logic:equal> 
 </p>
 
+<logic:equal name="mailTracking" property="currentUserOperator" value="true"> 
 <p>
 	<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
 		<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
 	</html:link>
 </p>
+</logic:equal>
+
 <logic:empty name="searchEntries">
 	<bean:message key="message.searched.correspondence.entries.empty" bundle="MAIL_TRACKING_RESOURCES" /> 
-</logic:empty>
+</logic:empty> 
 
 
 <logic:notEmpty name="searchEntries">
 <fr:view name="searchEntries" schema="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "module.mailtracking.correspondence.sent.entries.view" : "module.mailtracking.correspondence.received.entries.view" %>" >
 	<fr:layout name="ajax-tabular">
 		<fr:property name="classes" value="table display-sent"/>
-		<fr:property name="ajaxSourceUrl" value="<%= "/mailtracking.do?method=ajaxFilterCorrespondence&mailTrackingId=" + mailTrackingId + "&correspondenceType=" + correspondenceType %>" />
+		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
+
+		<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=viewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>" />
+		<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
+		<fr:property name="key(view)" value="link.view"/>
+		<fr:property name="order(view)" value="2" />
+		<fr:property name="visibleIf(view)" value="userAbleToView" />
 
 		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
-		<fr:property name="order(edit)" value="2" />
+		<fr:property name="order(edit)" value="3" />
 		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
 
-		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
+		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=prepareDeleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
-		<fr:property name="confirmationKey(delete)" value="message.confirm.entry.delete" />
-		<fr:property name="confirmationTitleKey(delete)" value="title.confirm.entry.delete" />
-		<fr:property name="order(delete)" value="3" />
+		<fr:property name="order(delete)" value="4" />
 		<fr:property name="visibleIf(edit)" value="userAbleToDelete" />
-		
-		<fr:property name="extraParameter(correspondenceType)" value="<%=  (String) correspondenceType %>" />
+				
+		<fr:property name="extraParameter(method)" value="ajaxFilterCorrespondence" />
+		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />
+		<fr:property name="extraParameter(mailTrackingId)" value="<%= (String) mailTrackingId %>" />
 	</fr:layout>
 </fr:view>
 

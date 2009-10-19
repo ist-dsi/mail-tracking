@@ -126,11 +126,11 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    scriptValue += "'url': sSource,\n";
 	    scriptValue += "'data': aoData,\n";
 	    scriptValue += "'success': fnCallback\n";
-	    scriptValue += "})\n";
+	    scriptValue += "});\n";
 	    scriptValue += "},\n";
 	    scriptValue += "'aoColumns': [\n";
-	    for (int i = 0; i < columnNumber; i++) {
-		scriptValue += ",\n";
+	    for (int i = 0; i < (columnNumber - (getSortedLinksSize() > 0 ? 1 : 0)); i++) {
+		scriptValue += "/*" + ((HtmlText) getHeaderComponent(i)).getText() + " */,\n";
 	    }
 
 	    if (AjaxTableRenderer.this.getSortedLinksSize() > 0) {
@@ -141,12 +141,13 @@ public class AjaxTableRenderer extends CollectionRenderer {
 		for (int i = 0; i < getSortedLinksSize(); i++) {
 		    TableLink link = getTableLink(i);
 		    String value = RenderUtils.getResourceString(link.getBundle(), link.getKey());
-		    scriptValue += "if(oObj.aData[" + columnNumber + "].split(',')[" + i + "] != 'permission_not_granted')\n";
-		    scriptValue += "links += \"<\" + \"a href='\" + oObj.aData[" + columnNumber + "].split(',')[" + i
+		    scriptValue += "if(oObj.aData[" + (columnNumber - 1) + "].split(',')[" + i
+			    + "] != 'permission_not_granted')\n";
+		    scriptValue += "links += \"<\" + \"a href='\" + oObj.aData[" + (columnNumber - 1) + "].split(',')[" + i
 			    + "] + \"'>" + value + "</a>";
 
 		    if (AjaxTableRenderer.this.getSortedLinksSize() > 1 && i < (AjaxTableRenderer.this.getSortedLinksSize() - 1)) {
-			scriptValue += ",";
+			scriptValue += " ";
 		    }
 
 		    scriptValue += "\"\n";
@@ -305,6 +306,14 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    }
 	}
 
+	@Override
+	protected void setExtraComponentOptions(Object object, HtmlComponent component, Class type) {
+	    HtmlInlineContainer container = (HtmlInlineContainer) component;
+	    HtmlTable table = (HtmlTable) container.getChildren().get(2);
+
+	    table.setRenderCompliantTable(getRenderCompliantTable());
+	}
+
     }
 
     public String getAjaxSourceUrl() {
@@ -321,9 +330,13 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	link.setModuleRelative(false);
 	link.setContextRelative(true);
 
+	String urlParametersBoundaryCharacter = "&";
+	if (link.calculateUrl().indexOf("?") == -1)
+	    urlParametersBoundaryCharacter = "?";
+
 	return link.calculateUrl()
-		+ String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
-			.calculateChecksum(link.calculateUrl()));
+		+ String.format(urlParametersBoundaryCharacter + "%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME,
+			GenericChecksumRewriter.calculateChecksum(link.calculateUrl()));
     }
 
     public java.util.Map<String, String> getExtraParameter() {

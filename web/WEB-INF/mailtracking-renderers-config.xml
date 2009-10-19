@@ -1,4 +1,5 @@
     <renderer type="java.util.Collection" layout="ajax-tabular" class="module.mailtracking.presentationTier.renderers.AjaxTableRenderer">
         	<property name="groupLinks" value="true"/>
         	<property name="linkGroupSeparator" value=", "/>
+			<property name="renderCompliantTable" value="true" />        	
     </renderer>

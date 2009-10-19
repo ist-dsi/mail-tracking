@@ -20,6 +20,7 @@ public class Document extends Document_Base {
 	super();
 	init(displayName, filename, content, description, type);
 	setDescription(description);
+	setState(DocumentState.ACTIVE);
     }
 
     private void init(String displayName, String filename, byte[] content, String description, DocumentType type) {
@@ -45,7 +46,11 @@ public class Document extends Document_Base {
 	if (type == null) {
 	    throw new DomainException("error.mail.tracking.document.type.cannot.be.null");
 	}
+    }
 
+    @Service
+    public void deleteDocument() {
+	this.setState(DocumentState.DELETED);
     }
 
     @Service

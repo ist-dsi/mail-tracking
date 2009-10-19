@@ -43,8 +43,19 @@
 
 <script type="text/javascript">	
 	$('document').ready(function() {
+		$("input[value='ONLY_OWNER_AND_OPERATOR']").attr("disabled", true);
+		
 		$("input[name$='owner_text']").change(function() {
 			$('form').find("input[name$='owner']").attr("value", $("input[name$='owner_text']").attr("value"));
-		});		
+			$("input[value='ONLY_OWNER_AND_OPERATOR']").attr("disabled", true);
+			$("input[value='ONLY_OWNER_AND_OPERATOR']").attr("checked", false);
+		});
+
+		$("input[name$='_AutoComplete']").change(function() {
+			var auto_complete_input = $("input[name$='owner_AutoComplete']");
+			var is_person_selected = auto_complete_input.attr("value") != 'custom' || auto_complete_input.attr("value") != '';
+			$("input[value='ONLY_OWNER_AND_OPERATOR']").attr("disabled", false);
+		});
 	});
+
 </script>

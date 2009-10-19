@@ -4,19 +4,36 @@
 	<slot name="recipient" key="label.recipient" />
 	<slot name="subject" key="label.subject" />
 	<slot name="sender" key="label.sender" />
-	
 </schema>
 
+<schema name="module.mailtracking.correspondence.sent.entries.view.detailed" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="entryNumber" key="label.registry.number.detailed" />
+	<slot name="whenSent" key="label.whenSent" />
+	<slot name="recipient" key="label.recipient" />
+	<slot name="subject" key="label.subject" />
+	<slot name="sender" key="label.sender" />
+	<slot name="observations" key="label.observations" />
+</schema>
 
 <schema name="module.mailtracking.correspondence.received.entries.view" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="entryNumber" key="label.registry.number" />
 	<slot name="whenReceived" key="label.whenReceived" />
 	<slot name="sender" key="label.sender" />
-	<slot name="whenSent" key="label.correspondence.date" />
 	<slot name="senderLetterNumber" key="label.sender.letter.number" />
 	<slot name="subject" key="label.subject" /> 
 	<slot name="recipient" key="label.dispatch" />
+</schema>
+
+<schema name="module.mailtracking.correspondence.received.entries.view.detailed" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="entryNumber" key="label.registry.number.detailed" />
+	<slot name="whenReceived" key="label.whenReceived" />
+	<slot name="sender" key="label.sender" />
+	<slot name="whenSent" key="label.correspondence.date.detailed" />
+	<slot name="senderLetterNumber" key="label.sender.letter.number.detailed" />
+	<slot name="subject" key="label.subject" /> 
+	<slot name="recipient" key="label.dispatch" />
 	<slot name="dispatchedToWhom" key="label.dispatch.made.to" />
+	<slot name="observations" key="label.observations" />
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" >
@@ -51,6 +68,11 @@
 		<property name="classes" value="inputsize300px"/>	
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
+		</validator>
+	</slot>
+	<slot name="observations" key="label.observations" layout="longText">
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="255" />
 		</validator>
 	</slot>
 </schema>
@@ -108,6 +130,11 @@
 			<property name="length" value="70" />
 		</validator>
 	</slot>
+	<slot name="observations" key="label.observations" layout="longText">
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
+			<property name="length" value="255" />
+		</validator>
+	</slot>	
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entry.visibility.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">
@@ -211,3 +238,26 @@
 		</validator>	
 	</slot>
 </schema>
+
+<schema name="module.mail.tracking.correspondence.importation.edit" type="module.mailtracking.presentationTier.ManageMailTrackingAction$ImportationFileBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="stream" key="label.file">
+		<property name="fileNameSlot" value="filename" />
+		<property name="fileSizeSlot" value="filesize" />
+		<property name="fileContentTypeSlot" value="mimetype" />
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.FileValidator" >
+			<property name="required" value="true" />
+			<property name="acceptedExtensions" value="csv" />
+		</validator>
+	</slot>
+	
+	<slot name="type" key="label.correspondence.type">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+	</slot>
+</schema>
+
+<schema name="module.mail.tracking.correspondence.importation.results.view" type="module.mailtracking.domain.MailTrackingImportationHelper$ImportationReportEntry" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="line" key="label.record" />
+	<slot name="state"  key="label.importation.state"/>
+	<slot name="reason" key="label.reason" />
+</schema>
+

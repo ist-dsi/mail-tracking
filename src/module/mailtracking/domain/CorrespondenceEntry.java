@@ -42,18 +42,19 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	setLastEditor(UserView.getCurrentUser());
 	init(mailTracking, bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceivedAsDateTime(), bean
 		.getWhenSentAsDateTime(), bean.getSenderLetterNumber(), bean.getDispatchedToWhom(), type, entryNumber, bean
-		.getOwner(), bean.getVisibility().getCustomEnum());
+		.getOwner(), bean.getVisibility().getCustomEnum(), bean.getObservations());
     }
 
     protected void init(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
 	    DateTime whenSent, String senderLetterNumber, String dispatchedToWhom, CorrespondenceType type, Long entryNumber,
-	    Person owner, CorrespondenceEntryVisibility visibility) {
+	    Person owner, CorrespondenceEntryVisibility visibility, String observations) {
 	setState(CorrespondenceEntryState.ACTIVE);
 	setType(type);
 	setMailTracking(mailTracking);
 	setEntryNumber(entryNumber);
 	setOwner(owner);
 	setVisibility(visibility);
+	setObservations(observations);
 
 	if (CorrespondenceType.SENT.equals(type)) {
 	    this.setWhenSent(whenSent);
@@ -187,6 +188,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	private String deletionReason;
 
+	private String observations;
+
 	public CorrespondenceEntryBean(MailTracking mailTracking) {
 	    this.setMailTracking(mailTracking);
 	    this.setVisibility(new CustomEnum(CorrespondenceEntryVisibility.TO_PUBLIC));
@@ -197,6 +200,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setVisibility(new CustomEnum(entry.getVisibility()));
 	    this.setMailTracking(entry.getMailTracking());
 	    this.setEntry(entry);
+	    this.setObservations(entry.getObservations());
 
 	    if (CorrespondenceType.SENT.equals(entry.getType())) {
 		if (entry.getWhenSent() != null)
@@ -333,12 +337,22 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	public void setDeletionReason(String value) {
 	    this.deletionReason = value;
 	}
+
+	public String getObservations() {
+	    return this.observations;
+	}
+
+	public void setObservations(String value) {
+	    this.observations = value;
+	}
     }
 
     void edit(CorrespondenceEntryBean bean) {
 	this.setEditionDate(new DateTime());
 	this.setLastEditor(UserView.getCurrentUser());
 	this.setVisibility(bean.getVisibility().getCustomEnum());
+	setOwner(bean.getOwner());
+	setObservations(bean.getObservations());
 
 	if (CorrespondenceType.SENT.equals(this.getType())) {
 	    this.setSender(bean.getSender());
@@ -379,6 +393,21 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    throw new DomainException("error.mailtracking.associate.document.is.null");
 
 	this.addDocuments(document);
+    }
+
+    public java.util.List<Document> getActiveDocuments() {
+	java.util.List<Document> associatedDocuments = new java.util.ArrayList<Document>();
+
+	CollectionUtils.select(this.getDocuments(), new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		return DocumentState.ACTIVE.equals(((Document) arg0).getState());
+	    }
+
+	}, associatedDocuments);
+
+	return associatedDocuments;
     }
 
     public boolean isUserAbleToView(User user) {

@@ -298,6 +298,15 @@ public class MailTrackingAction extends ContextBaseAction {
 	return prepareEditEntry(mapping, form, request, response);
     }
 
+    public final ActionForward viewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
+
+	request.setAttribute("correspondenceEntryBean", entry.createBean());
+
+	return forward(request, "/mailtracking/viewCorrespondenceEntry.jsp");
+    }
+
     private static final String DOCUMENT_NOT_SPECIFIED_MESSAGE = "error.correspondence.entry.document.not.specified";
     private static final String DOCUMENT_DESCRIPTION_MANDATORY_MESSAGE = "error.correspondence.entry.document.description.mandatory";
     private static final String MAX_FILE_EXCEEDED_MESSAGE = "error.correspondence.entry.document.file.size.exceeded";
@@ -331,6 +340,8 @@ public class MailTrackingAction extends ContextBaseAction {
     public AssociateDocumentBean setAssociateDocumentBean(final HttpServletRequest request, CorrespondenceEntry entry) {
 	AssociateDocumentBean bean = new AssociateDocumentBean(entry);
 	request.setAttribute("associateDocumentBean", bean);
+
+	bean.setType(DocumentType.OTHER_DOCUMENT);
 
 	return bean;
     }
@@ -420,6 +431,17 @@ public class MailTrackingAction extends ContextBaseAction {
 	return forward(request, "/mailtracking/createNewEntry.jsp");
     }
 
+    public ActionForward deleteDocument(ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws Exception {
+	readDocument(request).deleteDocument();
+
+	return prepareEditEntry(mapping, form, request, response);
+    }
+
+    private Document readDocument(final HttpServletRequest request) {
+	return this.getDomainObject(request, "fileId");
+    }
+
     private String serializeAjaxFilterResponseForSentMail(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
 	    java.util.List<CorrespondenceEntry> limitedEntries, HttpServletRequest request) {
 	StringBuilder stringBuilder = new StringBuilder("{");
@@ -434,7 +456,12 @@ public class MailTrackingAction extends ContextBaseAction {
 	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
+
 	    stringBuilder.append("\"").append(
+		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
+			    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
 		    entry.isUserAbleToEdit(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryEdition(request, entry)
 			    : "permission_not_granted").append(",");
 
@@ -450,6 +477,19 @@ public class MailTrackingAction extends ContextBaseAction {
 	return stringBuilder.toString();
     }
 
+    private String generateLinkForCorrespondenceEntryView(HttpServletRequest request, CorrespondenceEntry entry) {
+	String contextPath = request.getContextPath();
+	String realLink = contextPath
+		+ String.format(
+			"/mailtracking.do?entryId=%s&amp;method=viewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", entry
+				.getExternalId(), readCorrespondenceTypeView(request).name(), readMailTracking(request)
+				.getExternalId());
+	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
+		.calculateChecksum(realLink));
+
+	return realLink;
+    }
+
     private String serializeAjaxFilterResponseForReceivedMail(String sEcho, Integer iTotalRecords, Integer iTotalDisplayRecords,
 	    List<CorrespondenceEntry> limitedEntries, HttpServletRequest request) {
 	StringBuilder stringBuilder = new StringBuilder("{");
@@ -462,13 +502,21 @@ public class MailTrackingAction extends ContextBaseAction {
 	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getWhenSent().toString("dd/MM/yyyy")).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSenderLetterNumber()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getDispatchedToWhom()).append("\", ");
-	    stringBuilder.append("\"").append(generateLinkForCorrespondenceEntryEdition(request, entry)).append(",").append(
-		    generateLinkForCorrespondenceEntryRemoval(request, entry)).append("\" ], ");
+
+	    stringBuilder.append("\"").append(
+		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
+			    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
+		    entry.isUserAbleToEdit(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryEdition(request, entry)
+			    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
+		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
+			    entry) : "permission_not_granted").append("\" ], ");
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());

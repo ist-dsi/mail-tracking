@@ -306,24 +306,21 @@ public class MailTracking extends MailTracking_Base {
 	if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER))
 	    return MyOrg.getInstance().getMailTrackings();
 
-	java.util.List<Unit> unitsWithMailTrackings = new java.util.ArrayList<Unit>();
-	CollectionUtils.select(user.getPerson().getParentUnits(), new Predicate() {
+	java.util.List<MailTracking> unitsWithMailTrackings = new java.util.ArrayList<MailTracking>();
+	CollectionUtils.select(MyOrg.getInstance().getMailTrackings(), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
-		return MailTracking.isUserOperatorOfMailTracking((Unit) arg0, user)
-			|| MailTracking.isUserViewerOfMailTracking((Unit) arg0, user);
+		return ((MailTracking) arg0).isUserViewer(user) || ((MailTracking) arg0).isUserOperator(user);
+		// return MailTracking.isUserOperatorOfMailTracking((Unit) arg0,
+		// user)
+		// || MailTracking.isUserViewerOfMailTracking((Unit) arg0,
+		// user);
 	    }
 
 	}, unitsWithMailTrackings);
 
-	java.util.List<MailTracking> mailTrackingList = new java.util.ArrayList<MailTracking>();
-
-	for (Unit unit : unitsWithMailTrackings) {
-	    mailTrackingList.add(unit.getMailTracking());
-	}
-
-	return mailTrackingList;
+	return unitsWithMailTrackings;
     }
 
     protected static boolean isUserViewerOfMailTracking(Unit unit, User user) {
@@ -340,6 +337,10 @@ public class MailTracking extends MailTracking_Base {
 
     public static boolean isOperator(MailTracking mailtracking, final User user) {
 	return mailtracking.isUserOperator(user);
+    }
+
+    public boolean isCurrentUserOperator() {
+	return isOperator(this, UserView.getCurrentUser());
     }
 
 }

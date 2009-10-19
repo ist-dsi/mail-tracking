@@ -23,6 +23,14 @@
 		<p><html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit></p>
 	</fr:form>
 	
+	
+	<h3><bean:message key="mail.tracking.management.operations" bundle="MAIL_TRACKING_RESOURCES" /></h3>
+	
+	<html:link page="<%= "/manageMailTracking.do?method=prepareCGMailTrackingImportation&amp;partyOid=" + partyOid %>"><bean:message key="link.mail.tracking.management.importation" bundle="MAIL_TRACKING_RESOURCES" /></html:link> 
+	
+	
+	<h3><bean:message key="mail.tracking.users" bundle="MAIL_TRACKING_RESOURCES" /></h3>
+		
 	<bean:define id="mailTrackingId" name="mailTrackingBean" property="mailTracking.externalId" />
 
 	<p><strong><bean:message key="label.viewers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
