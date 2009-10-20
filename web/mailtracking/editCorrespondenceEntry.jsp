@@ -91,11 +91,13 @@
 		<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
+		<fr:property name="icon(view)" value="view" />
 
 		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteDocument&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
 		<fr:property name="order(delete)" value="3" />
+		<fr:property name="icon(delete)" value="delete" />
 		
 	</fr:layout> 
 </fr:view>

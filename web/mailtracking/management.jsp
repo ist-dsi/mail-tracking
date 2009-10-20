@@ -13,6 +13,10 @@
 
 <style type="text/css" title="currentStyle">
 	@import "<%= request.getContextPath() + "/javaScript/dataTables/media/css/demo_table.css" %>";
+	
+	.saviourDiv {
+		height: 30px;
+	}
 </style>
 
 
@@ -51,10 +55,19 @@
 </logic:empty> 
 
 
+<style type="text/css" title="currentStyle">
+	th.actions {
+		width : 70px;
+	}
+</style>
+
 <logic:notEmpty name="searchEntries">
 <fr:view name="searchEntries" schema="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "module.mailtracking.correspondence.sent.entries.view" : "module.mailtracking.correspondence.received.entries.view" %>" >
 	<fr:layout name="ajax-tabular">
 		<fr:property name="classes" value="table display-sent"/>
+		
+		<fr:property name="headerClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,,actions" : ",,,,,,actions" %>" />
+		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 
 		<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=viewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>" />
@@ -62,18 +75,22 @@
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
 		<fr:property name="visibleIf(view)" value="userAbleToView" />
+		<fr:property name="icon(view)" value="view" />
 
 		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
 		<fr:property name="order(edit)" value="3" />
 		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
+		<fr:property name="icon(edit)" value="edit" />
 
 		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=prepareDeleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
 		<fr:property name="order(delete)" value="4" />
-		<fr:property name="visibleIf(edit)" value="userAbleToDelete" />
+		<fr:property name="visibleIf(delete)" value="userAbleToDelete" />
+		<fr:property name="icon(delete)" value="delete" />
+		
 				
 		<fr:property name="extraParameter(method)" value="ajaxFilterCorrespondence" />
 		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />

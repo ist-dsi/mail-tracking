@@ -44,6 +44,7 @@
 		<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
+		<fr:property name="icon(view)" value="view" />
 		
 	</fr:layout> 
 </fr:view>
