@@ -359,4 +359,18 @@ public class AjaxTableRenderer extends CollectionRenderer {
     public void setExtraParameter(String key, String value) {
 	this.extraParameter.put(key, value);
     }
+
+    /**
+     * The counter isnt used in this kind of tables
+     * 
+     * @property
+     */
+    public void setCounter(String name, String value) {
+	/* Do nothing */
+    }
+
+    public String getCounter(String name) {
+	return null;
+    }
+
 }
