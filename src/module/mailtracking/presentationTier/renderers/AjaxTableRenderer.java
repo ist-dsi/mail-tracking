@@ -142,15 +142,16 @@ public class AjaxTableRenderer extends CollectionRenderer {
 		    TableLink link = getTableLink(i);
 
 		    String value = "";
+
 		    if (link.getIcon() != null && !link.getIcon().equals("none")) {
 			HtmlLink forImage = new HtmlLink();
 			forImage.setModuleRelative(false);
 			forImage.setContextRelative(true);
 			forImage.setUrl("/images/" + link.getIcon() + ".png");
 
-			value = String.format("<img src='%s' alt='%s' />", forImage.calculateUrl(), link.getLinkText(link));
+			value = String.format("<img src='%s' alt='%s' />", forImage.calculateUrl(), link.getLinkText(link, null));
 		    } else {
-			value = link.getLinkText(link);
+			value = link.getLinkText(link, null);
 		    }
 
 		    scriptValue += "if(oObj.aData[" + (columnNumber - 1) + "].split(',')[" + i
