@@ -127,6 +127,9 @@
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>		
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
+			<property name="allowsCustom" value="true" />
+		</validator>		
 	</slot>
 	<slot name="dispatchedToWhom" key="label.dispatch.made.to">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">

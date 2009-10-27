@@ -81,8 +81,8 @@ public class MailTracking extends MailTracking_Base {
 
     @Service
     public void addOperator(User user) {
-	if (!user.getPerson().getParentUnits().contains(this.getUnit()))
-	    throw new DomainException("error.mail.tracking.person.not.in.associated.unit");
+	//if (!user.getPerson().getParentUnits().contains(this.getUnit()))
+	//    throw new DomainException("error.mail.tracking.person.not.in.associated.unit");
 
 	((People) this.getOperatorsGroup()).addUsers(user);
     }
