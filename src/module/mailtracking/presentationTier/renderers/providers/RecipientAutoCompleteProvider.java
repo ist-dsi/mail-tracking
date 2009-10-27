@@ -9,6 +9,7 @@ import java.util.Map;
 import module.mailtracking.domain.MailTracking;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
+import myorg.domain.User;
 import myorg.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
@@ -23,10 +24,12 @@ public class RecipientAutoCompleteProvider implements AutoCompleteProvider {
 	final String[] input = trimmedValue.split(" ");
 	StringNormalizer.normalize(input);
 
-	for (final Person person : mailTracking.getUnit().getChildPersons()) {
-	    final String unitName = StringNormalizer.normalize(person.getPartyName().getContent());
-	    if (hasMatch(input, unitName)) {
-		persons.add(person);
+	for (final User user : mailTracking.getViewersGroup().getMembers()) {
+	    if (user.hasPerson()) {
+		final String unitName = StringNormalizer.normalize(user.getPerson().getPartyName().getContent());
+		if (hasMatch(input, unitName)) {
+		    persons.add(user.getPerson());
+		}
 	    }
 	}
 

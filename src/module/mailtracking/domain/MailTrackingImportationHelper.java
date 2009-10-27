@@ -2,6 +2,7 @@ package module.mailtracking.domain;
 
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.mailtracking.presentationTier.renderers.converters.LocalDateConverter;
+import myorg.domain.exceptions.DomainException;
 import myorg.util.BundleUtil;
 
 import org.joda.time.LocalDate;
@@ -21,12 +22,12 @@ public class MailTrackingImportationHelper {
     private static final String MESSAGE_LINE_IMPORTATION_ERROR = "message.mail.tracking.importation.error";
 
     @Service
-    public static boolean importSentMailTrackingFromCsv(MailTracking mailTracking, String importationContents,
+    public static Boolean importSentMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
 	    java.util.List<ImportationReportEntry> results) {
 
 	boolean errorOcurred = false;
 
-	for (String line : importationContents.split("\n")) {
+	for (String line : importationContents) {
 	    ImportationReportEntry resultEntry = new ImportationReportEntry();
 
 	    resultEntry.setLine(line);
@@ -66,12 +67,13 @@ public class MailTrackingImportationHelper {
     private static final Integer DISPATCHED_TO_WHOM_IDX = 7;
 
     @Service
-    public static boolean importReceivedMailTrackingFromCsv(MailTracking mailTracking, String importationContents,
-	    java.util.List<ImportationReportEntry> results) {
+    public static Boolean importReceivedMailTrackingFromCsv(MailTracking mailTracking,
+	    java.util.List<String> importationContents, java.util.List<ImportationReportEntry> results) {
 
 	boolean errorOcurred = false;
 
-	for (String line : importationContents.split("\n")) {
+	for (String line : importationContents) {
+
 	    ImportationReportEntry resultEntry = new ImportationReportEntry();
 
 	    resultEntry.setLine(line);
@@ -91,10 +93,19 @@ public class MailTrackingImportationHelper {
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.RECEIVED, null);
 		entry.setEntryNumber(Long.parseLong(fields[RECEIVED_ID_IDX]));
 
-		resultEntry.setState(BundleUtil.getStringFromResourceBundle("", MESSAGE_LINE_IMPORTATION_OK));
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_OK));
+	    } catch (pt.ist.fenixframework.pstm.IllegalWriteException e) {
+		throw e;
 	    } catch (Exception e) {
 		errorOcurred = true;
-		resultEntry.setState(BundleUtil.getStringFromResourceBundle("", MESSAGE_LINE_IMPORTATION_ERROR));
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_ERROR));
+		resultEntry.setReason(e.getMessage());
+	    } catch (DomainException e) {
+		errorOcurred = true;
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_ERROR));
 		resultEntry.setReason(e.getMessage());
 	    }
 

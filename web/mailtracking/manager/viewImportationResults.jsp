@@ -8,7 +8,7 @@
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
-<h3><bean:message key="title.mail.tracking.importation.results" /></h3>
+<h3><bean:message key="title.mail.tracking.importation.results" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <bean:define id="partyId" name="unit" property="externalId" />
 
@@ -17,20 +17,21 @@
 </html:link>
 
 <p>
-<logic:equals name="errorOccurred" value="true" >
+<logic:equal name="errorOccurred" value="false" >
 	<bean:message key="message.importation.operation.done.sucessfully" bundle="MAIL_TRACKING_RESOURCES" />
-</logic:equals>
+</logic:equal>
 
 
-<logic:equals name="errorOccurred" value="false">
+<logic:equal name="errorOccurred" value="true">
 	<bean:message key="message.some.error.occurred.on.importation.operation" bundle="MAIL_TRACKING_RESOURCES" />
-</logic:equals>
+</logic:equal>
 </p>
 
+
 <fr:view name="importationFileResults" schema="module.mail.tracking.correspondence.importation.results.view" >
-	<fr:layout name="">
-		<fr:property name="classes" value="" />
-		<fr:property name="" value="" />
+	<fr:layout name="tabular">
+		<fr:property name="classes" value="tstyle2"/>
+		<fr:property name="columnClasses" value="smalltxt aleft, smalltxt aleft"/>
 	</fr:layout>
 </fr:view>
 

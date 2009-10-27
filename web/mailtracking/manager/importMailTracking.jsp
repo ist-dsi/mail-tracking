@@ -16,7 +16,7 @@
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 
-<fr:form id="import.form" action="<%= "/manageMailTracking.do?method=importCGMailTracking&amp;partyOid=" + partyId %>">
+<fr:form id="import.form" action="<%= "/manageMailTracking.do?method=importCGMailTracking&amp;partyOid=" + partyId %>" encoding="multipart/form-data">
 	<fr:edit id="importation.file.bean" name="importationFileBean" visible="false" />
 	
 	<fr:edit id="importation.file.bean.set" name="importationFileBean" schema="module.mail.tracking.correspondence.importation.edit">

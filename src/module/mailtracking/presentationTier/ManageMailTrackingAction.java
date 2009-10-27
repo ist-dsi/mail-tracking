@@ -1,7 +1,9 @@
 package module.mailtracking.presentationTier;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -188,7 +190,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
 	ImportationFileBean bean = readImportationFileBean(request);
 
-	String importationContents = consumeCsvImportationContent(bean);
+	java.util.List<String> importationContents = consumeCsvImportationContent(bean);
 
 	java.util.List<ImportationReportEntry> importationResults = new java.util.ArrayList<ImportationReportEntry>();
 
@@ -205,7 +207,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	request.setAttribute("errorOccurred", errorOccurred);
 	request.setAttribute("importationFileResults", importationResults);
 
-	return forward(request, "/mailtracking/manage/viewImportationResults.jsp");
+	return forward(request, "/mailtracking/manager/viewImportationResults.jsp");
     }
 
     private ImportationFileBean readImportationFileBean(final HttpServletRequest request) {
@@ -314,10 +316,17 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	return content;
     }
 
-    private String consumeCsvImportationContent(ImportationFileBean bean) throws IOException {
-	byte[] contents = consumeStream(bean.getFilesize(), bean.getStream());
+    private java.util.List<String> consumeCsvImportationContent(ImportationFileBean bean) throws IOException {
+	InputStreamReader inputStreamReader = new InputStreamReader(bean.getStream(), "UTF8");
+	BufferedReader reader = new BufferedReader(inputStreamReader);
 
-	return new String(contents, "utf-8");
+	java.util.List<String> stringContents = new java.util.ArrayList<String>();
+	String line = null;
+	while ((line = reader.readLine()) != null) {
+	    stringContents.add(line);
+	}
+
+	return stringContents;
     }
 
 }

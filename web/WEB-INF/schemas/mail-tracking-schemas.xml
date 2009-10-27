@@ -69,6 +69,9 @@
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
+			<property name="allowsCustom" value="true" />
+		</validator>
 	</slot>
 	<slot name="observations" key="label.observations" layout="longText">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
@@ -250,7 +253,7 @@
 		</validator>
 	</slot>
 	
-	<slot name="type" key="label.correspondence.type">
+	<slot name="type" key="label.correspondence.type" bundle="MAIL_TRACKING_RESOURCES">
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 	</slot>
 </schema>
