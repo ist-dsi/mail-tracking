@@ -24,7 +24,7 @@ public class RecipientAutoCompleteProvider implements AutoCompleteProvider {
 	final String[] input = trimmedValue.split(" ");
 	StringNormalizer.normalize(input);
 
-	for (final User user : mailTracking.getViewersGroup().getMembers()) {
+	for (final User user : mailTracking.getTotalUsers()) {
 	    if (user.hasPerson()) {
 		final String unitName = StringNormalizer.normalize(user.getPerson().getPartyName().getContent());
 		if (hasMatch(input, unitName)) {

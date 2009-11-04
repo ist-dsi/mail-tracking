@@ -17,12 +17,10 @@ import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import myorg.applicationTier.Authenticate.UserView;
-import myorg.domain.RoleType;
 import myorg.domain.User;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
-import myorg.domain.groups.Role;
 import myorg.domain.groups.UserGroup;
 import myorg.presentationTier.actions.ContextBaseAction;
 
@@ -83,9 +81,6 @@ public class MailTrackingAction extends ContextBaseAction {
 	final Node mainNode = ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare",
 		"resources.MailTrackingResources", "link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
 
-	final Node mailTrackingManagerNode = ActionNode.createActionNode(virtualHost, mainNode, "/manageMailTracking", "prepare",
-		"resources.MailTrackingResources", "link.sideBar.mailtracking.manage", Role.getRole(RoleType.MANAGER));
-
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }
 
@@ -103,12 +98,12 @@ public class MailTrackingAction extends ContextBaseAction {
 	}
 
 	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserIsOperatorOrViewer(currentUser);
-	
-	if(mailTrackings.size() == 1)  {
+
+	if (mailTrackings.size() == 1 && mailTrackings.get(0).hasCurrentUserOnlyViewOrEditionOperations()) {
 	    request.setAttribute("mailTracking", mailTrackings.get(0));
 	    return prepare(mapping, form, request, response);
 	}
-	
+
 	request.setAttribute("mailTrackings", mailTrackings);
 
 	return forward(request, "/mailtracking/chooseMailTracking.jsp");

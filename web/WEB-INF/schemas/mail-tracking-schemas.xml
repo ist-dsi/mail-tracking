@@ -150,6 +150,7 @@
 		<property name="eachLayout" value="values" />
 		<property name="classes" value="nobullet"/>
 		<property name="saveOptions" value="true" />
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 	</slot>
 </schema>
 
@@ -213,6 +214,11 @@
 	<slot name="description" key="label.description" />
 </schema>
 
+<schema name="module.mailtracking.manage.view" type="module.mailtracking.domain.MailTracking" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="name" key="label.name" />
+	<slot name="active" key="label.isActive" />
+</schema>
+
 <schema name="module.mailtracking.manage.edit" type="module.mailtracking.domain.MailTracking$MailTrackingBean" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="name" key="label.name" />
 	<slot name="active" key="label.isActive" />
@@ -224,11 +230,19 @@
 
 <schema name="module.mailtracking.manage.operators.view" type="myorg.domain.User" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="presentationName" key="label.name" />
-</schema> 
+</schema>
 
-<schema name="module.mailtracking.manage.operators.search" type="module.mailtracking.presentationTier.ManageMailTrackingAction$SearchUserBean" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="istUsername" key="label.username" />
-	<slot name="name" key="label.name" />
+<schema name="module.mailtracking.manage.managers.view" type="myorg.domain.User" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="presentationName" key="label.name" />
+</schema>
+
+<schema name="module.mailtracking.manage.operators.search" type="module.mailtracking.presentationTier.SearchUserBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="mode" key="label.search.mode" >
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+	</slot>
+	<slot name="value" key="label.value">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+	</slot>
 </schema>
 
 <schema name="module.mail.tracking.choose" type="module.mailtracking.domain.MailTracking" bundle="MAIL_TRACKING_RESOURCES">
@@ -245,7 +259,7 @@
 	</slot>
 </schema>
 
-<schema name="module.mail.tracking.correspondence.importation.edit" type="module.mailtracking.presentationTier.ManageMailTrackingAction$ImportationFileBean" bundle="MAIL_TRACKING_RESOURCES">
+<schema name="module.mail.tracking.correspondence.importation.edit" type="module.mailtracking.presentationTier.ImportationFileBean" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="stream" key="label.file">
 		<property name="fileNameSlot" value="filename" />
 		<property name="fileSizeSlot" value="filesize" />
@@ -256,7 +270,7 @@
 		</validator>
 	</slot>
 	
-	<slot name="type" key="label.correspondence.type" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="type" key="label.correspondence.type">
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 	</slot>
 </schema>
@@ -267,3 +281,12 @@
 	<slot name="reason" key="label.reason" />
 </schema>
 
+<schema name="module.mail.tracking.statistics.simple.view" type="module.mailtracking.domain.MailTracking" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="totalNumberOfActiveSentEntries" key="label.mail.tracking.statistics.total.active.sent.entries" />
+	<slot name="totalNumberOfDeletedSentEntries" key="label.mail.tracking.statistics.total.deleted.sent.entries" />
+	<slot name="totalNumberOfSentEntries" key="label.mail.tracking.statistics.total.sent.entries" />
+	<slot name="totalNumberOfActiveReceivedEntries" key="label.mail.tracking.statistics.total.active.received.entries" />
+	<slot name="totalNumberOfDeletedReceivedEntries" key="label.mail.tracking.statistics.total.deleted.received.entries" />
+	<slot name="totalNumberOfReceivedEntries" key="label.mail.tracking.statistics.total.received.entries" />
+	<slot name="totalNumberOfActiveDocuments" key="label.mail.tracking.statistics.total.documents.of.active.entries" />
+</schema>

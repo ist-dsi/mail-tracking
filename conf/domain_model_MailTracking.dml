@@ -29,5 +29,8 @@ class MailTracking {
 	Boolean active;
 }
 
+class MailTrackingInitializer {
+}
+
 
 

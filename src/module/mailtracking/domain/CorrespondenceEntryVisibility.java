@@ -14,13 +14,15 @@ public enum CorrespondenceEntryVisibility {
 	@Override
 	public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
 	    return (entry.hasOwner() && entry.getOwner().equals(user.getPerson()))
-		    || entry.getMailTracking().isUserOperator(user);
+		    || (entry.getMailTracking().isUserOperator(user) && entry.getCreator().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
 	}
     },
     ONLY_OPERATOR {
 	@Override
 	public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
-	    return entry.getMailTracking().isUserOperator(user);
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getCreator().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
 	}
     };
 

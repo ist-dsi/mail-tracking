@@ -29,19 +29,29 @@ relation MyOrgMailTracking {
 	}
 }
 
+relation MyOrgMailTrackingInitializer {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.MailTrackingInitializer playsRole mailTrackingInitializer;
+}
+
 relation MailTrackingUnit {
 	module.organization.domain.Unit playsRole unit;
 	module.mailtracking.domain.MailTracking playsRole mailTracking;
 }
 
-relation MailTrackingPersistenceGroup {
-	module.mailtracking.domain.MailTracking playsRole mailTrackingForManagement;
+relation MailTrackingOperators {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForOperations;
 	myorg.domain.groups.PersistentGroup playsRole operatorsGroup;
 }
 
 relation MailTrackingViewers {
 	module.mailtracking.domain.MailTracking playsRole mailTrackingForView;
 	myorg.domain.groups.PersistentGroup playsRole viewersGroup;
+}
+
+relation MailTrackingManagers {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForManagement;
+	myorg.domain.groups.PersistentGroup playsRole managersGroup;
 }
 
 relation MaiTrackingCorrespondenceEntry {
@@ -81,3 +91,4 @@ relation CorrespondenceEntryOwner {
 		multiplicity *;
 	}
 }
+

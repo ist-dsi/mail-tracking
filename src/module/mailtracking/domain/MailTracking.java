@@ -19,7 +19,6 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
-import pt.ist.fenixWebFramework.security.accessControl.Checked;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -51,7 +50,6 @@ public class MailTracking extends MailTracking_Base {
     }
 
     @Service
-    @Checked("xpto.ALTO")
     public static MailTracking createMailTracking(Unit unit) {
 	if (unit.hasMailTracking())
 	    throw new DomainException("error.mail.tracking.exists.for.unit");
@@ -62,47 +60,49 @@ public class MailTracking extends MailTracking_Base {
 	operators.addUsers(UserView.getCurrentUser());
 	mailTracking.setOperatorsGroup(operators);
 
+	People managers = new NamedGroup("managers");
+	managers.addUsers(UserView.getCurrentUser());
+	mailTracking.setManagersGroup(managers);
+
 	People viewers = new NamedGroup("viewers");
 	for (Person person : unit.getChildPersons()) {
 	    if (person.hasUser())
 		viewers.addUsers(person.getUser());
 	}
 	viewers.addUsers(UserView.getCurrentUser());
-
 	mailTracking.setViewersGroup(viewers);
 
 	return mailTracking;
     }
 
     @Service
-    public void removeOperator(User user) {
+    public void removeOperator(final User user) {
 	((People) this.getOperatorsGroup()).removeUsers(user);
     }
 
     @Service
-    public void addOperator(User user) {
-	//if (!user.getPerson().getParentUnits().contains(this.getUnit()))
-	//    throw new DomainException("error.mail.tracking.person.not.in.associated.unit");
-
+    public void addOperator(final User user) {
 	((People) this.getOperatorsGroup()).addUsers(user);
     }
 
-    public boolean isUserOperator(User user) {
-	return this.getOperatorsGroup().isMember(user);
-    }
-
     @Service
-    public void addViewer(User user) {
+    public void addViewer(final User user) {
 	((People) this.getViewersGroup()).addUsers(user);
     }
 
     @Service
-    public void removeViewer(User user) {
+    public void removeViewer(final User user) {
 	((People) this.getViewersGroup()).removeUsers(user);
     }
 
-    public boolean isUserViewer(User user) {
-	return this.getViewersGroup().isMember(user);
+    @Service
+    public void addManager(final User user) {
+	((People) this.getManagersGroup()).addUsers(user);
+    }
+
+    @Service
+    public void removeManager(final User user) {
+	((People) this.getManagersGroup()).removeUsers(user);
     }
 
     @Service
@@ -331,16 +331,169 @@ public class MailTracking extends MailTracking_Base {
 	return unit.getMailTracking() != null && unit.getMailTracking().isUserOperator(user);
     }
 
-    public static boolean isManager(final User user) {
+    protected static Boolean isUserManagerOfMailTracking(Unit unit, User user) {
+	return unit.getMailTracking() != null && unit.getMailTracking().isUserManager(user);
+    }
+
+    public boolean isUserManager(User user) {
+	return this.getManagersGroup().isMember(user);
+    }
+
+    public boolean isUserOperator(User user) {
+	return this.getOperatorsGroup().isMember(user);
+    }
+
+    public boolean isUserViewer(User user) {
+	return this.getViewersGroup().isMember(user);
+    }
+
+    public static boolean isMyOrgManager(final User user) {
 	return user.hasRoleType(RoleType.MANAGER);
     }
 
-    public static boolean isOperator(MailTracking mailtracking, final User user) {
-	return mailtracking.isUserOperator(user);
+    public boolean isCurrentUserOperator() {
+	return this.isUserOperator(UserView.getCurrentUser());
     }
 
-    public boolean isCurrentUserOperator() {
-	return isOperator(this, UserView.getCurrentUser());
+    public boolean isCurrentUserViewer() {
+	return this.isUserViewer(UserView.getCurrentUser());
+    }
+
+    public boolean isCurrentUserManager() {
+	return this.isUserManager(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToCreateEntries(final User user) {
+	return this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToCreateEntries() {
+	return this.isUserAbleToCreateEntries(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToImportEntries(final User user) {
+	return this.isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToImportEntries() {
+	return this.isUserAbleToImportEntries(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToManageViewers(final User user) {
+	return this.isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToManageViewers() {
+	return isUserAbleToManageViewers(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToManageOperators(final User user) {
+	return this.isUserOperator(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToManageOperators() {
+	return this.isUserAbleToManageOperators(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToManageManagers(final User user) {
+	return isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToManageManagers() {
+	return isUserAbleToManageManagers(UserView.getCurrentUser());
+    }
+
+    public static boolean isUserAbleToCreateMailTrackingModule(final User user) {
+	return isMyOrgManager(user);
+    }
+
+    public static boolean isCurrentUserAbleToCreateMailTrackingModule() {
+	return isUserAbleToCreateMailTrackingModule(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToEditMailTrackingAttributes(final User user) {
+	return isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToEditMailTrackingAttributes() {
+	return this.isUserAbleToEditMailTrackingAttributes(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToViewMailTracking(final User user) {
+	return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToViewMailTracking() {
+	return this.isUserAbleToViewMailTracking(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToManageUsers(final User user) {
+	return this.isUserAbleToManageViewers(user) || this.isUserAbleToManageOperators(user)
+		|| this.isUserAbleToManageManagers(user);
+    }
+
+    public boolean isCurrentUserAbleToManageUsers() {
+	return this.isUserAbleToManageUsers(UserView.getCurrentUser());
+    }
+
+    public boolean hasUserOnlyViewOrEditionOperations(final User user) {
+	return (this.isUserAbleToCreateEntries(user) || this.isUserAbleToViewMailTracking(user))
+		&& !this.isUserAbleToCreateEntries(user) && !this.isUserAbleToImportEntries(user)
+		&& !this.isUserAbleToManageUsers(user);
+    }
+
+    public boolean hasCurrentUserOnlyViewOrEditionOperations() {
+	return hasUserOnlyViewOrEditionOperations(UserView.getCurrentUser());
+    }
+
+    public Integer getTotalNumberOfSentEntries() {
+	return this.getAnyStateEntries(CorrespondenceType.SENT).size();
+    }
+
+    public Integer getTotalNumberOfActiveSentEntries() {
+	return this.getActiveEntries(CorrespondenceType.SENT).size();
+    }
+
+    public Integer getTotalNumberOfDeletedSentEntries() {
+	return this.getDeletedEntries(CorrespondenceType.SENT).size();
+    }
+
+    public Integer getTotalNumberOfReceivedEntries() {
+	return this.getAnyStateEntries(CorrespondenceType.RECEIVED).size();
+    }
+
+    public Integer getTotalNumberOfActiveReceivedEntries() {
+	return this.getActiveEntries(CorrespondenceType.RECEIVED).size();
+    }
+
+    public Integer getTotalNumberOfDeletedReceivedEntries() {
+	return this.getDeletedEntries(CorrespondenceType.RECEIVED).size();
+    }
+
+    public Integer getTotalNumberOfActiveDocuments() {
+	return this.getTotalActiveDocuments().size();
+    }
+
+    private java.util.List<Document> getTotalActiveDocuments() {
+	java.util.List<CorrespondenceEntry> entries = this.getEntries();
+
+	java.util.List<Document> allDocuments = new java.util.ArrayList<Document>();
+
+	for (CorrespondenceEntry entry : entries) {
+	    allDocuments.addAll(entry.getDocuments());
+	}
+
+	return allDocuments;
+    }
+
+    public java.util.Set<User> getTotalUsers() {
+	java.util.Set<User> allUsers = new java.util.HashSet<User>();
+
+	allUsers.addAll(this.getViewersGroup().getMembers());
+	allUsers.addAll(this.getOperatorsGroup().getMembers());
+	allUsers.addAll(this.getManagersGroup().getMembers());
+
+	return allUsers;
     }
 
 }

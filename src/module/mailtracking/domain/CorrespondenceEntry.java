@@ -411,7 +411,11 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public boolean isUserAbleToView(User user) {
-	return this.getMailTracking().isUserViewer(user) && this.getVisibility().isUserAbleToView(this, user);
+	return this.getVisibility().isUserAbleToView(this, user);
+    }
+
+    public boolean isUserAbleToView() {
+	return isUserAbleToView(UserView.getCurrentUser());
     }
 
     public boolean isUserAbleToEdit() {
