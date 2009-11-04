@@ -147,7 +147,7 @@ public class AjaxTableRenderer extends CollectionRenderer {
 			HtmlLink forImage = new HtmlLink();
 			forImage.setModuleRelative(false);
 			forImage.setContextRelative(true);
-			forImage.setUrl("/images/" + link.getIcon() + ".png");
+			forImage.setUrl("/images/" + link.getIcon() + ".gif");
 
 			value = String.format("<img src='%s' alt='%s' />", forImage.calculateUrl(), link.getLinkText(link, null));
 		    } else {
