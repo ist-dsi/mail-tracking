@@ -156,7 +156,7 @@ padding-bottom: 0;
 
 <style type="text/css" title="currentStyle">
 	th.actions {
-		width : 120px;
+		width : 140px;
 	}
 </style>
 
@@ -191,6 +191,12 @@ padding-bottom: 0;
 		<fr:property name="visibleIf(delete)" value="userAbleToDelete" />
 		<fr:property name="icon(delete)" value="delete" />
 		
+		<fr:property name="linkFormat(document)" value="mailtracking.do" />
+		<fr:property name="bundle(document)" value="MAIL_TRACKING_RESOURCES" />
+		<fr:property name="key(document)" value="link.view.document" />
+		<fr:property name="order(document)" value="5" />
+		<fr:property name="visibleIf(document)" value="userAbleToViewDocument" />
+		<fr:property name="icon(document)" value="document" />
 				
 		<fr:property name="extraParameter(method)" value="ajaxFilterCorrespondence" />
 		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />

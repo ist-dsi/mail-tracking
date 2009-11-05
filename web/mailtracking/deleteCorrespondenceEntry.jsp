@@ -22,7 +22,11 @@
 <fr:form id="delete.entry.form" action="<%= "/mailtracking.do?method=deleteEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
-	<fr:edit id="correspondence.entry.bean.delete" name="correspondenceEntryBean" schema="module.mailtracking.correspondence.entry.delete" />
+	<fr:edit id="correspondence.entry.bean.delete" name="correspondenceEntryBean" schema="module.mailtracking.correspondence.entry.delete" >
+		<fr:layout name="tabular">
+			<fr:property name="columnClasses" value=",,tderror"/>
+		</fr:layout>
+	</fr:edit>
 	
 	<html:submit><bean:message key="label.delete" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
 </fr:form>

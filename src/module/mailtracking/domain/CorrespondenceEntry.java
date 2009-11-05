@@ -422,7 +422,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return isUserAbleToEdit(UserView.getCurrentUser());
     }
 
-    public boolean isUserAbleToEdit(User user) {
+    public boolean isUserAbleToEdit(final User user) {
 	return this.getMailTracking().isUserOperator(user);
     }
 
@@ -430,7 +430,26 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return this.isUserAbleToDelete(UserView.getCurrentUser());
     }
 
-    public boolean isUserAbleToDelete(User user) {
+    public boolean isUserAbleToDelete(final User user) {
 	return this.getMailTracking().isUserOperator(user);
+    }
+
+    public boolean isUserAbleToViewMainDocument(final User user) {
+	return this.isUserAbleToView() && this.hasMainDocument();
+    }
+
+    public Document getMainDocument() {
+	return (Document) CollectionUtils.find(this.getDocuments(), new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		return DocumentType.MAIN_DOCUMENT.equals(((Document) arg0).getType());
+	    }
+
+	});
+    }
+
+    public boolean hasMainDocument() {
+	return this.getMainDocument() != null;
     }
 }

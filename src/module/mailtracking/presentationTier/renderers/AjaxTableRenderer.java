@@ -130,11 +130,13 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    scriptValue += "},\n";
 	    scriptValue += "'aoColumns': [\n";
 	    for (int i = 0; i < (columnNumber - (getSortedLinksSize() > 0 ? 1 : 0)); i++) {
-		scriptValue += "/*" + ((HtmlText) getHeaderComponent(i)).getText() + " */,\n";
+		scriptValue += "/*" + ((HtmlText) getHeaderComponent(i)).getText() + " */ ";
+		scriptValue += String.format("{ \"sClass\": \"%s\" },\n", getColumnClassesFor(i));
 	    }
 
 	    if (AjaxTableRenderer.this.getSortedLinksSize() > 0) {
-		scriptValue += "/* Links */ { 'bSortable': false,\n";
+		scriptValue += "/*Links */ { 'bSortable': false,\n";
+		scriptValue += String.format("\"sClass\" : \"%s\",", getColumnClassesFor(columnNumber - 1));
 		scriptValue += "'fnRender': function(oObj) {\n";
 		scriptValue += "var links='';\n";
 
@@ -180,6 +182,15 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    script.setScript(scriptValue);
 
 	    container.addChild(script);
+	}
+
+	private Object getColumnClassesFor(int i) {
+	    String[] columnClasses = getColumnClasses().split(",");
+	    if (i < columnClasses.length) {
+		return columnClasses[i];
+	    }
+
+	    return "";
 	}
 
 	private String getAjaxTableLanguageConfiguration() {

@@ -324,8 +324,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    throw new DocumentUploadException(MAX_FILE_EXCEEDED_MESSAGE);
 
 	byte[] content = consumeStream(fileSize, stream);
-	Document document = Document.saveDocument(description, fileName, content, description, type);
-	return document;
+	return Document.saveDocument(description, fileName, content, description, type);
     }
 
     public AssociateDocumentBean getAssociateDocumentBean(final HttpServletRequest request) {
@@ -340,8 +339,6 @@ public class MailTrackingAction extends ContextBaseAction {
     public AssociateDocumentBean setAssociateDocumentBean(final HttpServletRequest request, CorrespondenceEntry entry) {
 	AssociateDocumentBean bean = new AssociateDocumentBean(entry);
 	request.setAttribute("associateDocumentBean", bean);
-
-	bean.setType(DocumentType.OTHER_DOCUMENT);
 
 	return bean;
     }
@@ -467,7 +464,13 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	    stringBuilder.append(
 		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
-			    entry) : "permission_not_granted").append("\" ], ");
+			    entry) : "permission_not_granted").append(",");
+
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+				    request, entry)
+				    : "permission_not_granted").append("\" ], ");
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -516,7 +519,13 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	    stringBuilder.append(
 		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
-			    entry) : "permission_not_granted").append("\" ], ");
+			    entry) : "permission_not_granted").append(",");
+
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+				    request, entry)
+				    : "permission_not_granted").append("\" ], ");
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -525,6 +534,17 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	return stringBuilder.toString();
 
+    }
+
+    private String generateLinkForCorrespondenceEntryMainDocument(HttpServletRequest request, CorrespondenceEntry entry) {
+	String contextPath = request.getContextPath();
+	String realLink = contextPath
+		+ String.format("/mailtracking.do?entryId=%s&amp;method=downloadFile&amp;fileId=%s", entry.getExternalId(), entry
+			.getMainDocument().getExternalId());
+	realLink += String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME, GenericChecksumRewriter
+		.calculateChecksum(realLink));
+
+	return realLink;
     }
 
     private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry) {
@@ -612,6 +632,9 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws IOException {
+	if (!getCorrespondenceEntryWithExternalId(request).isUserAbleToViewMainDocument(UserView.getCurrentUser()))
+	    throw new PermissionDeniedException();
+
 	String documentId = request.getParameter("fileId");
 	final Document document = CorrespondenceEntry.fromExternalId(documentId);
 
@@ -716,6 +739,9 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	public AssociateDocumentBean(CorrespondenceEntry entry) {
 	    this.setEntry(entry);
+
+	    if (entry != null)
+		this.setType(entry.hasMainDocument() ? DocumentType.OTHER_DOCUMENT : DocumentType.MAIN_DOCUMENT);
 	}
 
 	public String getFilename() {
