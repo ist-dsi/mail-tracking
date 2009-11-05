@@ -18,7 +18,7 @@
 </html:link>
 </p>
 
-<fr:form id="import.form" action="<%= String.format("/manageMailTracking.do?method=importMailTracking&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>" encoding="multipart/form-data">
+<fr:form id="import.form" action="<%= String.format("/mailTrackingOrganizationModel.do?method=importMailTracking&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>" encoding="multipart/form-data">
 	<fr:edit id="importation.file.bean" name="importationFileBean" visible="false" />
 	
 	<fr:edit id="importation.file.bean.set" name="importationFileBean" schema="module.mail.tracking.correspondence.importation.edit">

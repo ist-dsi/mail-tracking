@@ -33,7 +33,7 @@ public class MailTrackingImportationHelper {
 	    resultEntry.setLine(line);
 
 	    try {
-		String[] fields = line.split(";");
+		String[] fields = line.split(";", -1);
 
 		CorrespondenceEntryBean bean = new CorrespondenceEntryBean(mailTracking);
 		bean.setWhenSent(convertToLocalDate(fields[SENT_DATE_IDX]));
@@ -44,10 +44,19 @@ public class MailTrackingImportationHelper {
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.SENT, null);
 		entry.setEntryNumber(Long.parseLong(fields[SENT_ID_IDX]));
 
-		resultEntry.setState(BundleUtil.getStringFromResourceBundle("", MESSAGE_LINE_IMPORTATION_OK));
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_OK));
+	    } catch (pt.ist.fenixframework.pstm.IllegalWriteException e) {
+		throw e;
 	    } catch (Exception e) {
 		errorOcurred = true;
-		resultEntry.setState(BundleUtil.getStringFromResourceBundle("", MESSAGE_LINE_IMPORTATION_ERROR));
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_ERROR));
+		resultEntry.setReason(e.getMessage());
+	    } catch (DomainException e) {
+		errorOcurred = true;
+		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
+			MESSAGE_LINE_IMPORTATION_ERROR));
 		resultEntry.setReason(e.getMessage());
 	    }
 
@@ -78,8 +87,11 @@ public class MailTrackingImportationHelper {
 
 	    resultEntry.setLine(line);
 
+	    if (line.startsWith("#"))
+		break;
+
 	    try {
-		String[] fields = line.split(";");
+		String[] fields = line.split(";", -1);
 
 		CorrespondenceEntryBean bean = new CorrespondenceEntryBean(mailTracking);
 		bean.setWhenReceived(convertToLocalDate(fields[RECEIVED_RECEIVED_DATE_IDX]));

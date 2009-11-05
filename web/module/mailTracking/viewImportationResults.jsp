@@ -38,3 +38,8 @@
 	</fr:layout>
 </fr:view>
 
+<p>
+<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
+</html:link>
+</p>

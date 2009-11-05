@@ -1,10 +1,17 @@
 package module.mailtracking.presentationTier.organization;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
+import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import module.mailtracking.presentationTier.ImportationFileBean;
 import module.mailtracking.presentationTier.MailTrackingView;
@@ -230,6 +237,55 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
 	request.setAttribute("importationFileBean", new ImportationFileBean());
 
 	return forward(request, "/module/mailTracking/importEntries.jsp");
+    }
+
+    private ImportationFileBean readImportationFileBean(final HttpServletRequest request) {
+	ImportationFileBean importFileBean = (ImportationFileBean) request.getAttribute("importationFileBean");
+
+	if (importFileBean == null)
+	    importFileBean = this.getRenderedObject("importation.file.bean");
+
+	return importFileBean;
+    }
+
+    private java.util.List<String> consumeCsvImportationContent(ImportationFileBean bean) throws IOException {
+	InputStreamReader inputStreamReader = new InputStreamReader(bean.getStream(), "UTF8");
+	BufferedReader reader = new BufferedReader(inputStreamReader);
+
+	java.util.List<String> stringContents = new java.util.ArrayList<String>();
+	String line = null;
+	while ((line = reader.readLine()) != null) {
+	    stringContents.add(line);
+	}
+
+	return stringContents;
+    }
+
+    public ActionForward importMailTracking(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws Exception {
+
+	MailTracking mailTracking = readMailTrackingBean(request).getMailTracking();
+
+	ImportationFileBean bean = readImportationFileBean(request);
+
+	java.util.List<String> importationContents = consumeCsvImportationContent(bean);
+
+	java.util.List<ImportationReportEntry> importationResults = new java.util.ArrayList<ImportationReportEntry>();
+
+	boolean errorOccurred;
+
+	if (bean.getType().equals(CorrespondenceType.SENT)) {
+	    errorOccurred = MailTrackingImportationHelper.importSentMailTrackingFromCsv(mailTracking, importationContents,
+		    importationResults);
+	} else {
+	    errorOccurred = MailTrackingImportationHelper.importReceivedMailTrackingFromCsv(mailTracking, importationContents,
+		    importationResults);
+	}
+
+	request.setAttribute("errorOccurred", errorOccurred);
+	request.setAttribute("importationFileResults", importationResults);
+
+	return forward(request, "/module/mailTracking/viewImportationResults.jsp");
     }
 
 }
