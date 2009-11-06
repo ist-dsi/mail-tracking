@@ -409,9 +409,9 @@ public class MailTrackingAction extends ContextBaseAction {
 		    readCorrespondenceTypeView(request)).size(), numberOfRecordsMatched, limitedEntries, request);
 	}
 
-	final byte[] jsonResponsePayload = jsonResponseString.getBytes();
+	final byte[] jsonResponsePayload = jsonResponseString.getBytes("iso-8859-15");
 
-	response.setContentType("application/json");
+	response.setContentType("application/json; charset=iso-8859-15");
 	response.setContentLength(jsonResponsePayload.length);
 	response.getOutputStream().write(jsonResponsePayload);
 	response.getOutputStream().flush();

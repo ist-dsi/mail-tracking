@@ -44,6 +44,7 @@ public class MailTrackingInitializer extends MailTrackingInitializer_Base implem
 
     public MailTrackingInitializer() {
 	super();
+	setMyOrg(MyOrg.getInstance());
     }
 
     @Override

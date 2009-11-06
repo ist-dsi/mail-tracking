@@ -388,7 +388,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public boolean isUserAbleToManageOperators(final User user) {
-	return this.isUserOperator(user) || isMyOrgManager(user);
+	return this.isUserManager(user) || isMyOrgManager(user);
     }
 
     public boolean isCurrentUserAbleToManageOperators() {
