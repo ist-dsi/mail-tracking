@@ -364,11 +364,9 @@ public class MailTrackingAction extends ContextBaseAction {
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "entryNumber");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "whenReceived");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "sender");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "whenSent");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", "senderLetterNumber");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", "subject");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("6", "recipient");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("7", "dispatchToWhom");
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }
@@ -385,8 +383,13 @@ public class MailTrackingAction extends ContextBaseAction {
 	Integer[] orderToUse = getOrdering(request, iSortingCols, readCorrespondenceTypeView(request));
 
 	if (propertiesToCompare.length == 0) {
-	    propertiesToCompare = new String[] { "whenReceived" };
-	    orderToUse = new Integer[] { -1 };
+	    if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
+		propertiesToCompare = new String[] { "whenSent" };
+		orderToUse = new Integer[] { -1 };
+	    } else {
+		propertiesToCompare = new String[] { "whenReceived" };
+		orderToUse = new Integer[] { -1 };
+	    }
 	}
 
 	java.util.List<CorrespondenceEntry> entries = null;
