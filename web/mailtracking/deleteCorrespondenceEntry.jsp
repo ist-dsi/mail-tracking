@@ -6,16 +6,16 @@
 
 <%@ page import="module.mailtracking.domain.CorrespondenceType" %>
 
-<h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
+<h2><bean:message key="title.mail.tracking.correspondence.entry.delete" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 <bean:define id="correspondenceType" name="correspondenceType" />
 
-<html:link href="<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>" >
-	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
-</html:link>
-
-<h3><bean:message key="title.mail.tracking.correspondence.entry.delete" bundle="MAIL_TRACKING_RESOURCES" /></h3>
+<p>
+	<html:link href="<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>" >
+		<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
+	</html:link>
+</p>
 
 <p><bean:message key="messsage.mail.tracking.deletion.reason.necessary" bundle="MAIL_TRACKING_RESOURCES"/></p>
 

@@ -15,7 +15,7 @@
 
 <logic:notEmpty name="mailTrackings">
 	<p><strong><bean:message key="message.choose.one.mail.manager" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-	<table class="classes">
+	<table class="tstyle2">
 		<thead>
 		<th><bean:message key="label.mail.tracking.unit" bundle="MAIL_TRACKING_RESOURCES" /></th>
 		<th><bean:message key="mail.tracking.management.operations" bundle="MAIL_TRACKING_RESOURCES" /></th>
@@ -26,38 +26,40 @@
 				<bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 				<tr>
 					<td><bean:write name="mailTracking" property="name.content" /></td>
-					<td>
-						<% if(((MailTracking) mailTracking).isCurrentUserAbleToViewMailTracking()) { %>
-						<p>
-						<html:link page="<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>" >
-							<bean:message key="label.mail.tracking.view.entries.action" bundle="MAIL_TRACKING_RESOURCES" />
-						</html:link>
-						</p>
-						<% } %>
-						
-						<% if(((MailTracking) mailTracking).isCurrentUserAbleToManageUsers()) { %>
-						<p>
-						<html:link page="<%= String.format("/manageMailTracking.do?method=prepareUsersManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
-							<bean:message key="label.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES" />
-						</html:link>
-						</p>
-						<% } %>
-						
-						<% if(((MailTracking) mailTracking).isCurrentUserAbleToEditMailTrackingAttributes()) { %>
-						<p>
-						<html:link page="<%= String.format("/manageMailTracking.do?method=prepareMailTrackingAttributesManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
-							<bean:message key="label.mail.tracking.module.management" bundle="MAIL_TRACKING_RESOURCES" />
-						</html:link>
-						</p>
-						<% } %>
-						
-						<% if(((MailTracking) mailTracking).isCurrentUserAbleToImportEntries()) { %>
-						<p>
-						<html:link page="<%= String.format("") %>" >
-							<bean:message key="label.mail.tracking.entries.importation.action" bundle="MAIL_TRACKING_RESOURCES" />
-						</html:link>
-						</p>
-						<% } %>
+					<td class="aleft">
+						<ul style="margin: 0 0 0 2em; padding: 0;">
+							<% if(((MailTracking) mailTracking).isCurrentUserAbleToViewMailTracking()) { %>
+							<li>
+								<html:link page="<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>" >
+									<bean:message key="label.mail.tracking.view.entries.action" bundle="MAIL_TRACKING_RESOURCES" />
+								</html:link>
+							</li>
+							<% } %>
+							
+							<% if(((MailTracking) mailTracking).isCurrentUserAbleToManageUsers()) { %>
+							<li>
+								<html:link page="<%= String.format("/manageMailTracking.do?method=prepareUsersManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
+									<bean:message key="label.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES" />
+								</html:link>
+							</li>
+							<% } %>
+							
+							<% if(((MailTracking) mailTracking).isCurrentUserAbleToEditMailTrackingAttributes()) { %>
+							<li>
+								<html:link page="<%= String.format("/manageMailTracking.do?method=prepareMailTrackingAttributesManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
+									<bean:message key="label.mail.tracking.module.management" bundle="MAIL_TRACKING_RESOURCES" />
+								</html:link>
+							</li>
+							<% } %>
+							
+							<% if(((MailTracking) mailTracking).isCurrentUserAbleToImportEntries()) { %>
+							<li>
+								<html:link page="<%= String.format("") %>" >
+									<bean:message key="label.mail.tracking.entries.importation.action" bundle="MAIL_TRACKING_RESOURCES" />
+								</html:link>
+							</li>
+							<% } %>
+						</ul>
 					</td>
 				</tr>
 			</logic:iterate>

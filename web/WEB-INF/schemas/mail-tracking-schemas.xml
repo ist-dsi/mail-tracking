@@ -50,14 +50,15 @@
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
-		</validator>	
+		</validator>
+		<property name="size" value="60" />
 	</slot>
 	<slot name="subject" key="label.subject" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
-		<property name="size" value="70" />
+		<property name="size" value="60" />
 	</slot>
 	<slot name="owner" key="label.sender" layout="autoComplete">
 		<property name="rawSlotName" value="sender" />
@@ -65,18 +66,20 @@
 		<property name="format" value="${name}"/>
 		<property name="minChars" value="1"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
-		<property name="classes" value="inputsize300px"/>	
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
 			<property name="allowsCustom" value="true" />
 		</validator>
+		<property name="size" value="60" />
 	</slot>
 	<slot name="observations" key="label.observations" layout="longText">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
+		<property name="columns" value="45"/>
+		<property name="rows" value="4"/>
 	</slot>
 </schema>
 
@@ -95,6 +98,7 @@
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
+		<property name="size" value="60" />
 	</slot>
 	<slot name="whenSent" key="label.correspondence.date">
 		<property name="dateFormat" value="dd/MM/yyyy" />
@@ -108,14 +112,14 @@
 	<slot name="senderLetterNumber" key="label.sender.letter.number">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="50" />
-		</validator>		
+		</validator>
 	</slot>
 	<slot name="subject" key="label.subject" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
-		<property name="size" value="70" />
+		<property name="size" value="60" />
 	</slot>
 	<slot name="owner" key="label.dispatch" layout="autoComplete">
 		<property name="rawSlotName" value="recipient" />
@@ -123,23 +127,26 @@
 		<property name="format" value="${name}"/>
 		<property name="minChars" value="1"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.RecipientAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
-		<property name="classes" value="inputsize300px"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>		
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
 			<property name="allowsCustom" value="true" />
-		</validator>		
+		</validator>
+		<property name="size" value="60" />
 	</slot>
 	<slot name="dispatchedToWhom" key="label.dispatch.made.to">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="70" />
 		</validator>
+		<property name="size" value="60" />
 	</slot>
 	<slot name="observations" key="label.observations" layout="longText">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
+		<property name="columns" value="45"/>
+		<property name="rows" value="4"/>
 	</slot>	
 </schema>
 
@@ -182,17 +189,19 @@
 			<property name="required" value="true" />
 			<property name="maxSize" value="3145728" />
 		</validator>
+		<property name="size" value="40" />
 	</slot>
 	<slot name="description" key="label.description" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="50" />
 		</validator>	
+		<property name="size" value="60" />
 	</slot>
 </schema>
 
 <schema name="module.mailtracking.associate.document.create" type="module.mailtracking.presentationTier.MailTrackingAction$AssociateDocumentBean" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="stream" key="label.document" >
+	<slot name="stream" key="label.file" >
 		<property name="fileNameSlot" value="filename" />
 		<property name="fileSizeSlot" value="filesize" />
 		<property name="fileContentTypeSlot" value="mimetype" />
@@ -200,11 +209,13 @@
 			<property name="required" value="false" />
 			<property name="maxSize" value="3145728" />
 		</validator>
+		<property name="size" value="40" />
 	</slot>
 	<slot name="description" key="label.description" >
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="50" />
-		</validator>	
+		</validator>
+		<property name="size" value="60" />
 	</slot>
 </schema>
 

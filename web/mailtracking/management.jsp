@@ -12,50 +12,56 @@
 <script type="text/javascript" src="<%= request.getContextPath() + "/javaScript/dataTables/media/js/jquery.dataTables.js"%>"></script>
 
 <style>
-#list_tabs{
-clear:both;
-display:block;
-border-bottom:1px solid #CECECE;
+#list_tabs {
+clear: both;
+display: block;
+border-bottom: 1px solid #CECECE;
 margin-bottom: 15px;
+font-size: 11px !important;
+line-height: 16px !important;
 }
-.tabMenu {
-text-align:left;
-margin: 15px 0 4px 0;
+#list_tabs ul {
+text-align: left;
+margin: 15px 0 5px 0;
 padding: 0;
 }
-.tabMenu li {
-display:inline;
-margin:0;
+#list_tabs ul li {
+display: inline;
+margin: 0;
 }
-.tabMenu li#on_lists_tab {
+#list_tabs ul li#on_lists_tab {
 padding-left: 10px;
 }
-.tabMenu li a {
-margin-right:1px;
-display:inline;
-padding:7px 15px 7px 15px;
+#list_tabs ul li a {
+margin-right: 1px;
+display: inline;
+padding: 7px 15px 7px 15px;
 background-color: #eee;
-text-decoration:none;
--moz-border-radius:3px 3px 0 0;
--webkit-border-top-left-radius:3px;
--webkit-border-top-right-radius:3px;
+
+-moz-border-radius: 3px 3px 0 0;
+-webkit-border-top-left-radius: 3px;
+-webkit-border-top-right-radius: 3px;
+
 }
-.tabMenu li a:hover {
+#list_tabs ul li a:hover {
 background-color:#E6E6E6;
 }
-.tabMenu li.active a {
-border:1px solid #c4c4c4;
-color:#555;
-text-decoration: none !important;
-background-color:#fff;
-border-bottom:1px solid #fff;
-padding:6px 14px 7px 14px;
-margin-right:1px;
+#list_tabs ul li.active span {
+border: 1px solid #c4c4c4;
+color: #555;
+font-weight: bold !important;
+background-color :#fff;
+border-bottom: 1px solid #fff;
+padding: 6px 14px 7px 14px;
+margin-right: 1px;
+-moz-border-radius: 3px 3px 0 0;
+-webkit-border-top-left-radius: 3px;
+-webkit-border-top-right-radius: 3px;
 }
 
 
 a.view {
-background: url(view01.gif) center center no-repeat;
+background: url(docs01.gif) center center no-repeat;
 display: block;
 width: 28px;
 height: 24px;
@@ -92,11 +98,26 @@ width: 37px;
 padding-top: 0;
 padding-bottom: 0;
 }
+
+.nowrap { white-space: nowrap; }
+.width30px { width: 30px; }
+.width50px { width: 50px; }
+
+
+.sorting, .sorting_asc, .sorting_desc { cursor: pointer; }
+.paginate_disabled_previous { background-image: url('../images/back_disabled.jpg'); }
+.paginate_enabled_previous { background-image: url('../images/back_enabled.jpg'); }
+.paginate_disabled_next { background-image: url('../images/forward_disabled.jpg'); }
+.paginate_enabled_next { background-image: url('../images/forward_enabled.jpg'); }
+/*
+tr.odd td.sorting_1 { background-color: #f5f5f5; }
+tr.even td.sorting_1 { background-color: #f5f5f5; }
+*/
+
 </style>
 
 <style type="text/css" title="currentStyle">
 	@import "<%= request.getContextPath() + "/javaScript/dataTables/media/css/demo_table.css" %>";
-	
 	.saviourDiv {
 		height: 30px;
 	}
@@ -108,6 +129,7 @@ padding-bottom: 0;
 
 <h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
+<%-- 
 <logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
 	<h3><bean:message key="label.last.correspondence.sent.entries" bundle="MAIL_TRACKING_RESOURCES" /> </h3>
 </logic:equal>
@@ -115,39 +137,77 @@ padding-bottom: 0;
 <logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
 	<h3><bean:message key="label.last.correspondence.received.entries" bundle="MAIL_TRACKING_RESOURCES" /> </h3>
 </logic:equal>
+--%>
 
 <fr:form id="search.parameters.simple.form" action="/mailtracking.do?method=prepare">
 	<fr:edit id="search.parameters.simple.bean" name="searchParametersBean" visible="false" />
 </fr:form>
 
-<div id="list_tabs">
-<ul class="tabMenu">
+
+
+<logic:equal name="mailTracking" property="currentUserAbleToCreateEntries" value="true">
+	<ul class="mtop05 mbottom2">
+		<li>
+			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+				<bean:message key="label.mail.tracking.create.new.entry.sent" bundle="MAIL_TRACKING_RESOURCES"/>
+			</html:link>
+		</li>
+		<li>
+			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+				<bean:message key="label.mail.tracking.create.new.entry.received" bundle="MAIL_TRACKING_RESOURCES"/>
+			</html:link>
+		</li>
+	</ul>
+</logic:equal>
+
+
+<%--
 <logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
-	<li id="on_lists_tab" class="active">
-		<bean:message key="label.mail.tracking.sent.correspondence" bundle="MAIL_TRACKING_RESOURCES" />
-	</li>
-	<li id="my_lists_tab">
-		<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.mail.tracking.received.correspondence" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
-	</li>
+	<p class="mtop05 mbottom15">
+		<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+			<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
+		</html:link>
+	</p>
 </logic:equal>
 <logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
-	<li id="on_lists_tab">
-		<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.mail.tracking.sent.correspondence" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
-	</li>
-	<li id="my_lists_tab" class="active">
-		<bean:message key="label.mail.tracking.received.correspondence" bundle="MAIL_TRACKING_RESOURCES" />
-	</li>
+	<p class="mtop05 mbottom15">
+		<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+			<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
+		</html:link>
+	</p>
 </logic:equal>
-</ul>
+--%>
+
+
+
+
+
+
+
+
+<div id="list_tabs">
+	<ul>
+		<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
+			<li id="on_lists_tab" class="active">
+				<span><bean:message key="label.last.correspondence.sent.entries" bundle="MAIL_TRACKING_RESOURCES" /></span>
+			</li>
+			<li id="my_lists_tab">
+				<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.last.correspondence.received.entries" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
+			</li>
+		</logic:equal>
+		<logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
+			<li id="on_lists_tab">
+				<html:link page="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"><bean:message key="label.last.correspondence.sent.entries" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
+			</li>
+			<li id="my_lists_tab" class="active">
+				<span><bean:message key="label.last.correspondence.received.entries" bundle="MAIL_TRACKING_RESOURCES" /></span>
+			</li>
+		</logic:equal>
+	</ul>
 </div>
 
-<logic:equal name="mailTracking" property="currentUserOperator" value="true"> 
-<p>
-	<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
-		<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
-	</html:link>
-</p>
-</logic:equal>
+
+
 
 <logic:empty name="searchEntries">
 	<bean:message key="message.searched.correspondence.entries.empty" bundle="MAIL_TRACKING_RESOURCES" /> 
@@ -163,10 +223,11 @@ padding-bottom: 0;
 <logic:notEmpty name="searchEntries">
 <fr:view name="searchEntries" schema="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "module.mailtracking.correspondence.sent.entries.view" : "module.mailtracking.correspondence.received.entries.view" %>" >
 	<fr:layout name="ajax-tabular">
-		<fr:property name="classes" value="table display-sent"/>
+		<fr:property name="classes" value="tstyle3 mtop05 mbottom05"/>
+		<fr:property name="style" value="width: 100%;"/>
 		
-		<fr:property name="headerClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,,actions" : ",,,,,,actions" %>" />
-		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,,aleft" : ",,,,,,aleft" %>" />
+		<fr:property name="headerClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,," : ",,,,,," %>" />
+		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "width30px,width50px,,,,nowrap" : "width30px,width50px,,,,,nowrap" %>" />
 		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 
