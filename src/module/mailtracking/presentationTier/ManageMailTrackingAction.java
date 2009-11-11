@@ -188,13 +188,18 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	java.util.List<ImportationReportEntry> importationResults = new java.util.ArrayList<ImportationReportEntry>();
 
 	boolean errorOccurred;
-
-	if (bean.getType().equals(CorrespondenceType.SENT)) {
-	    errorOccurred = MailTrackingImportationHelper.importSentMailTrackingFromCsv(mailTracking, importationContents,
-		    importationResults);
-	} else {
-	    errorOccurred = MailTrackingImportationHelper.importReceivedMailTrackingFromCsv(mailTracking, importationContents,
-		    importationResults);
+	try {
+	    if (bean.getType().equals(CorrespondenceType.SENT)) {
+		MailTrackingImportationHelper
+			.importSentMailTrackingFromCsv(mailTracking, importationContents, importationResults);
+		errorOccurred = true;
+	    } else {
+		MailTrackingImportationHelper.importReceivedMailTrackingFromCsv(mailTracking, importationContents,
+			importationResults);
+		errorOccurred = true;
+	    }
+	} catch (MailTrackingImportationHelper.ImportationErrorException e) {
+	    errorOccurred = false;
 	}
 
 	request.setAttribute("errorOccurred", errorOccurred);

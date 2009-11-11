@@ -24,6 +24,7 @@
 	
 	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>" >
 		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>" />
 		<fr:layout name="tabular">
 			<fr:property name="columnClasses" value=",,tderror"/>
 		</fr:layout>		
@@ -32,6 +33,7 @@
 	<p class="mbottom05"><bean:message key="message.correspondence.sent.entry.visibility" bundle="MAIL_TRACKING_RESOURCES" /></p>
 	
 	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" >
+		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>" />
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="mtop05"/>
 			<fr:property name="columnClasses" value=",,tderror"/>
@@ -39,6 +41,7 @@
 	</fr:edit>	
 	
 	<html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
+	<html:cancel><bean:message key="label.cancel" bundle="MAIL_TRACKING_RESOURCES" /></html:cancel>
 </fr:form>
 
 <script type="text/javascript">	

@@ -17,12 +17,13 @@ public class MailTrackingImportationHelper {
     private static final Integer SENT_RECIPIENT_IDX = 2;
     private static final Integer SENT_SUBJECT_IDX = 3;
     private static final Integer SENT_SENDER_IDX = 4;
+    private static final Integer SENT_OBSERVATIONS_IDX = 5;
 
     private static final String MESSAGE_LINE_IMPORTATION_OK = "message.mail.tracking.importation.ok";
     private static final String MESSAGE_LINE_IMPORTATION_ERROR = "message.mail.tracking.importation.error";
 
     @Service
-    public static Boolean importSentMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
+    public static void importSentMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
 	    java.util.List<ImportationReportEntry> results) {
 
 	boolean errorOcurred = false;
@@ -40,6 +41,7 @@ public class MailTrackingImportationHelper {
 		bean.setRecipient(fields[SENT_RECIPIENT_IDX]);
 		bean.setSubject(fields[SENT_SUBJECT_IDX]);
 		bean.setSender(fields[SENT_SENDER_IDX]);
+		bean.setObservations(fields[SENT_OBSERVATIONS_IDX]);
 
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.SENT, null);
 		entry.setEntryNumber(Long.parseLong(fields[SENT_ID_IDX]));
@@ -63,7 +65,9 @@ public class MailTrackingImportationHelper {
 	    results.add(resultEntry);
 	}
 
-	return errorOcurred;
+	if (errorOcurred) {
+	    throw new ImportationErrorException();
+	}
     }
 
     private static final Integer RECEIVED_ID_IDX = 0;
@@ -76,8 +80,8 @@ public class MailTrackingImportationHelper {
     private static final Integer DISPATCHED_TO_WHOM_IDX = 7;
 
     @Service
-    public static Boolean importReceivedMailTrackingFromCsv(MailTracking mailTracking,
-	    java.util.List<String> importationContents, java.util.List<ImportationReportEntry> results) {
+    public static void importReceivedMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
+	    java.util.List<ImportationReportEntry> results) {
 
 	boolean errorOcurred = false;
 
@@ -124,7 +128,9 @@ public class MailTrackingImportationHelper {
 	    results.add(resultEntry);
 	}
 
-	return errorOcurred;
+	if (errorOcurred) {
+	    throw new ImportationErrorException();
+	}
     }
 
     private static LocalDate convertToLocalDate(String value) throws ConversionException {
@@ -179,4 +185,19 @@ public class MailTrackingImportationHelper {
 
     }
 
+    public static class ImportationErrorException extends DomainException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ImportationErrorException() {
+	    super();
+	}
+
+	public ImportationErrorException(String key, String... args) {
+	    super(key, args);
+	}
+    }
 }

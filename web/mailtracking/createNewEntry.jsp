@@ -21,15 +21,17 @@
 
 
 <fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" encoding="multipart/form-data">
-
+	
 	<h3><bean:message key="label.correspondence.details" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
 	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>" >
 		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
 		<fr:layout name="tabular">
 			<fr:property name="columnClasses" value=",,tderror"/>
+			<fr:property name="requiredMarkShown" value="true" />
 		</fr:layout>
 	</fr:edit>
 	
@@ -39,9 +41,11 @@
 	
 	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" >
 		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="mtop05"/>
 			<fr:property name="columnClasses" value=",,tderror"/>
+			<fr:property name="requiredMarkShown" value="true" />
 		</fr:layout>
 	</fr:edit>
 	
@@ -49,9 +53,14 @@
 
 	<fr:edit id="associate.document.bean" name="associateDocumentBean" schema="module.mailtracking.associate.document.create" >
 		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:layout name="tabular">
+			<fr:property name="requiredMarkShown" value="true" />
+		</fr:layout>
 	</fr:edit>
 	
 	<html:submit><bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
+	<html:cancel><bean:message key="label.cancel" bundle="MAIL_TRACKING_RESOURCES" /></html:cancel>
 	
 </fr:form>
 

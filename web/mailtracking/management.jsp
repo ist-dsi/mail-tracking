@@ -148,41 +148,17 @@ tr.even td.sorting_1 { background-color: #f5f5f5; }
 <logic:equal name="mailTracking" property="currentUserAbleToCreateEntries" value="true">
 	<ul class="mtop05 mbottom2">
 		<li>
-			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=SENT&amp;mailTrackingId=" + mailTrackingId %>">
 				<bean:message key="label.mail.tracking.create.new.entry.sent" bundle="MAIL_TRACKING_RESOURCES"/>
 			</html:link>
 		</li>
 		<li>
-			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
+			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=RECEIVED&amp;mailTrackingId=" + mailTrackingId %>">
 				<bean:message key="label.mail.tracking.create.new.entry.received" bundle="MAIL_TRACKING_RESOURCES"/>
 			</html:link>
 		</li>
 	</ul>
 </logic:equal>
-
-
-<%--
-<logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">
-	<p class="mtop05 mbottom15">
-		<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
-			<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
-		</html:link>
-	</p>
-</logic:equal>
-<logic:equal name="correspondenceType" value="<%=  CorrespondenceType.RECEIVED.name() %>">
-	<p class="mtop05 mbottom15">
-		<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>">
-			<bean:message key="label.mail.tracking.create.new.entry" bundle="MAIL_TRACKING_RESOURCES"/>
-		</html:link>
-	</p>
-</logic:equal>
---%>
-
-
-
-
-
-
 
 
 <div id="list_tabs">
