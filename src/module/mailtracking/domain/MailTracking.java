@@ -301,7 +301,7 @@ public class MailTracking extends MailTracking_Base {
 	return entries.get(entries.size() - 1).getEntryNumber() + 1;
     }
 
-    public static java.util.List<MailTracking> getMailTrackingsWhereUserIsOperatorOrViewer(final User user) {
+    public static java.util.List<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
 
 	if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER))
 	    return MyOrg.getInstance().getMailTrackings();
@@ -311,11 +311,7 @@ public class MailTracking extends MailTracking_Base {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
-		return ((MailTracking) arg0).isUserViewer(user) || ((MailTracking) arg0).isUserOperator(user);
-		// return MailTracking.isUserOperatorOfMailTracking((Unit) arg0,
-		// user)
-		// || MailTracking.isUserViewerOfMailTracking((Unit) arg0,
-		// user);
+		return ((MailTracking) arg0).isUserWithSomeRoleOnThisMailTracking(user);
 	    }
 
 	}, unitsWithMailTrackings);

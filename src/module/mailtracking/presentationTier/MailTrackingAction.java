@@ -97,7 +97,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    return forward(request, "/mailtracking/management.jsp");
 	}
 
-	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserIsOperatorOrViewer(currentUser);
+	java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
 
 	if (mailTrackings.size() == 1 && mailTrackings.get(0).hasCurrentUserOnlyViewOrEditionOperations()) {
 	    request.setAttribute("mailTracking", mailTrackings.get(0));
@@ -252,7 +252,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    return prepareEditEntry(mapping, form, request, response);
 	}
 
-	if (!mailTracking.isUserOperator(UserView.getCurrentUser()))
+	if (!readCorrespondenceEntryBean(request).getEntry().isUserAbleToEdit())
 	    throw new PermissionDeniedException();
 
 	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
@@ -275,6 +275,10 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletResponse response) throws Exception {
 	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 	bean.getEntry().delete(bean.getDeletionReason());
+
+	if (!readCorrespondenceEntryBean(request).getEntry().isUserAbleToDelete()) {
+	    throw new PermissionDeniedException();
+	}
 
 	return prepare(mapping, form, request, response);
     }

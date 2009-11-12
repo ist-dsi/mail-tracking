@@ -418,12 +418,12 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return isUserAbleToView(UserView.getCurrentUser());
     }
 
-    public boolean isUserAbleToEdit() {
-	return isUserAbleToEdit(UserView.getCurrentUser());
+    public boolean isUserAbleToEdit(final User user) {
+	return this.getVisibility().isUserAbleToEdit(this, user);
     }
 
-    public boolean isUserAbleToEdit(final User user) {
-	return this.getMailTracking().isUserOperator(user);
+    public boolean isUserAbleToEdit() {
+	return this.isUserAbleToEdit(UserView.getCurrentUser());
     }
 
     public boolean isUserAbleToDelete() {
@@ -431,7 +431,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public boolean isUserAbleToDelete(final User user) {
-	return this.getMailTracking().isUserOperator(user);
+	return this.getVisibility().isUserAbleToDelete(this, user);
     }
 
     public boolean isUserAbleToViewMainDocument(final User user) {

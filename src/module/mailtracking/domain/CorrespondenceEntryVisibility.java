@@ -9,19 +9,55 @@ public enum CorrespondenceEntryVisibility {
 	public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
 	    return true;
 	}
+
+	@Override
+	public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
+	    return entry.getMailTracking().isUserOperator(user) || entry.getMailTracking().isUserManager(user)
+		    || MailTracking.isMyOrgManager(user);
+	}
+
+	@Override
+	public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
+	    return entry.getMailTracking().isUserOperator(user) || entry.getMailTracking().isUserManager(user)
+		    || MailTracking.isMyOrgManager(user);
+	}
     },
     ONLY_OWNER_AND_OPERATOR {
 	@Override
 	public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
 	    return (entry.hasOwner() && entry.getOwner().equals(user.getPerson()))
-		    || (entry.getMailTracking().isUserOperator(user) && entry.getCreator().equals(user))
+		    || (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+	}
+
+	@Override
+	public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+	}
+
+	@Override
+	public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
 		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
 	}
     },
     ONLY_OPERATOR {
 	@Override
 	public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
-	    return (entry.getMailTracking().isUserOperator(user) && entry.getCreator().equals(user))
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+	}
+
+	@Override
+	public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
+		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+	}
+
+	@Override
+	public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
+	    return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
 		    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
 	}
     };
@@ -37,6 +73,10 @@ public enum CorrespondenceEntryVisibility {
     }
 
     public abstract boolean isUserAbleToView(CorrespondenceEntry entry, User user);
+
+    public abstract boolean isUserAbleToEdit(CorrespondenceEntry entry, User user);
+
+    public abstract boolean isUserAbleToDelete(CorrespondenceEntry entry, User user);
 
     public static class CustomEnum implements java.io.Serializable {
 	/**
