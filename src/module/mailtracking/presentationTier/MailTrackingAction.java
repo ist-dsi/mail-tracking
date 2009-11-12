@@ -90,7 +90,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	MailTracking mailTracking = readMailTracking(request);
 
 	if (mailTracking != null) {
-	    if (!mailTracking.isUserOperator(currentUser) && !mailTracking.isUserViewer(currentUser))
+	    if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking())
 		return forward(request, "/mailtracking/permissionDenied.jsp");
 
 	    getEntries(request);
@@ -163,7 +163,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletResponse response) throws Exception {
 	MailTracking mailTracking = readMailTracking(request);
 
-	if (!mailTracking.isUserOperator(UserView.getCurrentUser()))
+	if (!mailTracking.isCurrentUserAbleToCreateEntries())
 	    throw new PermissionDeniedException();
 
 	if (!preValidate(readCorrespondenceEntryBean(request), request)) {

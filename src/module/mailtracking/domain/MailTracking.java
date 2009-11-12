@@ -436,6 +436,14 @@ public class MailTracking extends MailTracking_Base {
 	return this.isUserAbleToManageUsers(UserView.getCurrentUser());
     }
 
+    public boolean isUserWithSomeRoleOnThisMailTracking(final User user) {
+	return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserWithSomeRoleOnThisMailTracking() {
+	return isUserWithSomeRoleOnThisMailTracking(UserView.getCurrentUser());
+    }
+
     public boolean hasUserOnlyViewOrEditionOperations(final User user) {
 	return (this.isUserAbleToCreateEntries(user) || this.isUserAbleToViewMailTracking(user))
 		&& !this.isUserAbleToCreateEntries(user) && !this.isUserAbleToImportEntries(user)
