@@ -6,7 +6,7 @@
 
 <bean:define id="mailTrackingId" name="mailTrackingBean" property="mailTracking.externalId" />
 
-<h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
+<h2><bean:message key="title.mail.tracking.application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <h3><bean:message key="title.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 

@@ -127,7 +127,7 @@ tr.even td.sorting_1 { background-color: #f5f5f5; }
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 
 
-<h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
+<h2><bean:message key="title.mail.tracking.application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <%-- 
 <logic:equal name="correspondenceType" value="<%= CorrespondenceType.SENT.name() %>">

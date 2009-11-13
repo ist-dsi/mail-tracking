@@ -7,7 +7,7 @@
 
 <%@page import="module.mailtracking.domain.MailTracking" %>
 
-<h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
+<h2><bean:message key="title.mail.tracking.application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <logic:empty name="mailTrackings" >
 	<p><em><bean:message key="message.not.operator.in.any.mail.tracking" bundle="MAIL_TRACKING_RESOURCES" /></em></p>

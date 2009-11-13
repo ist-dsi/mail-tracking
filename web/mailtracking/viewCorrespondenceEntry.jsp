@@ -6,7 +6,7 @@
 
 <%@ page import="module.mailtracking.domain.CorrespondenceType" %>
 
-<h2><bean:message key="title.mail.tracking,application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
+<h2><bean:message key="title.mail.tracking.application" bundle="MAIL_TRACKING_RESOURCES" /></h2>
 
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 <bean:define id="correspondenceType" name="correspondenceType" />
