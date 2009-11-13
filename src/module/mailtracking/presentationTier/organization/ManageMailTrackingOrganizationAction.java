@@ -28,6 +28,9 @@ import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
+import myorg.presentationTier.LayoutContext;
+import myorg.presentationTier.Context;
+
 @Mapping(path = "/mailTrackingOrganizationModel")
 public class ManageMailTrackingOrganizationAction extends OrganizationModelAction {
 
@@ -291,6 +294,13 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
 	request.setAttribute("importationFileResults", importationResults);
 
 	return forward(request, "/module/mailTracking/viewImportationResults.jsp");
+    }
+
+    @Override
+    public Context createContext(String contextPathString, HttpServletRequest request) {
+	LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+	context.addHead("/mailtracking/layoutHead.jsp");
+	return context;
     }
 
 }

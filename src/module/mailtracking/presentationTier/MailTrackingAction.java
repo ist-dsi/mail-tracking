@@ -36,6 +36,9 @@ import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumR
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
+import myorg.presentationTier.LayoutContext;
+import myorg.presentationTier.Context;
+
 @Mapping(path = "/mailtracking")
 public class MailTrackingAction extends ContextBaseAction {
 
@@ -829,6 +832,13 @@ public class MailTrackingAction extends ContextBaseAction {
 	stream.read(content);
 
 	return content;
+    }
+
+    @Override
+    public Context createContext(String contextPathString, HttpServletRequest request) {
+	LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+	context.addHead("/mailtracking/layoutHead.jsp");
+	return context;
     }
 
 }

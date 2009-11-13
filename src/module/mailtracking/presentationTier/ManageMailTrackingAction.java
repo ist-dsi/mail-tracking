@@ -24,6 +24,9 @@ import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
+import myorg.presentationTier.LayoutContext;
+import myorg.presentationTier.Context;
+
 @Mapping(path = "/manageMailTracking")
 public class ManageMailTrackingAction extends ContextBaseAction {
 
@@ -243,6 +246,13 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     private SearchUserBean readSearchUserBean(HttpServletRequest request) {
 	return this.getRenderedObject("search.user.bean");
+    }
+
+    @Override
+    public Context createContext(String contextPathString, HttpServletRequest request) {
+	LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+	context.addHead("/mailtracking/layoutHead.jsp");
+	return context;
     }
 
 }
