@@ -456,10 +456,10 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	for (CorrespondenceEntry entry : limitedEntries) {
 	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getWhenSent().toString("dd/MM/yyyy")).append("\", ");
-	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getWhenSent().toString("dd/MM/yyyy"))).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getRecipient())).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getSubject())).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getSender())).append("\", ");
 
 	    stringBuilder.append("\"").append(
 		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
@@ -487,6 +487,10 @@ public class MailTrackingAction extends ContextBaseAction {
 	return stringBuilder.toString();
     }
 
+    private Object escapeQuotes(String value) {
+	return value.replaceAll("\\\"", "\\\\\"");
+    }
+
     private String generateLinkForCorrespondenceEntryView(HttpServletRequest request, CorrespondenceEntry entry) {
 	String contextPath = request.getContextPath();
 	String realLink = contextPath
@@ -511,10 +515,10 @@ public class MailTrackingAction extends ContextBaseAction {
 	for (CorrespondenceEntry entry : limitedEntries) {
 	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSender()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSenderLetterNumber()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getSubject()).append("\", ");
-	    stringBuilder.append("\"").append(entry.getRecipient()).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getSender())).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getSenderLetterNumber())).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getSubject())).append("\", ");
+	    stringBuilder.append("\"").append(escapeQuotes(entry.getRecipient())).append("\", ");
 
 	    stringBuilder.append("\"").append(
 		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
