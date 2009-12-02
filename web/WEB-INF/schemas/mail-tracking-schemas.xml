@@ -301,7 +301,7 @@
 	<slot name="totalNumberOfActiveDocuments" key="label.mail.tracking.statistics.total.documents.of.active.entries" />
 </schema>
 
-
+<!-- 
 <schema name="module.mail.tracking.years.view" type="module.mailtracking.domain.Year" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="name" key="label.mail.tracking.year.name" />
 	<slot name="startDate" key="label.mail.tracking.year.startDate" />
@@ -309,7 +309,7 @@
 </schema>
 
 
-<schema name="module.mail.tracking.years.create" type="module.mailtracking.presentationTier.MailTrackingActionOperations$YearBean">
+<schema name="module.mail.tracking.years.create" type="module.mailtracking.presentationTier.MailTrackingActionOperations$YearBean" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="year" key="label.mail.tracking.year" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
 		<layout name="menu-select">
@@ -317,3 +317,6 @@
 		</layout>
 	</slot>
 </schema>
+
+ -->
+ 
