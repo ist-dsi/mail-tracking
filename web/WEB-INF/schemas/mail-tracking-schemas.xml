@@ -300,3 +300,20 @@
 	<slot name="totalNumberOfReceivedEntries" key="label.mail.tracking.statistics.total.received.entries" />
 	<slot name="totalNumberOfActiveDocuments" key="label.mail.tracking.statistics.total.documents.of.active.entries" />
 </schema>
+
+
+<schema name="module.mail.tracking.years.view" type="module.mailtracking.domain.Year" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="name" key="label.mail.tracking.year.name" />
+	<slot name="startDate" key="label.mail.tracking.year.startDate" />
+	<slot name="endDate" key="label.mail.tracking.year.endDate" />
+</schema>
+
+
+<schema name="module.mail.tracking.years.create" type="module.mailtracking.presentationTier.MailTrackingActionOperations$YearBean">
+	<slot name="year" key="label.mail.tracking.year" >
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+		<layout name="menu-select">
+			<property name="providerClass" value="module.mailtracking.presentationTier.MailTrackingActionOperations$CreateYearProvider" />
+		</layout>
+	</slot>
+</schema>

@@ -31,6 +31,10 @@
 		<bean:message key="label.mail.tracking.entries.importation" bundle="MAIL_TRACKING_RESOURCES"/>
 	</html:link>
 	|
+	<html:link action="<%= String.format("/mailTrackingOrganizationModel.do?method=prepareYearsManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+		<bean:message key="label.mail.tracking.entries.manage.years" bundle="MAIL_TRACKING_RESOURCES" />
+	</html:link>
+	|
 	<html:link action="<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>">
 		<bean:message key="label.mail.tracking.view.entries" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
