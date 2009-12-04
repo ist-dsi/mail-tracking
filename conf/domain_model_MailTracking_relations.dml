@@ -92,3 +92,25 @@ relation CorrespondenceEntryOwner {
 	}
 }
 
+relation MyOrgMailTrackingYears {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.Year playsRole years {
+		multiplicity *;
+	}
+} 
+
+relation MailTrackingYear {
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	module.mailtracking.domain.Year playsRole years {
+		multiplicity *;
+	}
+}
+
+relation YearCorrespondenceEntry {
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+	
+	module.mailtracking.domain.Year playsRole year;
+}
+

@@ -34,41 +34,41 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	setMyOrg(MyOrg.getInstance());
     }
 
-    CorrespondenceEntry(MailTracking mailTracking, CorrespondenceEntryBean bean, CorrespondenceType type, Long entryNumber) {
+    CorrespondenceEntry(final MailTracking mailTracking, final CorrespondenceEntryBean bean, final CorrespondenceType type,
+	    final Long entryNumber) {
 	this();
 	setCreationDate(new DateTime());
 	setEditionDate(new DateTime());
 	setCreator(UserView.getCurrentUser());
 	setLastEditor(UserView.getCurrentUser());
-	init(mailTracking, bean.getSender(), bean.getRecipient(), bean.getSubject(), bean.getWhenReceivedAsDateTime(), bean
-		.getWhenSentAsDateTime(), bean.getSenderLetterNumber(), bean.getDispatchedToWhom(), type, entryNumber, bean
-		.getOwner(), bean.getVisibility().getCustomEnum(), bean.getObservations());
+	init(mailTracking, bean, type, entryNumber);
     }
 
-    protected void init(MailTracking mailTracking, String sender, String recipient, String subject, DateTime whenReceived,
-	    DateTime whenSent, String senderLetterNumber, String dispatchedToWhom, CorrespondenceType type, Long entryNumber,
-	    Person owner, CorrespondenceEntryVisibility visibility, String observations) {
+    protected void init(final MailTracking mailTracking, final CorrespondenceEntryBean bean, final CorrespondenceType type,
+	    final Long entryNumber) {
 	setState(CorrespondenceEntryState.ACTIVE);
 	setType(type);
 	setMailTracking(mailTracking);
 	setEntryNumber(entryNumber);
-	setOwner(owner);
-	setVisibility(visibility);
-	setObservations(observations);
+	setOwner(bean.getOwner());
+	setVisibility(bean.getVisibility().getCustomEnum());
+	setObservations(bean.getObservations());
 
 	if (CorrespondenceType.SENT.equals(type)) {
-	    this.setWhenSent(whenSent);
-	    this.setRecipient(recipient);
-	    this.setSubject(subject);
-	    this.setSender(sender);
+	    this.setWhenSent(bean.getWhenSentAsDateTime());
+	    this.setRecipient(bean.getRecipient());
+	    this.setSubject(bean.getSubject());
+	    this.setSender(bean.getSender());
+	    this.setYear(mailTracking.getYearFor(bean.getWhenSentAsDateTime()));
 	} else if (CorrespondenceType.RECEIVED.equals(type)) {
-	    this.setWhenReceived(whenReceived);
-	    this.setSender(sender);
-	    this.setWhenSent(whenSent);
-	    this.setSenderLetterNumber(senderLetterNumber);
-	    this.setSubject(subject);
-	    this.setRecipient(recipient);
-	    this.setDispatchedToWhom(dispatchedToWhom);
+	    this.setWhenReceived(bean.getWhenReceivedAsDateTime());
+	    this.setSender(bean.getSender());
+	    this.setWhenSent(bean.getWhenSentAsDateTime());
+	    this.setSenderLetterNumber(bean.getSenderLetterNumber());
+	    this.setSubject(bean.getSubject());
+	    this.setRecipient(bean.getRecipient());
+	    this.setDispatchedToWhom(bean.getDispatchedToWhom());
+	    this.setYear(mailTracking.getYearFor(bean.getWhenReceivedAsDateTime()));
 	}
 
 	this.checkParameters();
@@ -359,6 +359,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setRecipient(bean.getRecipient());
 	    this.setSubject(bean.getSubject());
 	    this.setWhenSent(bean.getWhenSentAsDateTime());
+	    this.setYear(this.getMailTracking().getYearFor(bean.getWhenSentAsDateTime()));
 	} else if (CorrespondenceType.RECEIVED.equals(this.getType())) {
 	    this.setWhenReceived(bean.getWhenReceivedAsDateTime());
 	    this.setSender(bean.getSender());
@@ -367,6 +368,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setSubject(bean.getSubject());
 	    this.setRecipient(bean.getRecipient());
 	    this.setDispatchedToWhom(bean.getDispatchedToWhom());
+	    this.setYear(this.getMailTracking().getYearFor(bean.getWhenReceivedAsDateTime()));
 	}
 
 	checkParameters();
@@ -451,5 +453,15 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     public boolean hasMainDocument() {
 	return this.getMainDocument() != null;
+    }
+
+    public void reIndexByYear() {
+	if (CorrespondenceType.SENT.equals(this.getType())) {
+	    this.setYear(this.getMailTracking().getYearFor(getWhenSent()));
+	} else if (CorrespondenceType.RECEIVED.equals(this.getType())) {
+	    this.setYear(this.getMailTracking().getYearFor(getWhenReceived()));
+	} else {
+	    throw new DomainException("error.mail.tracking.correspondence.type.invalid");
+	}
     }
 }

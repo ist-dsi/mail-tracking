@@ -14,6 +14,7 @@ import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.Document;
 import module.mailtracking.domain.DocumentType;
 import module.mailtracking.domain.MailTracking;
+import module.mailtracking.domain.Year;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import myorg.applicationTier.Authenticate.UserView;
@@ -22,6 +23,8 @@ import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
 import myorg.domain.groups.UserGroup;
+import myorg.presentationTier.Context;
+import myorg.presentationTier.LayoutContext;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -35,9 +38,6 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
-
-import myorg.presentationTier.LayoutContext;
-import myorg.presentationTier.Context;
 
 @Mapping(path = "/mailtracking")
 public class MailTrackingAction extends ContextBaseAction {
@@ -97,6 +97,9 @@ public class MailTrackingAction extends ContextBaseAction {
 		return forward(request, "/mailtracking/permissionDenied.jsp");
 
 	    getEntries(request);
+
+	    request.setAttribute("yearBean", readYearBean(request));
+
 	    return forward(request, "/mailtracking/management.jsp");
 	}
 
@@ -110,6 +113,27 @@ public class MailTrackingAction extends ContextBaseAction {
 	request.setAttribute("mailTrackings", mailTrackings);
 
 	return forward(request, "/mailtracking/chooseMailTracking.jsp");
+    }
+
+    private YearBean readYearBean(HttpServletRequest request) {
+	YearBean bean = (YearBean) request.getAttribute("yearBean");
+
+	if (bean == null) {
+	    bean = this.getRenderedObject("year.bean");
+	}
+
+	if (bean == null) {
+	    if (!StringUtils.isEmpty(request.getParameter("yearId"))) {
+		Year chosenYear = this.getDomainObject(request, "yearId");
+		bean = new YearBean(chosenYear.getMailTracking(), chosenYear);
+	    }
+	}
+
+	if (bean == null) {
+	    bean = new YearBean(readMailTracking(request));
+	}
+
+	return bean;
     }
 
     private java.util.List<CorrespondenceEntry> getEntries(HttpServletRequest request) {
@@ -400,10 +424,20 @@ public class MailTrackingAction extends ContextBaseAction {
 	}
 
 	java.util.List<CorrespondenceEntry> entries = null;
+	YearBean yearBean = readYearBean(request);
+
 	if (StringUtils.isEmpty(sSearch)) {
-	    entries = readMailTracking(request).getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
+	    if (yearBean.getChosenYear() != null) {
+		entries = yearBean.getChosenYear().getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
+	    } else {
+		entries = readMailTracking(request).getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
+	    }
 	} else {
-	    entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch);
+	    if (yearBean.getChosenYear() != null) {
+		entries = yearBean.getChosenYear().simpleSearch(readCorrespondenceTypeView(request), sSearch);
+	    } else {
+		entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch);
+	    }
 	}
 
 	Integer numberOfRecordsMatched = entries.size();

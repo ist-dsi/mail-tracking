@@ -139,10 +139,15 @@ public class MailTracking extends MailTracking_Base {
 	return this.getEntries(null, type);
     }
 
-    public java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
+    java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
+	return filterEntriesByTypeAndState(this.getEntries(), state, type);
+    }
+
+    static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(final java.util.List<CorrespondenceEntry> entries,
+	    final CorrespondenceEntryState state, final CorrespondenceType type) {
 	java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
-	CollectionUtils.select(this.getEntries(), new Predicate() {
+	CollectionUtils.select(entries, new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
@@ -440,10 +445,26 @@ public class MailTracking extends MailTracking_Base {
 	return isUserWithSomeRoleOnThisMailTracking(UserView.getCurrentUser());
     }
 
+    public boolean isUserAbleToRearrangeEntries(final User user) {
+	return isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToRearrangeEntries() {
+	return isUserAbleToRearrangeEntries(UserView.getCurrentUser());
+    }
+
     public boolean hasUserOnlyViewOrEditionOperations(final User user) {
 	return (this.isUserAbleToCreateEntries(user) || this.isUserAbleToViewMailTracking(user))
 		&& !this.isUserAbleToCreateEntries(user) && !this.isUserAbleToImportEntries(user)
 		&& !this.isUserAbleToManageUsers(user);
+    }
+
+    public boolean isCurrentUserAbleToManageYears() {
+	return isUserAbleToManageYears(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToManageYears(final User user) {
+	return this.isUserManager(user) || isMyOrgManager(user);
     }
 
     public boolean hasCurrentUserOnlyViewOrEditionOperations() {
@@ -498,6 +519,26 @@ public class MailTracking extends MailTracking_Base {
 	allUsers.addAll(this.getManagersGroup().getMembers());
 
 	return allUsers;
+    }
+
+    public Year getYearFor(final Integer forYear) {
+	return Year.getYearFor(this, forYear);
+    }
+
+    Year getYearFor(final DateTime date) {
+	return Year.getYearFor(this, date);
+    }
+
+    @Service
+    public Year createYearFor(Integer year) {
+	return Year.createYearFor(this, year);
+    }
+
+    @Service
+    public void reIndexEntriesByYear() {
+	for (CorrespondenceEntry entry : this.getEntries()) {
+	    entry.reIndexByYear();
+	}
     }
 
 }

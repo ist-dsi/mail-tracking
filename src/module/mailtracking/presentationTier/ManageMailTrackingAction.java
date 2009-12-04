@@ -1,21 +1,16 @@
 package module.mailtracking.presentationTier;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
-import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
 import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import module.organization.domain.Person;
 import myorg.domain.User;
+import myorg.presentationTier.Context;
+import myorg.presentationTier.LayoutContext;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
@@ -23,9 +18,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
-
-import myorg.presentationTier.LayoutContext;
-import myorg.presentationTier.Context;
 
 @Mapping(path = "/manageMailTracking")
 public class ManageMailTrackingAction extends ContextBaseAction {
@@ -47,73 +39,41 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward removeOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	MailTrackingBean bean = readMailTrackingBean(request);
-
-	if (!bean.getMailTracking().isCurrentUserAbleToManageOperators()) {
-	    throw new PermissionDeniedException();
-	}
-
-	bean.getMailTracking().removeOperator(readUser(request));
-
+	MailTrackingActionOperations.removeOperator(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward addOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	User user = readUser(request);
-	if (!readMailTracking(request).isCurrentUserAbleToManageOperators()) {
-	    throw new PermissionDeniedException();
-	}
-
-	readMailTracking(request).addOperator(user);
-
+	MailTrackingActionOperations.addOperator(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
+    }
+
+    private static User readUser(HttpServletRequest request) {
+	return User.fromExternalId(request.getParameter("userId"));
     }
 
     public ActionForward removeViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	if (!readMailTracking(request).isCurrentUserAbleToManageViewers()) {
-	    throw new PermissionDeniedException();
-	}
-
-	readMailTracking(request).removeViewer(readUser(request));
+	MailTrackingActionOperations.removeViewer(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward addViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	User user = readUser(request);
-
-	if (!readMailTracking(request).isCurrentUserAbleToManageViewers()) {
-	    throw new PermissionDeniedException();
-	}
-
-	readMailTracking(request).addViewer(user);
-
+	MailTrackingActionOperations.addViewer(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward addManager(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	User user = readUser(request);
-
-	if (!readMailTracking(request).isCurrentUserAbleToManageManagers()) {
-	    throw new PermissionDeniedException();
-	}
-
-	readMailTracking(request).addManager(user);
+	MailTrackingActionOperations.addManager(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward removeManager(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	User user = readUser(request);
-
-	if (!readMailTracking(request).isCurrentUserAbleToManageManagers()) {
-	    throw new PermissionDeniedException();
-	}
-
-	readMailTracking(request).removeManager(user);
+	MailTrackingActionOperations.removeManager(readMailTrackingBean(request), readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
@@ -168,10 +128,6 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	return this.getRenderedObject("mail.tracking.bean");
     }
 
-    private User readUser(HttpServletRequest request) {
-	return User.fromExternalId(request.getParameter("userId"));
-    }
-
     public ActionForward prepareMailTrackingImportation(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 	request.setAttribute("importationFileBean", new ImportationFileBean());
@@ -181,31 +137,10 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward importMailTracking(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-
-	MailTracking mailTracking = readMailTrackingBean(request).getMailTracking();
-
-	ImportationFileBean bean = readImportationFileBean(request);
-
-	java.util.List<String> importationContents = consumeCsvImportationContent(bean);
-
 	java.util.List<ImportationReportEntry> importationResults = new java.util.ArrayList<ImportationReportEntry>();
 
-	boolean errorOccurred;
-	try {
-	    if (bean.getType().equals(CorrespondenceType.SENT)) {
-		MailTrackingImportationHelper
-			.importSentMailTrackingFromCsv(mailTracking, importationContents, importationResults);
-		errorOccurred = true;
-	    } else {
-		MailTrackingImportationHelper.importReceivedMailTrackingFromCsv(mailTracking, importationContents,
-			importationResults);
-		errorOccurred = true;
-	    }
-	} catch (MailTrackingImportationHelper.ImportationErrorException e) {
-	    errorOccurred = false;
-	}
-
-	request.setAttribute("errorOccurred", errorOccurred);
+	request.setAttribute("errorOccurred", MailTrackingActionOperations.importMailTracking(readMailTrackingBean(request),
+		readImportationFileBean(request), importationResults));
 	request.setAttribute("importationFileResults", importationResults);
 
 	return forward(request, "/mailtracking/manager/viewImportationResults.jsp");
@@ -218,26 +153,6 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	    importFileBean = this.getRenderedObject("importation.file.bean");
 
 	return importFileBean;
-    }
-
-    private byte[] consumeStream(Long fileSize, InputStream stream) throws IOException {
-	byte[] content = new byte[fileSize.intValue()];
-	stream.read(content);
-
-	return content;
-    }
-
-    private java.util.List<String> consumeCsvImportationContent(ImportationFileBean bean) throws IOException {
-	InputStreamReader inputStreamReader = new InputStreamReader(bean.getStream(), "UTF8");
-	BufferedReader reader = new BufferedReader(inputStreamReader);
-
-	java.util.List<String> stringContents = new java.util.ArrayList<String>();
-	String line = null;
-	while ((line = reader.readLine()) != null) {
-	    stringContents.add(line);
-	}
-
-	return stringContents;
     }
 
     private MailTracking readMailTracking(final HttpServletRequest request) {
@@ -254,5 +169,4 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	context.addHead("/mailtracking/layoutHead.jsp");
 	return context;
     }
-
 }

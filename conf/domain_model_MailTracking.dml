@@ -33,4 +33,9 @@ class MailTrackingInitializer {
 }
 
 
+class Year {
+	String name;
+	DateTime startDate;
+	DateTime endDate;
+}
 

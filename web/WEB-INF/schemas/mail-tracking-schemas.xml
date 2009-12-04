@@ -301,7 +301,7 @@
 	<slot name="totalNumberOfActiveDocuments" key="label.mail.tracking.statistics.total.documents.of.active.entries" />
 </schema>
 
-<!-- 
+
 <schema name="module.mail.tracking.years.view" type="module.mailtracking.domain.Year" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="name" key="label.mail.tracking.year.name" />
 	<slot name="startDate" key="label.mail.tracking.year.startDate" />
@@ -309,7 +309,7 @@
 </schema>
 
 
-<schema name="module.mail.tracking.years.create" type="module.mailtracking.presentationTier.MailTrackingActionOperations$YearBean" bundle="MAIL_TRACKING_RESOURCES">
+<schema name="module.mail.tracking.years.create" type="module.mailtracking.presentationTier.YearBean" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="year" key="label.mail.tracking.year" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
 		<layout name="menu-select">
@@ -317,6 +317,15 @@
 		</layout>
 	</slot>
 </schema>
-
- -->
+ 
+<schema name="module.mail.tracking.choose.year" type="module.mailtracking.presentationTier.YearBean" bundle="MAIL_TRACKING_RESOURCES">
+ 	<slot name="chosenYear" key="label.mail.tracking.year" layout="menu-select-postback">
+		<property name="providerClass" value="module.mailtracking.presentationTier.renderers.providers.MailTrackingYearProvider" />
+		<property name="format" value="${name}" />
+		<property name="key" value="true" />
+		<property name="defaultText" value="label.all" />
+		<property name="bundle" value="MAIL_TRACKING_RESOURCES" />
+		<property name="sortBy" value="name" />
+ 	</slot>
+ </schema>
  

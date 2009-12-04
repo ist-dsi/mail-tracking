@@ -21,12 +21,32 @@
 	<p><em><bean:message key="message.mail.tracking.for.unit.is.not.created" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 </logic:equal>
 
+ 
 <logic:equal name="existsMailTrackingForUnit" value="true">
-	<fr:view name="mailTrackingBean" property="mailTracking.years" schema="module.mail.tracking.years.view"/>
+	
+	<logic:empty name="mailTrackingBean" property="mailTracking.years">
+		<bean:message key="message.mail.tracking.years.not.defined" bundle="MAIL_TRACKING_RESOURCES" />
+	</logic:empty>
+	
+	<logic:notEmpty name="mailTrackingBean" property="mailTracking.years">
+	<fr:view name="mailTrackingBean" property="mailTracking.years" schema="module.mail.tracking.years.view" >
+		<fr:layout name="tabular" />
+	</fr:view>
+	</logic:notEmpty>
+
 </logic:equal>
 
-<fr:form action="<%= String.format("/mailTrackingOrganizationModel.do?method=createYearFor&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
-	<fr:edit id="" name="module.mail.tracking.years.create" schema="module.mail.tracking.years.create" />
+
+<p><strong></strong><bean:message key="label.mail.tracking.create.year" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
+<fr:form action="<%= String.format("/mailTrackingOrganizationModel.do?method=createYear&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+	<fr:edit id="mail.tracking.year.bean" name="yearBean" schema="module.mail.tracking.years.create" />
 	
-	<html:submit><bean:message label="label.mail.tracking.years.create" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
+	<html:submit><bean:message key="label.mail.tracking.years.create" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
 </fr:form>
+
+
+<p><strong><bean:message key="label.mail.tracking.rearrange.entries.by.year" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
+
+<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=rearrangeEntries&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+	<bean:message key="label.mail.tracking.organize.entries" bundle="MAIL_TRACKING_RESOURCES" />
+</html:link>

@@ -5,6 +5,7 @@
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
 <%@ page import="module.mailtracking.domain.CorrespondenceType" %>
+<%@ page import="module.mailtracking.presentationTier.YearBean" %>
 
 <bean:define id="correspondenceType" name="correspondenceType" />
 
@@ -92,6 +93,20 @@
 </style>
 
 <logic:notEmpty name="searchEntries">
+
+
+<p>
+	<fr:form id="mail.tracking.select.years" action="<%= String.format("/mailtracking.do?method=prepare&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>">
+	<fr:edit id="year.bean" name="yearBean" schema="module.mail.tracking.choose.year" >
+		<fr:layout name="tabular" >
+			<fr:destination name="postback" path="<%= String.format("/mailtracking.do?method=prepare&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>" />
+		</fr:layout>
+	</fr:edit>
+	</fr:form>
+</p>
+
+<bean:define id="yearId" value="<%= ((YearBean) request.getAttribute("yearBean")).getChosenYear() != null ? ((YearBean) request.getAttribute("yearBean")).getChosenYear().getExternalId() : "" %>" /> 
+
 <fr:view name="searchEntries" schema="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "module.mailtracking.correspondence.sent.entries.view" : "module.mailtracking.correspondence.received.entries.view" %>" >
 	<fr:layout name="ajax-tabular">
 		<fr:property name="classes" value="tstyle3 mtop05 mbottom05"/>
@@ -133,6 +148,7 @@
 		<fr:property name="extraParameter(method)" value="ajaxFilterCorrespondence" />
 		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />
 		<fr:property name="extraParameter(mailTrackingId)" value="<%= (String) mailTrackingId %>" />
+		<fr:property name="extraParameter(yearId)" value="<%= yearId %>" />
 	</fr:layout>
 </fr:view>
 
