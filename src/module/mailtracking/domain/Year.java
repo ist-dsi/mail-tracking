@@ -186,4 +186,40 @@ public class Year extends Year_Base {
 	return new YearBean();
     }
 
+    @Override
+    public Integer getNextReceivedEntryNumber() {
+	throw new DomainException("error.mail.tracking.method.cannot.be.called.outside");
+    }
+
+    @Override
+    public Integer getNextSentEntryNumber() {
+	throw new DomainException("error.mail.tracking.method.cannot.be.called.outside");
+    }
+
+    Integer nextSentEntryNumber() {
+	if (super.getNextSentEntryNumber() == null) {
+	    super.setNextSentEntryNumber(1);
+	    return 1;
+	}
+
+	Integer num = super.getNextSentEntryNumber();
+	super.setNextSentEntryNumber(num + 1);
+	return num;
+    }
+
+    Integer nextRecievedEntryNumber() {
+	if (super.getNextReceivedEntryNumber() == null) {
+	    super.setNextReceivedEntryNumber(1);
+	    return 1;
+	}
+
+	Integer num = super.getNextReceivedEntryNumber();
+	super.setNextReceivedEntryNumber(num + 1);
+	return num;
+    }
+
+    void resetCounters() {
+	super.setNextSentEntryNumber(1);
+	super.setNextReceivedEntryNumber(1);
+    }
 }

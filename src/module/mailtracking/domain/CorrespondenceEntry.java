@@ -29,6 +29,32 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     };
 
+    public static final Comparator<CorrespondenceEntry> SORT_BY_WHEN_SENT_COMPARATOR = new Comparator<CorrespondenceEntry>() {
+
+	@Override
+	public int compare(CorrespondenceEntry entryLeft, CorrespondenceEntry entryRight) {
+	    return entryLeft.getWhenSent().compareTo(entryRight.getWhenSent());
+	}
+    };
+
+    public static final Comparator<CorrespondenceEntry> SORT_BY_REFERENCE_COMPARATOR = new Comparator<CorrespondenceEntry>() {
+
+	@Override
+	public int compare(CorrespondenceEntry left, CorrespondenceEntry right) {
+	    String yearLeft = left.getReference().substring(0, 4);
+	    String yearRight = right.getReference().substring(0, 4);
+
+	    if (yearLeft.compareTo(yearRight) == 0) {
+		String codeLeft = left.getReference().substring(5);
+		String codeRight = right.getReference().substring(5);
+
+		return new Integer(codeLeft).compareTo(new Integer(codeRight));
+	    }
+
+	    return yearLeft.compareTo(yearRight);
+	}
+    };
+
     CorrespondenceEntry() {
 	super();
 	setMyOrg(MyOrg.getInstance());
@@ -60,6 +86,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setSubject(bean.getSubject());
 	    this.setSender(bean.getSender());
 	    this.setYear(mailTracking.getYearFor(bean.getWhenSentAsDateTime()));
+	    this.setReference(String.format("%s/%s", this.getYear().getName(), this.getYear().nextSentEntryNumber()));
 	} else if (CorrespondenceType.RECEIVED.equals(type)) {
 	    this.setWhenReceived(bean.getWhenReceivedAsDateTime());
 	    this.setSender(bean.getSender());
@@ -69,6 +96,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setRecipient(bean.getRecipient());
 	    this.setDispatchedToWhom(bean.getDispatchedToWhom());
 	    this.setYear(mailTracking.getYearFor(bean.getWhenReceivedAsDateTime()));
+	    this.setReference(String.format("%s/%s", this.getYear().getName(), this.getYear().nextRecievedEntryNumber()));
 	}
 
 	this.checkParameters();
@@ -121,6 +149,13 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	if (this.getVisibility() == null)
 	    throw new DomainException("error.correspondence.entry.visibility.cannot.be.empty");
 
+	if (StringUtils.isEmpty(this.getReference())) {
+	    throw new DomainException("error.correspondence.entry.reference.cannot.be.empty");
+	}
+
+	if ("\\d{4}/\\d+".matches(this.getReference())) {
+	    throw new DomainException("error.correspondence.entry.reference.invalid");
+	}
     }
 
     public static java.util.List<CorrespondenceEntry> getLastActiveEntriesSortedByDate(Integer numberOfEntries) {
@@ -222,6 +257,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 		this.setRecipient(entry.getRecipient());
 		this.setDispatchedToWhom(entry.getDispatchedToWhom());
 	    }
+
 	}
 
 	public String getSender() {

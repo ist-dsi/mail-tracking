@@ -27,7 +27,7 @@ import myorg.presentationTier.Context;
 import myorg.presentationTier.LayoutContext;
 import myorg.presentationTier.actions.ContextBaseAction;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -381,23 +381,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
     private static final java.util.Map<String, Object> SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
     static {
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "entryNumber");
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "whenSent");
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "recipient");
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", "subject");
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", "sender");
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", CorrespondenceEntry.SORT_BY_REFERENCE_COMPARATOR);
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new BeanComparator("whenSent"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new BeanComparator("recipient"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new BeanComparator("subject"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("sender"));
 	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }
 
     private static final java.util.Map<String, Object> RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
     static {
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", "entryNumber");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", "whenReceived");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", "sender");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", "senderLetterNumber");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", "subject");
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("6", "recipient");
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", CorrespondenceEntry.SORT_BY_REFERENCE_COMPARATOR);
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new BeanComparator("whenReceived"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new BeanComparator("sender"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("senderLetterNumber"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", new BeanComparator("subject"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("6", new BeanComparator("recipient"));
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }
@@ -410,15 +410,15 @@ public class MailTrackingAction extends ContextBaseAction {
 	Integer iDisplayStart = Integer.valueOf(request.getParameter("iDisplayStart"));
 	Integer iDisplayLength = Integer.valueOf(request.getParameter("iDisplayLength"));
 
-	String[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols, readCorrespondenceTypeView(request));
+	Comparator[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols, readCorrespondenceTypeView(request));
 	Integer[] orderToUse = getOrdering(request, iSortingCols, readCorrespondenceTypeView(request));
 
 	if (propertiesToCompare.length == 0) {
 	    if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
-		propertiesToCompare = new String[] { "whenSent" };
+		propertiesToCompare = new Comparator[] { new BeanComparator("whenSent") };
 		orderToUse = new Integer[] { -1 };
 	    } else {
-		propertiesToCompare = new String[] { "whenReceived" };
+		propertiesToCompare = new Comparator[] { new BeanComparator("whenReceived") };
 		orderToUse = new Integer[] { -1 };
 	    }
 	}
@@ -492,7 +492,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	stringBuilder.append("\"aaData\": ").append("[ \n");
 
 	for (CorrespondenceEntry entry : limitedEntries) {
-	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
+	    stringBuilder.append("[ \"").append(entry.getReference()).append("\", ");
 	    stringBuilder.append("\"").append(escapeQuotes(entry.getWhenSent().toString("dd/MM/yyyy"))).append("\", ");
 	    stringBuilder.append("\"").append(escapeQuotes(entry.getRecipient())).append("\", ");
 	    stringBuilder.append("\"").append(escapeQuotes(entry.getSubject())).append("\", ");
@@ -550,7 +550,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	stringBuilder.append("\"aaData\": ").append("[ \n");
 
 	for (CorrespondenceEntry entry : limitedEntries) {
-	    stringBuilder.append("[ \"").append(entry.getEntryNumber()).append("\", ");
+	    stringBuilder.append("[ \"").append(entry.getReference()).append("\", ");
 	    stringBuilder.append("\"").append(entry.getWhenReceived().toString("dd/MM/yyyy")).append("\", ");
 	    stringBuilder.append("\"").append(escapeQuotes(entry.getSender())).append("\", ");
 	    stringBuilder.append("\"").append(escapeQuotes(entry.getSenderLetterNumber())).append("\", ");
@@ -624,7 +624,7 @@ public class MailTrackingAction extends ContextBaseAction {
     }
 
     private java.util.List<CorrespondenceEntry> limitAndOrderSearchedEntries(java.util.List searchedEntries,
-	    final String[] propertiesToCompare, final Integer[] orderToUse, Integer iDisplayStart, Integer iDisplayLength) {
+	    final Comparator[] propertiesToCompare, final Integer[] orderToUse, Integer iDisplayStart, Integer iDisplayLength) {
 
 	Collections.sort(searchedEntries, new Comparator<CorrespondenceEntry>() {
 
@@ -632,11 +632,10 @@ public class MailTrackingAction extends ContextBaseAction {
 	    public int compare(CorrespondenceEntry oLeft, CorrespondenceEntry oRight) {
 		for (int i = 0; i < propertiesToCompare.length; i++) {
 		    try {
-			Comparable propLeft = (Comparable) PropertyUtils.getProperty(oLeft, propertiesToCompare[i]);
-			Comparable propRight = (Comparable) PropertyUtils.getProperty(oRight, propertiesToCompare[i]);
+			Comparator comparator = propertiesToCompare[i];
 
-			if (propLeft.compareTo(propRight) != 0) {
-			    return orderToUse[i] * propLeft.compareTo(propRight);
+			if (comparator.compare(oLeft, oRight) != 0) {
+			    return orderToUse[i] * comparator.compare(oLeft, oRight);
 			}
 		    } catch (Exception e) {
 			throw new RuntimeException(e);
@@ -664,18 +663,18 @@ public class MailTrackingAction extends ContextBaseAction {
 	return order.toArray(new Integer[] {});
     }
 
-    private String[] getPropertiesToCompare(HttpServletRequest request, Integer iSortingCols, CorrespondenceType type) {
-	java.util.List<String> properties = new java.util.ArrayList<String>();
+    private Comparator[] getPropertiesToCompare(HttpServletRequest request, Integer iSortingCols, CorrespondenceType type) {
+	java.util.List<Comparator> properties = new java.util.ArrayList<Comparator>();
 
 	java.util.Map<String, Object> mapToUse = CorrespondenceType.SENT.equals(type) ? SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP
 		: RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP;
 
 	for (int i = 0; i < iSortingCols; i++) {
 	    String iSortingColIdx = request.getParameter("iSortCol_" + i);
-	    properties.add((String) mapToUse.get(iSortingColIdx));
+	    properties.add((Comparator) mapToUse.get(iSortingColIdx));
 	}
 
-	return properties.toArray(new String[] {});
+	return properties.toArray(new Comparator[] {});
     }
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

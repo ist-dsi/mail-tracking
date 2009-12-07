@@ -1,5 +1,5 @@
 <schema name="module.mailtracking.correspondence.sent.entries.view" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
-	<slot name="entryNumber" key="label.registry.number" />
+	<slot name="reference" key="label.registry.number" />
 	<slot name="whenSent" key="label.whenSent" />
 	<slot name="recipient" key="label.recipient" />
 	<slot name="subject" key="label.subject" />
@@ -7,7 +7,7 @@
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entries.view.detailed" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
-	<slot name="entryNumber" key="label.registry.number.detailed" />
+	<slot name="reference" key="label.registry.number.detailed" />
 	<slot name="whenSent" key="label.whenSent" />
 	<slot name="recipient" key="label.recipient" />
 	<slot name="subject" key="label.subject" />
@@ -16,7 +16,7 @@
 </schema>
 
 <schema name="module.mailtracking.correspondence.received.entries.view" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="entryNumber" key="label.registry.number" />
+	<slot name="reference" key="label.registry.number" />
 	<slot name="whenReceived" key="label.whenReceived" />
 	<slot name="sender" key="label.sender" />
 	<slot name="senderLetterNumber" key="label.sender.letter.number" />
@@ -25,7 +25,7 @@
 </schema>
 
 <schema name="module.mailtracking.correspondence.received.entries.view.detailed" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="entryNumber" key="label.registry.number.detailed" />
+	<slot name="reference" key="label.registry.number.detailed" />
 	<slot name="whenReceived" key="label.whenReceived" />
 	<slot name="sender" key="label.sender" />
 	<slot name="whenSent" key="label.correspondence.date.detailed" />

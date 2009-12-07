@@ -22,6 +22,8 @@ class CorrespondenceEntry {
 	DateTime deletionDate;
 	String deletionReason;
 	String observations;
+	String originalReference;
+	String reference;
 }
 
 class MailTracking {
@@ -37,5 +39,7 @@ class Year {
 	String name;
 	DateTime startDate;
 	DateTime endDate;
+	Integer nextSentEntryNumber;
+	Integer nextReceivedEntryNumber;
 }
 

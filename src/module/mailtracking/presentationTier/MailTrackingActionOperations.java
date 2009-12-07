@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import module.mailtracking.domain.CorrespondenceType;
+import module.mailtracking.domain.Helper;
 import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
 import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
@@ -116,7 +117,7 @@ public class MailTrackingActionOperations {
 	    throw new PermissionDeniedException();
 	}
 
-	mailTrackingBean.getMailTracking().reIndexEntriesByYear();
+	(new Helper()).reNumberEntries(mailTrackingBean.getMailTracking());
     }
 
     public static class CreateYearProvider implements DataProvider {
