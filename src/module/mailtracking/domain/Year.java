@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 public class Year extends Year_Base {
 
@@ -70,7 +69,7 @@ public class Year extends Year_Base {
     static Year getYearFor(MailTracking mailTracking, Integer forYear) {
 	DateTime time = new DateTime(forYear, 6, 01, 0, 0, 0, 0);
 
-	return null;
+	return getYearFor(mailTracking, time);
     }
 
     @Service
@@ -132,7 +131,6 @@ public class Year extends Year_Base {
 	return entries;
     }
 
-    // TODO REFACTOR
     public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key) {
 	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
@@ -140,19 +138,11 @@ public class Year extends Year_Base {
 	    return entries;
 	}
 
-	final String normalizedKey = StringNormalizer.normalize(key);
-
 	CollectionUtils.select(this.getAbleToViewActiveEntries(type), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
-		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		String normalizedEntrySender = StringNormalizer.normalize(entry.getSender());
-		String normalizedEntryRecipient = StringNormalizer.normalize(entry.getRecipient());
-		String normalizedSubject = StringNormalizer.normalize(entry.getSubject());
-
-		return (normalizedEntrySender.indexOf(normalizedKey) > -1 || normalizedEntryRecipient.indexOf(normalizedKey) > -1 || normalizedSubject
-			.indexOf(normalizedKey) > -1);
+		return Helper.matchGivenSearchToken((CorrespondenceEntry) arg0, key);
 	    }
 
 	}, entries);
@@ -160,7 +150,7 @@ public class Year extends Year_Base {
 	return entries;
     }
 
-    private boolean isBetween(final DateTime toCompare) {
+    boolean isBetween(final DateTime toCompare) {
 	return isDateTimeBetween(this.getStartDate(), this.getEndDate(), toCompare);
     }
 
@@ -198,7 +188,7 @@ public class Year extends Year_Base {
 
     Integer nextSentEntryNumber() {
 	if (super.getNextSentEntryNumber() == null) {
-	    super.setNextSentEntryNumber(1);
+	    super.setNextSentEntryNumber(2);
 	    return 1;
 	}
 
@@ -209,7 +199,7 @@ public class Year extends Year_Base {
 
     Integer nextRecievedEntryNumber() {
 	if (super.getNextReceivedEntryNumber() == null) {
-	    super.setNextReceivedEntryNumber(1);
+	    super.setNextReceivedEntryNumber(2);
 	    return 1;
 	}
 

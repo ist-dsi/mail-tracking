@@ -10,7 +10,7 @@
 
 <h3><bean:message key="title.mail.tracking.importation.results" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
-<bean:define id="partyId" name="unit" property="externalId" />
+<bean:define id="partyId" name="party" property="externalId" />
 
 <html:link href="<%= request.getContextPath() + "/manageMailTracking.do?method=prepare&amp;partyOid=" + partyId %>" >
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
@@ -26,7 +26,6 @@
 	<bean:message key="message.some.error.occurred.on.importation.operation" bundle="MAIL_TRACKING_RESOURCES" />
 </logic:equal>
 </p>
-
 
 <fr:view name="importationFileResults" schema="module.mail.tracking.correspondence.importation.results.view" >
 	<fr:layout name="tabular">

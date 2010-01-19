@@ -19,6 +19,15 @@
 	</html:link>
 </p>
 
+<div>
+	<html:messages id="message" message="true" bundle="MAIL_TRACKING_RESOURCES">
+		<p>
+			<span class="error0"> <bean:write name="message" /></span>
+		</p>
+	</html:messages>
+</div>
+
+
 <fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	

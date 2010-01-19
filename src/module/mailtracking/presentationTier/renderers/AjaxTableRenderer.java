@@ -115,6 +115,8 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    scriptValue += getAjaxTableLanguageConfiguration() + ",\n";
 	    scriptValue += "'bProcessing': true,\n";
 	    scriptValue += "'bServerSide': true,\n";
+	    scriptValue += "'aaSorting': [[1,'desc']],\n";
+	    scriptValue += "'iDisplayLength': 100,\n";
 	    scriptValue += "'sAjaxSource': \"" + getAjaxSourceUrlWithChecksum() + "\",\n";
 	    scriptValue += "'fnServerData': function(sSource, aoData, fnCallback){\n";
 	    for (java.util.Map.Entry<String, String> entry : getExtraParameter().entrySet())

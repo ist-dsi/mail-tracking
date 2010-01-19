@@ -44,7 +44,7 @@ public class MailTrackingImportationHelper {
 		bean.setObservations(fields[SENT_OBSERVATIONS_IDX]);
 
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.SENT, null);
-		entry.setEntryNumber(Long.parseLong(fields[SENT_ID_IDX]));
+		entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[SENT_ID_IDX]));
 
 		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
 			MESSAGE_LINE_IMPORTATION_OK));
@@ -107,7 +107,7 @@ public class MailTrackingImportationHelper {
 		bean.setDispatchedToWhom(fields[DISPATCHED_TO_WHOM_IDX]);
 
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.RECEIVED, null);
-		entry.setEntryNumber(Long.parseLong(fields[RECEIVED_ID_IDX]));
+		entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[RECEIVED_ID_IDX]));
 
 		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
 			MESSAGE_LINE_IMPORTATION_OK));

@@ -26,7 +26,7 @@
 
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
-	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>" >
+	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.create" : "module.mailtracking.correspondence.sent.entry.create" %>" >
 		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
 		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
 		<fr:layout name="tabular">

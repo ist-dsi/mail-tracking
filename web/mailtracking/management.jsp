@@ -113,7 +113,7 @@
 		<fr:property name="style" value="width: 100%;"/>
 		
 		<fr:property name="headerClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,," : ",,,,,," %>" />
-		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "width30px,width50px,,,,nowrap" : "width30px,width50px,,,,,nowrap" %>" />
+		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "width30px,width50px,,,,nowrap" : "width30px,width50px,,width30px,,,nowrap" %>" />
 		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 

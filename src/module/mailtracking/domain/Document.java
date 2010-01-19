@@ -57,4 +57,12 @@ public class Document extends Document_Base {
     public static Document saveDocument(String displayName, String filename, byte[] content, String description, DocumentType type) {
 	return new Document(displayName, filename, content, description, type);
     }
+
+    public void deleteDomainObject() {
+	removeCorrespondenceEntry();
+	removeMyOrg();
+	removeStorage();
+
+	super.deleteDomainObject();
+    }
 }

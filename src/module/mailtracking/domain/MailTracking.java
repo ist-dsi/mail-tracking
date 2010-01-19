@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
+import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 public class MailTracking extends MailTracking_Base {
@@ -201,19 +202,11 @@ public class MailTracking extends MailTracking_Base {
 	    return entries;
 	}
 
-	final String normalizedKey = StringNormalizer.normalize(key);
-
 	CollectionUtils.select(this.getAbleToViewActiveEntries(type), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
-		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		String normalizedEntrySender = StringNormalizer.normalize(entry.getSender());
-		String normalizedEntryRecipient = StringNormalizer.normalize(entry.getRecipient());
-		String normalizedSubject = StringNormalizer.normalize(entry.getSubject());
-
-		return (normalizedEntrySender.indexOf(normalizedKey) > -1 || normalizedEntryRecipient.indexOf(normalizedKey) > -1 || normalizedSubject
-			.indexOf(normalizedKey) > -1);
+		return Helper.matchGivenSearchToken((CorrespondenceEntry) arg0, key);
 	    }
 
 	}, entries);
@@ -541,4 +534,24 @@ public class MailTracking extends MailTracking_Base {
 	}
     }
 
+    public Year getCurrentYear() {
+	for (Year year : getYears()) {
+	    if (year.isBetween(new DateTime())) {
+		return year;
+	    }
+	}
+
+	return null;
+    }
+
+    public static MailTracking readMailTrackingByName(String name) {
+	for (MailTracking mailTracking : MyOrg.getInstance().getMailTrackings()) {
+	    if (name.equals(mailTracking.getName().getContent(Language.pt))
+		    || name.equals(mailTracking.getName().getContent(Language.en))) {
+		return mailTracking;
+	    }
+	}
+
+	return null;
+    }
 }

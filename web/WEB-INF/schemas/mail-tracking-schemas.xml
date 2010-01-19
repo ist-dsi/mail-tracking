@@ -37,6 +37,9 @@
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="reference" key="label.registry.number.detailed" >
+		<property name="readOnly" value="true" />
+	</slot>
 	<slot name="whenSent" key="label.whenSent">
 		<property name="dateFormat" value="dd/MM/yyyy" />
 		<property name="size" value="10" />
@@ -83,7 +86,14 @@
 	</slot>
 </schema>
 
+<schema name="module.mailtracking.correspondence.sent.entry.create" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" extends="module.mailtracking.correspondence.sent.entry.edit" >
+	<remove name="reference"/>
+</schema>
+
 <schema name="module.mailtracking.correspondence.received.entry.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="reference" key="label.registry.number.detailed" >
+		<property name="readOnly" value="true" />
+	</slot>	
 	<slot name="whenReceived" key="label.whenReceived">
 		<property name="dateFormat" value="dd/MM/yyyy" />
 		<property name="size" value="10" />
@@ -147,6 +157,10 @@
 		<property name="columns" value="45"/>
 		<property name="rows" value="4"/>
 	</slot>	
+</schema>
+
+<schema name="module.mailtracking.correspondence.received.entry.create" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES" extends="module.mailtracking.correspondence.received.entry.edit" >
+	<remove name="reference" />
 </schema>
 
 <schema name="module.mailtracking.correspondence.sent.entry.visibility.edit" type="module.mailtracking.domain.CorrespondenceEntry$CorrespondenceEntryBean" bundle="MAIL_TRACKING_RESOURCES">

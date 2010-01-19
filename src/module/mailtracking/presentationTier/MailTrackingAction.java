@@ -131,6 +131,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	if (bean == null) {
 	    bean = new YearBean(readMailTracking(request));
+	    bean.setChosenYear(readMailTracking(request).getCurrentYear());
 	}
 
 	return bean;
@@ -216,10 +217,12 @@ public class MailTrackingAction extends ContextBaseAction {
 	    }
 	}
 
-	mailTracking.createNewEntry(readCorrespondenceEntryBean(request), readCorrespondenceTypeView(request), document);
-	request.setAttribute("correspondenceEntryBean", new CorrespondenceEntryBean(readMailTracking(request)));
+	CorrespondenceEntry entry = mailTracking.createNewEntry(readCorrespondenceEntryBean(request),
+		readCorrespondenceTypeView(request), document);
+	addMessage(request, "message.mail.tracking.add.entry.successfully");
+	request.setAttribute("entryId", entry.getExternalId());
 
-	return prepare(mapping, form, request, response);
+	return viewEntry(mapping, form, request, response);
     }
 
     public final ActionForward addNewEntryInvalid(final ActionMapping mapping, final ActionForm form,
@@ -395,9 +398,9 @@ public class MailTrackingAction extends ContextBaseAction {
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", CorrespondenceEntry.SORT_BY_REFERENCE_COMPARATOR);
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new BeanComparator("whenReceived"));
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new BeanComparator("sender"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("senderLetterNumber"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", new BeanComparator("subject"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("6", new BeanComparator("recipient"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new BeanComparator("senderLetterNumber"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("subject"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", new BeanComparator("recipient"));
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }

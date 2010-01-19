@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import module.mailtracking.domain.CorrespondenceEntryVisibility.CustomEnum;
+import module.mailtracking.utilities.NaturalOrderComparator;
 import module.organization.domain.Person;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
@@ -37,6 +38,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	}
     };
 
+    public static final NaturalOrderComparator NATURAL_ORDER_COMPARATOR = new NaturalOrderComparator();
+
     public static final Comparator<CorrespondenceEntry> SORT_BY_REFERENCE_COMPARATOR = new Comparator<CorrespondenceEntry>() {
 
 	@Override
@@ -48,7 +51,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 		String codeLeft = left.getReference().substring(5);
 		String codeRight = right.getReference().substring(5);
 
-		return new Integer(codeLeft).compareTo(new Integer(codeRight));
+		return NATURAL_ORDER_COMPARATOR.compare(codeLeft, codeRight);
 	    }
 
 	    return yearLeft.compareTo(yearRight);
@@ -499,5 +502,23 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	} else {
 	    throw new DomainException("error.mail.tracking.correspondence.type.invalid");
 	}
+    }
+
+    public void deleteDomainObject() {
+	removeCreator();
+	removeDeletionResponsible();
+
+	for (Document document : getDocuments()) {
+	    document.deleteDomainObject();
+	}
+
+	removeLastEditor();
+	removeMailTracking();
+	removeMyOrg();
+	removeOwner();
+	removeYear();
+
+	super.deleteDomainObject();
+
     }
 }
