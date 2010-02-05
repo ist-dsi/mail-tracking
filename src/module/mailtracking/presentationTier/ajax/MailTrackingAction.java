@@ -25,7 +25,7 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
 
     public ActionForward prepareCreateFastNewEntry(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
-	readCorrespondenceEntryBean(request);
+	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 	setAssociateDocumentBean(request, null);
 
 	return forward(request, "/mailtracking/ajax/createNewEntry.jsp");

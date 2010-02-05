@@ -27,5 +27,6 @@
 	</p>
 </logic:empty>
 
-<html:link href="#" onclick="close()">Close</html:link>
-
+<p class="mtop2 mbottom05"> 
+<html:link href="#" onclick="closeFastEntryCreation();"><bean:message key="link.close" bundle="MAIL_TRACKING_RESOURCES" /></html:link>
+</p>

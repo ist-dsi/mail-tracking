@@ -46,8 +46,12 @@
 		</fr:layout>
 	</fr:edit>
 	
-	<html:submit onclick="submitForm(); return false;"><bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
-	<html:cancel onclick="close(); return false;"><bean:message key="label.cancel" bundle="MAIL_TRACKING_RESOURCES" /></html:cancel>
+	<html:submit onclick="<%=  String.format("submitForm('%s'); return false;", CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "fast-received-entry-creation-submission-link" : "fast-sent-entry-creation-submission-link") %>">
+		<bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" />
+	</html:submit>
+	<html:cancel onclick="closeFastEntryCreation(); return false;">
+		<bean:message key="label.cancel" bundle="MAIL_TRACKING_RESOURCES" />
+	</html:cancel>
 	
 </fr:form>
 

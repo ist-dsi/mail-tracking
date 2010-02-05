@@ -25,12 +25,13 @@
 		display: none;
 	}
 	
-	.fast-entry-creation span {
+	.fast-entry-creation div {
 		margin: auto;
+		vertical-align: middle;
+		text-align: center;
 	}
 	
 	.hidden-link {
-		vertical-align: middle;
 		display: none;
 	}
 </style>
@@ -41,7 +42,7 @@
 	
 	function loadFastCreateEntryPage(linkToUse) {
 		if(fastEntryCreationModal != null) {
-			fastEntryCreationModal.open()
+			fastEntryCreationModal.dialog('open');
 		} else {			
 			fastEntryCreationModal = $('.fast-entry-creation').dialog({
 				bgiframe: true,
@@ -51,7 +52,6 @@
 			});
 		}
 
-		/*
 		$.ajax({
 			type: "POST",
 			dataType: 'html',
@@ -60,7 +60,6 @@
 				$('.fast-entry-creation').html(data);
 			}
 		});
-		*/
 	}
 
 	function loadFastCopyEntryPage(entryId) {
@@ -82,14 +81,11 @@
 		});
 	}
 	
-
-	
-
-	function submitForm() {
+	function submitForm(linkToUse) {
 		$.ajax({
 			type: "POST",
 			dataType: 'html',
-			url: $('.fast-entry-creation-submission-link').attr('href'),
+			url: $('.' + linkToUse).attr('href'),
 			data: buildFormDataForPost(),
 			success: function(data) {
 				$('.fast-entry-creation').html(data);
@@ -98,7 +94,7 @@
 		});
 	}
 
-	function close() {
+	function closeFastEntryCreation() {
 		fastEntryCreationModal.dialog('close');
 	}
  
@@ -256,7 +252,8 @@
 
 <html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
 <html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
-<html:link  styleClass="hidden-link fast-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-sent-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name()  + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-received-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
 <html:link  styleClass="hidden-link fast-entry-copy-submission-link" page="<%= "/ajax-mailtracking.do?method=prepareCopyEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
 
 </logic:notEmpty>
