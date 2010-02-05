@@ -20,6 +20,95 @@
 </style>
 
 
+<style type="text/css" title="currentStyle">
+	.fast-entry-creation {
+		display: none;
+	}
+	
+	.fast-entry-creation span {
+		margin: auto;
+	}
+	
+	.hidden-link {
+		vertical-align: middle;
+		display: none;
+	}
+</style>
+
+
+<script type="text/javascript">
+	var fastEntryCreationModal = null;
+	
+	function loadFastCreateEntryPage(linkToUse) {
+		if(fastEntryCreationModal != null) {
+			fastEntryCreationModal.open()
+		} else {			
+			fastEntryCreationModal = $('.fast-entry-creation').dialog({
+				bgiframe: true,
+				height: 700,
+				width: 900,
+				modal: true
+			});
+		}
+
+		/*
+		$.ajax({
+			type: "POST",
+			dataType: 'html',
+			url: $('.' + linkToUse).attr('href'),
+			success: function(data) {
+				$('.fast-entry-creation').html(data);
+			}
+		});
+		*/
+	}
+
+	function loadFastCopyEntryPage(entryId) {
+		$('.fast-entry-creation').dialog({
+			bgiframe: true,
+			height: 700,
+			width: 900,
+			modal: true
+		});
+
+		$.ajax({
+			type: "POST",
+			dataType: 'html',
+			url: $('.fast-entry-copy-submission-link').attr('href'),
+			data: "entryId=" + entryId,
+			success: function(data) {
+				$('.fast-entry-creation').html(data);
+			}
+		});
+	}
+	
+
+	
+
+	function submitForm() {
+		$.ajax({
+			type: "POST",
+			dataType: 'html',
+			url: $('.fast-entry-creation-submission-link').attr('href'),
+			data: buildFormDataForPost(),
+			success: function(data) {
+				$('.fast-entry-creation').html(data);
+				oTable.fnDraw();
+			}
+		});
+	}
+
+	function close() {
+		fastEntryCreationModal.dialog('close');
+	}
+ 
+	function buildFormDataForPost() {
+		return $('#entryForm').serialize();
+	}
+
+</script>
+
+
 <bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 
 
@@ -44,12 +133,12 @@
 <logic:equal name="mailTracking" property="currentUserAbleToCreateEntries" value="true">
 	<ul class="mtop05 mbottom2">
 		<li>
-			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=SENT&amp;mailTrackingId=" + mailTrackingId %>">
+			<html:link href="#" onclick="loadFastCreateEntryPage('fast-sent-entry-creation-link')">
 				<bean:message key="label.mail.tracking.create.new.entry.sent" bundle="MAIL_TRACKING_RESOURCES"/>
 			</html:link>
 		</li>
 		<li>
-			<html:link page="<%= "/mailtracking.do?method=prepareCreateNewEntry&amp;correspondenceType=RECEIVED&amp;mailTrackingId=" + mailTrackingId %>">
+			<html:link href="#" onclick="loadFastCreateEntryPage('fast-received-entry-creation-link')">
 				<bean:message key="label.mail.tracking.create.new.entry.received" bundle="MAIL_TRACKING_RESOURCES"/>
 			</html:link>
 		</li>
@@ -144,6 +233,13 @@
 		<fr:property name="order(document)" value="5" />
 		<fr:property name="visibleIf(document)" value="userAbleToViewDocument" />
 		<fr:property name="icon(document)" value="document" />
+
+		<fr:property name="linkFormat(copyEntry)" value=""/>
+		<fr:property name="bundle(copyEntry)" value="MAIL_TRACKING_RESOURCES" />
+		<fr:property name="key(copyEntry)" value="link.copy.entry" />
+		<fr:property name="order(copyEntry)" value="6" />
+		<fr:property name="visibleIf(copyEntry)" value="userAbleToCopyEntry" />
+		<fr:property name="icon(copyEntry)" value="copyEntry" />
 				
 		<fr:property name="extraParameter(method)" value="ajaxFilterCorrespondence" />
 		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />
@@ -152,5 +248,15 @@
 	</fr:layout>
 </fr:view>
 
-</logic:notEmpty>
+<div class="fast-entry-creation">
+	<div>
+		<img src="<%= request.getContextPath() + "/images/ajax-loader.gif" %>" />
+	</div>
+</div>
 
+<html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-entry-copy-submission-link" page="<%= "/ajax-mailtracking.do?method=prepareCopyEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+
+</logic:notEmpty>

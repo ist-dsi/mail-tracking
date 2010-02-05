@@ -52,7 +52,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return super.execute(mapping, form, request, response);
     }
 
-    private MailTracking readMailTracking(HttpServletRequest request) {
+    protected MailTracking readMailTracking(HttpServletRequest request) {
 	MailTracking mailTracking = (MailTracking) request.getAttribute("mailTracking");
 
 	if (mailTracking == null) {
@@ -64,7 +64,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return mailTracking;
     }
 
-    private CorrespondenceType readCorrespondenceTypeView(HttpServletRequest request) {
+    protected CorrespondenceType readCorrespondenceTypeView(HttpServletRequest request) {
 	String typeValue = request.getParameter("correspondenceType");
 	CorrespondenceType type = StringUtils.isEmpty(typeValue) ? null : CorrespondenceType.valueOf(typeValue);
 
@@ -157,7 +157,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return searchedEntries;
     }
 
-    private CorrespondenceEntryBean readCorrespondenceEntryBean(HttpServletRequest request) {
+    protected CorrespondenceEntryBean readCorrespondenceEntryBean(HttpServletRequest request) {
 	CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getAttribute("correspondenceEntryBean");
 
 	if (entryBean == null)
@@ -187,7 +187,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return searchBean;
     }
 
-    public final ActionForward addNewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+    public ActionForward addNewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
 	MailTracking mailTracking = readMailTracking(request);
 
@@ -225,8 +225,8 @@ public class MailTrackingAction extends ContextBaseAction {
 	return viewEntry(mapping, form, request, response);
     }
 
-    public final ActionForward addNewEntryInvalid(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+    public ActionForward addNewEntryInvalid(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws Exception {
 	readCorrespondenceEntryBean(request);
 
 	RenderUtils.invalidateViewState("associate.document.bean");
@@ -236,7 +236,7 @@ public class MailTrackingAction extends ContextBaseAction {
     private static final Integer MAX_SENDER_SIZE = 50;
     private static final Integer MAX_RECIPIENT_SIZE = 50;
 
-    private boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request) {
+    protected boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request) {
 	if (StringUtils.isEmpty(correspondenceEntryBean.getSender())) {
 	    addMessage(request, "error.mail.tracking.sender.is.required");
 	    return false;
@@ -332,7 +332,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return prepareEditEntry(mapping, form, request, response);
     }
 
-    public final ActionForward viewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+    public ActionForward viewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 	CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
 
@@ -377,7 +377,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	return bean;
     }
 
-    private CorrespondenceEntry getCorrespondenceEntryWithExternalId(final HttpServletRequest request) {
+    protected CorrespondenceEntry getCorrespondenceEntryWithExternalId(final HttpServletRequest request) {
 	String entryId = this.getAttribute(request, "entryId");
 	return CorrespondenceEntry.fromExternalId(entryId);
     }
@@ -517,7 +517,12 @@ public class MailTrackingAction extends ContextBaseAction {
 		    .append(
 			    entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
 				    request, entry)
-				    : "permission_not_granted").append("\" ], ");
+				    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
+		    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+			    entry) : "permission_not_granted").append("\" ], ");
+
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -576,7 +581,12 @@ public class MailTrackingAction extends ContextBaseAction {
 		    .append(
 			    entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
 				    request, entry)
-				    : "permission_not_granted").append("\" ], ");
+				    : "permission_not_granted").append(",");
+
+	    stringBuilder.append(
+		    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+			    entry) : "permission_not_granted").append("\" ], ");
+
 	}
 
 	stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -585,6 +595,10 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	return stringBuilder.toString();
 
+    }
+
+    private String generateLinkForCorrespondenceEntryCopy(HttpServletRequest request, CorrespondenceEntry entry) {
+	return String.format("javascript: loadFastCopyEntryPage(%s);", entry.getExternalId());
     }
 
     private String generateLinkForCorrespondenceEntryMainDocument(HttpServletRequest request, CorrespondenceEntry entry) {

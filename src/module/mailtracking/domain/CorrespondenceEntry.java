@@ -479,6 +479,14 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	return this.isUserAbleToView() && this.hasMainDocument();
     }
 
+    public boolean isUserAbleToCopyEntry() {
+	return isUserAbleToCopyEntry(UserView.getCurrentUser());
+    }
+
+    public boolean isUserAbleToCopyEntry(final User user) {
+	return this.getVisibility().isUserAbleToEdit(this, user) && this.getMailTracking().isUserAbleToCreateEntries(user);
+    }
+
     public Document getMainDocument() {
 	return (Document) CollectionUtils.find(this.getDocuments(), new Predicate() {
 

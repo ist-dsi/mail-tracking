@@ -110,8 +110,9 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    HtmlScript script = new HtmlScript();
 
 	    String scriptValue = "\n";
+	    scriptValue += "var oTable;\n";
 	    scriptValue += "$(document).ready(function() {\n";
-	    scriptValue += "	$(\".ajax-table\").dataTable({\n";
+	    scriptValue += "	oTable = $(\".ajax-table\").dataTable({\n";
 	    scriptValue += getAjaxTableLanguageConfiguration() + ",\n";
 	    scriptValue += "'bProcessing': true,\n";
 	    scriptValue += "'bServerSide': true,\n";
