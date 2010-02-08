@@ -7,7 +7,7 @@ import myorg.domain.scheduler.CustomTask;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.Transaction;
 
-public class SetNextEntryNumbers extends CustomTask implements TransactionalCommand {
+public class SetNextEntryNumbersFor2010 extends CustomTask implements TransactionalCommand {
 
     @Override
     public void run() {

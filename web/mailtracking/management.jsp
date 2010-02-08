@@ -34,13 +34,18 @@
 	.hidden-link {
 		display: none;
 	}
+	
+	.spinner {
+		display: none;
+	}
 </style>
-
 
 <script type="text/javascript">
 	var fastEntryCreationModal = null;
 	
 	function loadFastCreateEntryPage(linkToUse) {
+		$('.fast-entry-creation').html($('.spinner').html());
+		
 		if(fastEntryCreationModal != null) {
 			fastEntryCreationModal.dialog('open');
 		} else {			
@@ -63,12 +68,18 @@
 	}
 
 	function loadFastCopyEntryPage(entryId) {
-		$('.fast-entry-creation').dialog({
-			bgiframe: true,
-			height: 700,
-			width: 900,
-			modal: true
-		});
+		$('.fast-entry-creation').html($('.spinner').html());
+		
+		if(fastEntryCreationModal != null) {
+			fastEntryCreationModal.dialog('open');
+		} else {
+			fastEntryCreationModal = $('.fast-entry-creation').dialog({
+				bgiframe: true,
+				height: 700,
+				width: 900,
+				modal: true
+			});
+		}
 
 		$.ajax({
 			type: "POST",
@@ -245,10 +256,12 @@
 </fr:view>
 
 <div class="fast-entry-creation">
-	<div>
-		<img src="<%= request.getContextPath() + "/images/ajax-loader.gif" %>" />
-	</div>
 </div>
+
+<div class="spinner">
+	<img src="<%= request.getContextPath() + "/images/ajax-loader.gif" %>" />
+</div>
+
 
 <html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
 <html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
