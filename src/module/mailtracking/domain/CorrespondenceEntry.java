@@ -89,7 +89,10 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setSubject(bean.getSubject());
 	    this.setSender(bean.getSender());
 	    this.setYear(mailTracking.getYearFor(bean.getWhenSentAsDateTime()));
-	    this.setReference(String.format("%s/%s", this.getYear().getName(), this.getYear().nextSentEntryNumber()));
+
+	    this.setReference(StringUtils.isEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
+		    .getYear().nextSentEntryNumber()) : bean.getReference());
+
 	} else if (CorrespondenceType.RECEIVED.equals(type)) {
 	    this.setWhenReceived(bean.getWhenReceivedAsDateTime());
 	    this.setSender(bean.getSender());
@@ -99,7 +102,10 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setRecipient(bean.getRecipient());
 	    this.setDispatchedToWhom(bean.getDispatchedToWhom());
 	    this.setYear(mailTracking.getYearFor(bean.getWhenReceivedAsDateTime()));
-	    this.setReference(String.format("%s/%s", this.getYear().getName(), this.getYear().nextRecievedEntryNumber()));
+
+	    this.setReference(StringUtils.isEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
+		    .getYear().nextRecievedEntryNumber()) : bean.getReference());
+
 	}
 
 	this.checkParameters();
@@ -228,6 +234,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	private String observations;
 
+	private String reference;
+
 	public CorrespondenceEntryBean(MailTracking mailTracking) {
 	    this.setMailTracking(mailTracking);
 	    this.setVisibility(new CustomEnum(CorrespondenceEntryVisibility.TO_PUBLIC));
@@ -239,6 +247,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	    this.setMailTracking(entry.getMailTracking());
 	    this.setEntry(entry);
 	    this.setObservations(entry.getObservations());
+	    this.setReference(entry.getReference());
 
 	    if (CorrespondenceType.SENT.equals(entry.getType())) {
 		if (entry.getWhenSent() != null)
@@ -384,6 +393,14 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	public void setObservations(String value) {
 	    this.observations = value;
 	}
+
+	public String getReference() {
+	    return this.reference;
+	}
+
+	public void setReference(final String value) {
+	    this.reference = value;
+	}
     }
 
     void edit(CorrespondenceEntryBean bean) {
@@ -392,6 +409,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 	this.setVisibility(bean.getVisibility().getCustomEnum());
 	setOwner(bean.getOwner());
 	setObservations(bean.getObservations());
+	setReference(bean.getReference());
 
 	if (CorrespondenceType.SENT.equals(this.getType())) {
 	    this.setSender(bean.getSender());
