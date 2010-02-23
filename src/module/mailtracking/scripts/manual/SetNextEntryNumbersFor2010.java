@@ -25,7 +25,7 @@ public class SetNextEntryNumbersFor2010 extends CustomTask implements Transactio
 	final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
 	Year year = mailtracking.getYearFor(2010);
-	year.setNextReceivedEntryNumber(136);
-	year.setNextSentEntryNumber(42);
+	year.setNextReceivedEntryNumber(203);
+	year.setNextSentEntryNumber(63);
     }
 }

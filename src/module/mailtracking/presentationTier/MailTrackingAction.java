@@ -16,6 +16,7 @@ import module.mailtracking.domain.DocumentType;
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.Year;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryFieldComparator;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -385,10 +386,10 @@ public class MailTrackingAction extends ContextBaseAction {
     private static final java.util.Map<String, Object> SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
     static {
 	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", CorrespondenceEntry.SORT_BY_REFERENCE_COMPARATOR);
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new BeanComparator("whenSent"));
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new BeanComparator("recipient"));
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new BeanComparator("subject"));
-	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("sender"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new CorrespondenceEntryFieldComparator("whenSent"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new CorrespondenceEntryFieldComparator("recipient"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new CorrespondenceEntryFieldComparator("subject"));
+	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new CorrespondenceEntryFieldComparator("sender"));
 	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }
@@ -396,11 +397,11 @@ public class MailTrackingAction extends ContextBaseAction {
     private static final java.util.Map<String, Object> RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP = new java.util.HashMap<String, Object>();
     static {
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("0", CorrespondenceEntry.SORT_BY_REFERENCE_COMPARATOR);
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new BeanComparator("whenReceived"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new BeanComparator("sender"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new BeanComparator("senderLetterNumber"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new BeanComparator("subject"));
-	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", new BeanComparator("recipient"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("1", new CorrespondenceEntryFieldComparator("whenReceived"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("2", new CorrespondenceEntryFieldComparator("sender"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("3", new CorrespondenceEntryFieldComparator("senderLetterNumber"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("4", new CorrespondenceEntryFieldComparator("subject"));
+	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("5", new CorrespondenceEntryFieldComparator("recipient"));
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("asc", 1);
 	RECEIVED_CORRESPONDENCE_TABLE_COLUMNS_MAP.put("desc", -1);
     }

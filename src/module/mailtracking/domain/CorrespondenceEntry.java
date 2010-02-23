@@ -11,6 +11,7 @@ import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -44,19 +45,29 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	@Override
 	public int compare(CorrespondenceEntry left, CorrespondenceEntry right) {
-	    String yearLeft = left.getReference().substring(0, 4);
-	    String yearRight = right.getReference().substring(0, 4);
-
-	    if (yearLeft.compareTo(yearRight) == 0) {
-		String codeLeft = left.getReference().substring(5);
-		String codeRight = right.getReference().substring(5);
-
-		return NATURAL_ORDER_COMPARATOR.compare(codeLeft, codeRight);
-	    }
-
-	    return yearLeft.compareTo(yearRight);
+	    return NATURAL_ORDER_COMPARATOR.compare(left.getReference(), right.getReference());
 	}
     };
+
+    public static class CorrespondenceEntryFieldComparator implements Comparator<CorrespondenceEntry> {
+	private Comparator beanComparator;
+
+	public CorrespondenceEntryFieldComparator(final String property) {
+	    beanComparator = new BeanComparator(property);
+	}
+
+	@Override
+	public int compare(CorrespondenceEntry left, CorrespondenceEntry right) {
+	    int value = beanComparator.compare(left, right);
+
+	    if (value == 0) {
+		return SORT_BY_REFERENCE_COMPARATOR.compare(left, right);
+	    }
+
+	    return value;
+	}
+
+    }
 
     CorrespondenceEntry() {
 	super();

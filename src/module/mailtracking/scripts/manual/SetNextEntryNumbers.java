@@ -1,31 +1,21 @@
 package module.mailtracking.scripts.manual;
 
-import jvstm.TransactionalCommand;
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.Year;
-import myorg.domain.scheduler.CustomTask;
-import pt.ist.fenixWebFramework.services.Service;
-import pt.ist.fenixframework.pstm.Transaction;
+import myorg.domain.scheduler.WriteCustomTask;
 
-public class SetNextEntryNumbers extends CustomTask implements TransactionalCommand {
-
-    @Override
-    public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
-    }
+public class SetNextEntryNumbers extends WriteCustomTask {
 
     @Override
     public void doIt() {
 	setCountersOnYear();
     }
 
-    @Service
     public void setCountersOnYear() {
 	final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
 	Year year = mailtracking.getYearFor(2010);
-	year.setNextReceivedEntryNumber(136);
-	year.setNextSentEntryNumber(42);
+	year.setNextReceivedEntryNumber(203);
+	year.setNextSentEntryNumber(63);
     }
 }
