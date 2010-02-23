@@ -28,6 +28,12 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
 	CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request);
 	setAssociateDocumentBean(request, null);
 
+	if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
+	    bean.setWhenSent(new LocalDate());
+	} else if (CorrespondenceType.RECEIVED.equals(readCorrespondenceTypeView(request))) {
+	    bean.setWhenReceived(new LocalDate());
+	}
+
 	return forward(request, "/mailtracking/ajax/createNewEntry.jsp");
     }
 

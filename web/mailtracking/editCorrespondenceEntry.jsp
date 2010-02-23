@@ -49,7 +49,7 @@
 		</fr:layout>
 	</fr:edit>	
 	
-	<html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
+	<html:submit><bean:message key="label.save" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
 	<html:cancel><bean:message key="label.cancel" bundle="MAIL_TRACKING_RESOURCES" /></html:cancel>
 </fr:form>
 
@@ -108,7 +108,7 @@
 	<fr:view name="associatedDocuments" schema="module.mailtracking.associated.document.view" >
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="" />
-			<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=downloadFile&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>"/>
+			<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=downloadFile&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>"/>
 			<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 			<fr:property name="key(view)" value="link.view"/>
 			<fr:property name="order(view)" value="2" />

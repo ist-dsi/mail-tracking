@@ -52,8 +52,12 @@
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
-	<slot name="recipient" key="label.recipient">
-		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+	<slot name="recipient" key="label.recipient" layout="simpleAutoComplete">
+		<property name="minChars" value="3"/>
+		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.RecipientOnSentEntryAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
+			<property name="allowsCustom" value="true" />
+		</validator>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
@@ -113,8 +117,12 @@
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
-	<slot name="sender" key="label.sender">
-		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+	<slot name="sender" key="label.sender" layout="simpleAutoComplete">
+		<property name="minChars" value="3"/>
+		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderOnReceivedEntryAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
+		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
+			<property name="allowsCustom" value="true" />
+		</validator>	
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
@@ -221,9 +229,9 @@
 	<slot name="description" key="label.description" >
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
-			<property name="length" value="50" />
+			<property name="length" value="200" />
 		</validator>	
-		<property name="size" value="60" />
+		<property name="size" value="80" />
 	</slot>
 </schema>
 

@@ -51,8 +51,8 @@
 		} else {			
 			fastEntryCreationModal = $('.fast-entry-creation').dialog({
 				bgiframe: true,
-				height: 700,
-				width: 900,
+				height: 600,
+				width: 700,
 				modal: true
 			});
 		}
@@ -75,8 +75,8 @@
 		} else {
 			fastEntryCreationModal = $('.fast-entry-creation').dialog({
 				bgiframe: true,
-				height: 700,
-				width: 900,
+				height: 600,
+				width: 700,
 				modal: true
 			});
 		}
@@ -113,6 +113,14 @@
 		return $('#entryForm').serialize();
 	}
 
+
+	$(document).ready(function(){
+		$('.fast-entry-creation').css('font-size', "90%");
+		if($(window).width() == 800 && $(window).height() == 600) {
+			$('.fast-entry-creation').css('font-size', "60%");
+		}
+	});
+	
 </script>
 
 
@@ -209,7 +217,7 @@
 		<fr:property name="style" value="width: 100%;"/>
 		
 		<fr:property name="headerClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? ",,,,," : ",,,,,," %>" />
-		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "width30px,width50px,,,,nowrap" : "width30px,width50px,,width30px,,,nowrap" %>" />
+		<fr:property name="columnClasses" value="<%= CorrespondenceType.SENT.name().equals(correspondenceType) ? "width30px,width50px,,,,nowrap" : "width30px,width50px,,width20px,,,nowrap" %>" />
 		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 
