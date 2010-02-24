@@ -115,11 +115,11 @@
 
 
 	$(document).ready(function(){
-		$('.fast-entry-creation').css('font-size', "90%");
-		if($(window).width() == 800 && $(window).height() == 600) {
-			$('.fast-entry-creation').css('font-size', "60%");
-		}
+		$('.fast-entry-creation').css('font-size', "80%");
 	});
+
+
+
 	
 </script>
 
