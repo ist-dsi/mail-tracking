@@ -1,7 +1,7 @@
 enum module.mailtracking.domain.DocumentType as DocumentType;
 enum module.mailtracking.domain.DocumentState as DocumentState;
 
-class module.mailtracking.domain.Document extends module.fileSupport.domain.GenericFile {
+class module.mailtracking.domain.Document extends pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile {
 	String description;
 	DocumentType type;
 	DocumentState state;
