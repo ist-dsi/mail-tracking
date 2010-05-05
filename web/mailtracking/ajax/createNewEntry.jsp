@@ -32,19 +32,6 @@
 		</fr:layout>
 	</fr:edit>
 
-	<h3><bean:message key="label.correspondence.visibility" bundle="MAIL_TRACKING_RESOURCES" /></h3>
-	
-	<p class="mtop15 mbottom05"><bean:message key="message.correspondence.sent.entry.visibility" bundle="MAIL_TRACKING_RESOURCES" /></p>
-	
-	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" >
-		<fr:destination name="invalid" path="<%= "/ajax-mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:destination name="cancel" path="<%= "/ajax-mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:layout name="tabular">
-			<fr:property name="classes" value="mtop05"/>
-			<fr:property name="columnClasses" value=",,tderror"/>
-			<fr:property name="requiredMarkShown" value="true" />
-		</fr:layout>
-	</fr:edit>
 	
 	<html:submit onclick="<%=  String.format("submitForm('%s'); return false;", CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "fast-received-entry-creation-submission-link" : "fast-sent-entry-creation-submission-link") %>">
 		<bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" />
