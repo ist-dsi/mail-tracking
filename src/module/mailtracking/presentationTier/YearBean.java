@@ -18,6 +18,10 @@ public class YearBean implements java.io.Serializable {
 
     private Year chosenYear;
 
+    private Integer nextSentEntryNumber;
+
+    private Integer nextReceivedEntryNumber;
+
     public YearBean() {
 
     }
@@ -29,6 +33,8 @@ public class YearBean implements java.io.Serializable {
     public YearBean(MailTracking mailTracking, Year chosenYear) {
 	setMailTracking(mailTracking);
 	setChosenYear(chosenYear);
+	setNextSentEntryNumber(chosenYear.getNextSentEntryNumber());
+	setNextReceivedEntryNumber(chosenYear.getNextReceivedEntryNumber());
     }
 
     public Integer getYear() {
@@ -54,4 +60,21 @@ public class YearBean implements java.io.Serializable {
     public void setChosenYear(final Year chosenYear) {
 	this.chosenYear = chosenYear;
     }
+
+    public Integer getNextSentEntryNumber() {
+	return nextSentEntryNumber;
+    }
+
+    public void setNextSentEntryNumber(Integer nextSentEntryNumber) {
+	this.nextSentEntryNumber = nextSentEntryNumber;
+    }
+
+    public Integer getNextReceivedEntryNumber() {
+	return nextReceivedEntryNumber;
+    }
+
+    public void setNextReceivedEntryNumber(Integer nextReceivedEntryNumber) {
+	this.nextReceivedEntryNumber = nextReceivedEntryNumber;
+    }
+
 }

@@ -176,16 +176,6 @@ public class Year extends Year_Base {
 	return new YearBean();
     }
 
-    @Override
-    public Integer getNextReceivedEntryNumber() {
-	throw new DomainException("error.mail.tracking.method.cannot.be.called.outside");
-    }
-
-    @Override
-    public Integer getNextSentEntryNumber() {
-	throw new DomainException("error.mail.tracking.method.cannot.be.called.outside");
-    }
-
     Integer nextSentEntryNumber() {
 	if (super.getNextSentEntryNumber() == null) {
 	    super.setNextSentEntryNumber(2);
@@ -211,5 +201,19 @@ public class Year extends Year_Base {
     void resetCounters() {
 	super.setNextSentEntryNumber(1);
 	super.setNextReceivedEntryNumber(1);
+    }
+
+    @Service
+    public void setCounters(Integer nextSentEntryNumber, Integer nextReceivedEntryNumber) {
+	if (nextSentEntryNumber < 0) {
+	    throw new DomainException("error.mail.tracking.next.sent.entry.number.invalid");
+	}
+
+	if (nextReceivedEntryNumber < 0) {
+	    throw new DomainException("error.mail.tracking.next.received.entry.number.invalid");
+	}
+
+	setNextSentEntryNumber(nextSentEntryNumber);
+	setNextReceivedEntryNumber(nextReceivedEntryNumber);
     }
 }

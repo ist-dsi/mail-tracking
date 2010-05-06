@@ -157,6 +157,11 @@
 				<bean:message key="label.mail.tracking.create.new.entry.received" bundle="MAIL_TRACKING_RESOURCES"/>
 			</html:link>
 		</li>
+		<li>
+			<html:link action="<%= "/mailtracking.do?method=prepareSetReferenceCounters&amp;mailTrackingId=" + mailTrackingId %>">
+				<bean:message key="label.mail.tracking.set.counters" bundle="MAIL_TRACKING_RESOURCES" /> 
+			</html:link>
+		</li>
 	</ul>
 </logic:equal>
 
@@ -221,21 +226,21 @@
 		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 
-		<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=viewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>" />
+		<fr:property name="linkFormat(view)" value="<%= String.format("/mailtracking.do?method=viewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType,  mailTrackingId) %>" />
 		<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
 		<fr:property name="visibleIf(view)" value="userAbleToView" />
 		<fr:property name="icon(view)" value="view" />
 
-		<fr:property name="linkFormat(edit)" value="<%= "/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
+		<fr:property name="linkFormat(edit)" value="<%= String.format("/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType, mailTrackingId) %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
 		<fr:property name="order(edit)" value="3" />
 		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
 		<fr:property name="icon(edit)" value="edit" />
 
-		<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=prepareDeleteEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId=${externalId}" %>"/>
+		<fr:property name="linkFormat(delete)" value="<%= String.format("/mailtracking.do?method=prepareDeleteEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType, mailTrackingId) %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
 		<fr:property name="order(delete)" value="4" />
@@ -271,10 +276,10 @@
 </div>
 
 
-<html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
-<html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= "/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
-<html:link  styleClass="hidden-link fast-sent-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + CorrespondenceType.SENT.name()  + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
-<html:link  styleClass="hidden-link fast-received-entry-creation-submission-link" page="<%= "/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=" + CorrespondenceType.RECEIVED.name() + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
-<html:link  styleClass="hidden-link fast-entry-copy-submission-link" page="<%= "/ajax-mailtracking.do?method=prepareCopyEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId=" + mailTrackingId %>"></html:link>
+<html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.SENT.name(), mailTrackingId) %>"></html:link>
+<html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.RECEIVED.name(), mailTrackingId) %>"></html:link>
+<html:link  styleClass="hidden-link fast-sent-entry-creation-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.SENT.name(), mailTrackingId) %>"></html:link>
+<html:link  styleClass="hidden-link fast-received-entry-creation-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.RECEIVED.name(), mailTrackingId) %>"></html:link>
+<html:link  styleClass="hidden-link fast-entry-copy-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCopyEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>"></html:link>
 
 </logic:notEmpty>

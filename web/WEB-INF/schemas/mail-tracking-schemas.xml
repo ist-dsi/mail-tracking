@@ -373,3 +373,27 @@
  	</slot>
  </schema>
  
+ <schema name="module.mail.tracking.set.reference.counters.years.list" type="module.mailtracking.presentationTier.YearBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="chosenYear" key="label.mail.tracking.year" layout="menu-select-postback">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+		<property name="format" value="${name}" />
+		<property name="providerClass" value="module.mailtracking.presentationTier.MailTrackingAction$YearProvider" />
+	</slot>
+</schema>
+ 
+ <schema name="module.mail.tracking.set.reference.counters.edit" type="module.mailtracking.presentationTier.YearBean" bundle="MAIL_TRACKING_RESOURCES">
+ 	<slot name="nextSentEntryNumber" key="label.mail.tracking.sent.next.counter">
+ 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+ 		<validator class="pt.ist.fenixWebFramework.renderers.validators.NumberValidator" >
+ 			<property name="base" value="10" />
+ 		</validator>
+ 	</slot>
+ 	
+ 	<slot name="nextReceivedEntryNumber" key="label.mail.tracking.received.next.counter">
+ 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" />
+ 		<validator class="pt.ist.fenixWebFramework.renderers.validators.NumberValidator" >
+ 			<property name="base" value="10" />
+ 		</validator> 	
+ 	</slot>
+ </schema>
+ 

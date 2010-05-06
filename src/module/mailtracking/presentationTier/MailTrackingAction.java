@@ -35,6 +35,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.joda.time.DateTime;
 
+import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
+import pt.ist.fenixWebFramework.renderers.DataProvider;
+import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
@@ -94,11 +97,11 @@ public class MailTrackingAction extends ContextBaseAction {
 	MailTracking mailTracking = readMailTracking(request);
 
 	if (mailTracking != null) {
-	    if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking())
+	    if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking()) {
 		return forward(request, "/mailtracking/permissionDenied.jsp");
+	    }
 
 	    getEntries(request);
-
 	    request.setAttribute("yearBean", readYearBean(request));
 
 	    return forward(request, "/mailtracking/management.jsp");
@@ -706,6 +709,36 @@ public class MailTrackingAction extends ContextBaseAction {
 	return download(response, document.getFilename(), document.getContent(), document.getContentType());
     }
 
+    public ActionForward prepareSetReferenceCounters(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+	YearBean yearBean = new YearBean(readMailTracking(request));
+	request.setAttribute("yearBean", yearBean);
+
+	return forward(request, "/mailtracking/setReferenceCounters.jsp");
+    }
+
+    public ActionForward setReferenceCounters(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	YearBean yearBean = readYearBean(request);
+
+	yearBean.getChosenYear().setCounters(yearBean.getNextSentEntryNumber(), yearBean.getNextReceivedEntryNumber());
+	RenderUtils.invalidateViewState();
+	request.setAttribute("yearBean", null);
+
+	return prepare(mapping, form, request, response);
+    }
+
+    public ActionForward chooseYearForReferenceCountSet(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+	YearBean yearBean = readYearBean(request);
+
+	RenderUtils.invalidateViewState();
+
+	request.setAttribute("yearBean", new YearBean(readMailTracking(request), yearBean.getChosenYear()));
+
+	return forward(request, "/mailtracking/setReferenceCounters.jsp");
+    }
+
     public static class SearchParametersBean implements java.io.Serializable {
 	/**
 	 * 
@@ -890,6 +923,20 @@ public class MailTrackingAction extends ContextBaseAction {
 	LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
 	context.addHead("/mailtracking/layoutHead.jsp");
 	return context;
+    }
+
+    public static class YearProvider implements DataProvider {
+
+	@Override
+	public Converter getConverter() {
+	    return new DomainObjectKeyConverter();
+	}
+
+	@Override
+	public Object provide(Object source, Object currentValue) {
+	    YearBean bean = (YearBean) source;
+	    return bean.getMailTracking().getYears();
+	}
     }
 
 }
