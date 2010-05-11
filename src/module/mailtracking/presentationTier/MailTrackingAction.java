@@ -721,7 +721,7 @@ public class MailTrackingAction extends ContextBaseAction {
 	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 	YearBean yearBean = readYearBean(request);
 
-	yearBean.getChosenYear().setCounters(yearBean.getNextSentEntryNumber(), yearBean.getNextReceivedEntryNumber());
+	MailTrackingActionOperations.setReferenceCounters(yearBean);
 	RenderUtils.invalidateViewState();
 	request.setAttribute("yearBean", null);
 

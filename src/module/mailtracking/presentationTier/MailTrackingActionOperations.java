@@ -120,6 +120,14 @@ public class MailTrackingActionOperations {
 	(new Helper()).reNumberEntries(mailTrackingBean.getMailTracking());
     }
 
+    public static void setReferenceCounters(final YearBean bean) {
+	if (!bean.getMailTracking().isCurrentUserAbleToSetReferenceCounters()) {
+	    throw new PermissionDeniedException();
+	}
+
+	bean.getChosenYear().setCounters(bean.getNextSentEntryNumber(), bean.getNextReceivedEntryNumber());
+    }
+
     public static class CreateYearProvider implements DataProvider {
 
 	@Override

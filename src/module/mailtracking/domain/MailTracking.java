@@ -464,6 +464,14 @@ public class MailTracking extends MailTracking_Base {
 	return hasUserOnlyViewOrEditionOperations(UserView.getCurrentUser());
     }
 
+    public boolean isUserAbleToSetReferenceCounters(final User user) {
+	return isUserOperator(user) || isUserManager(user) || isMyOrgManager(user);
+    }
+
+    public boolean isCurrentUserAbleToSetReferenceCounters() {
+	return isUserAbleToSetReferenceCounters(UserView.getCurrentUser());
+    }
+
     public Integer getTotalNumberOfSentEntries() {
 	return this.getAnyStateEntries(CorrespondenceType.SENT).size();
     }
