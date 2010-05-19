@@ -22,7 +22,7 @@ public class ReorderEntries extends CustomTask implements TransactionalCommand {
 	MailTracking tracking = MailTracking.readMailTrackingByName("Conselho de Gestão");
 
 	for (int i = 482, j = 477; i < 550; i++) {
-	    List<CorrespondenceEntry> entries = tracking.simpleSearch(CorrespondenceType.RECEIVED, "2010/" + i);
+	    List<CorrespondenceEntry> entries = tracking.simpleSearch(CorrespondenceType.RECEIVED, "2010/" + i, false);
 
 	    if (entries.isEmpty()) {
 		break;

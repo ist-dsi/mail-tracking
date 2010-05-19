@@ -101,7 +101,8 @@ public class MailTrackingAction extends ContextBaseAction {
 		return forward(request, "/mailtracking/permissionDenied.jsp");
 	    }
 
-	    getEntries(request);
+	    request.setAttribute("searchEntries", mailTracking.getAbleToViewEntries(readCorrespondenceTypeView(request),
+		    readFilterDeletedEntriesBean(request).getValue()));
 	    request.setAttribute("yearBean", readYearBean(request));
 
 	    return forward(request, "/mailtracking/management.jsp");
@@ -117,6 +118,29 @@ public class MailTrackingAction extends ContextBaseAction {
 	request.setAttribute("mailTrackings", mailTrackings);
 
 	return forward(request, "/mailtracking/chooseMailTracking.jsp");
+    }
+
+    private FilterDeletedEntriesBean readFilterDeletedEntriesBean(HttpServletRequest request) {
+	FilterDeletedEntriesBean bean = (FilterDeletedEntriesBean) request.getAttribute("filterDeletedEntriesBean");
+
+	if (bean == null) {
+	    bean = this.getRenderedObject("filter.deleted.entries.bean");
+	}
+
+	if (bean == null) {
+	    if (!StringUtils.isEmpty(request.getParameter("filterDeletedEntries"))) {
+		Boolean value = Boolean.parseBoolean(request.getParameter("filterDeletedEntries"));
+		bean = new FilterDeletedEntriesBean(value);
+	    }
+	}
+
+	if (bean == null) {
+	    bean = new FilterDeletedEntriesBean();
+	}
+
+	request.setAttribute("filterDeletedEntriesBean", bean);
+
+	return bean;
     }
 
     private YearBean readYearBean(HttpServletRequest request) {
@@ -141,25 +165,23 @@ public class MailTrackingAction extends ContextBaseAction {
 	return bean;
     }
 
-    private java.util.List<CorrespondenceEntry> getEntries(HttpServletRequest request) {
-	SearchParametersBean searchBean = getSearchParametersBean(request);
-
-	java.util.List<CorrespondenceEntry> searchedEntries;
-	if (searchBean.isExtendedSearchActive()) {
-	    searchedEntries = readMailTracking(request).find(readCorrespondenceTypeView(request), searchBean.getSender(),
-		    searchBean.getRecipient(), searchBean.getSubject(), searchBean.getWhenReceivedBegin(),
-		    searchBean.getWhenReceivedEnd());
-	} else if (searchBean.isSimpleSearchActive()) {
-	    searchedEntries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request),
-		    searchBean.getAllStringFieldsFilter());
-	} else {
-	    searchedEntries = CorrespondenceEntry.getActiveEntries();
-	}
-
-	request.setAttribute("searchEntries", searchedEntries);
-
-	return searchedEntries;
-    }
+    // private java.util.List<CorrespondenceEntry> getEntries(HttpServletRequest
+    // request) {
+    // SearchParametersBean searchBean = getSearchParametersBean(request);
+    //
+    // java.util.List<CorrespondenceEntry> searchedEntries;
+    // if (searchBean.isSimpleSearchActive()) {
+    // searchedEntries =
+    // readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request),
+    // searchBean.getAllStringFieldsFilter());
+    // } else {
+    // searchedEntries = CorrespondenceEntry.getActiveEntries();
+    // }
+    //
+    // request.setAttribute("searchEntries", searchedEntries);
+    //
+    // return searchedEntries;
+    // }
 
     protected CorrespondenceEntryBean readCorrespondenceEntryBean(HttpServletRequest request) {
 	CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getAttribute("correspondenceEntryBean");
@@ -432,18 +454,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	java.util.List<CorrespondenceEntry> entries = null;
 	YearBean yearBean = readYearBean(request);
+	FilterDeletedEntriesBean filterDeletedBean = readFilterDeletedEntriesBean(request);
 
 	if (StringUtils.isEmpty(sSearch)) {
 	    if (yearBean.getChosenYear() != null) {
-		entries = yearBean.getChosenYear().getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
+		entries = yearBean.getChosenYear().getAbleToViewEntries(readCorrespondenceTypeView(request),
+			filterDeletedBean.getValue());
 	    } else {
-		entries = readMailTracking(request).getAbleToViewActiveEntries(readCorrespondenceTypeView(request));
+		entries = readMailTracking(request).getAbleToViewEntries(readCorrespondenceTypeView(request),
+			filterDeletedBean.getValue());
 	    }
 	} else {
 	    if (yearBean.getChosenYear() != null) {
-		entries = yearBean.getChosenYear().simpleSearch(readCorrespondenceTypeView(request), sSearch);
+		entries = yearBean.getChosenYear().simpleSearch(readCorrespondenceTypeView(request), sSearch,
+			filterDeletedBean.getValue());
 	    } else {
-		entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch);
+		entries = readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch,
+			filterDeletedBean.getValue());
 	    }
 	}
 
@@ -737,6 +764,31 @@ public class MailTrackingAction extends ContextBaseAction {
 	request.setAttribute("yearBean", new YearBean(readMailTracking(request), yearBean.getChosenYear()));
 
 	return forward(request, "/mailtracking/setReferenceCounters.jsp");
+    }
+
+    public static class FilterDeletedEntriesBean implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Boolean value;
+
+	public FilterDeletedEntriesBean() {
+	    value = Boolean.TRUE;
+	}
+
+	public FilterDeletedEntriesBean(Boolean value) {
+	    this.value = value;
+	}
+
+	public Boolean getValue() {
+	    return value;
+	}
+
+	public void setValue(final Boolean value) {
+	    this.value = value;
+	}
     }
 
     public static class SearchParametersBean implements java.io.Serializable {

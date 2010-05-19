@@ -116,10 +116,12 @@ public class Year extends Year_Base {
     }
 
     // TODO REFACTOR
-    public java.util.List<CorrespondenceEntry> getAbleToViewActiveEntries(final CorrespondenceType type) {
+    public java.util.List<CorrespondenceEntry> getAbleToViewEntries(final CorrespondenceType type, boolean onlyActive) {
 	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
-	CollectionUtils.select(getActiveEntries(type), new Predicate() {
+	java.util.List<CorrespondenceEntry> baseEntries = onlyActive ? getActiveEntries(type) : getAnyStateEntries(type);
+
+	CollectionUtils.select(baseEntries, new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
@@ -131,14 +133,15 @@ public class Year extends Year_Base {
 	return entries;
     }
 
-    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key) {
+    // TODO REFACTOR
+    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
 	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
 	if (StringUtils.isEmpty(key)) {
 	    return entries;
 	}
 
-	CollectionUtils.select(this.getAbleToViewActiveEntries(type), new Predicate() {
+	CollectionUtils.select(this.getAbleToViewEntries(type, onlyActiveEntries), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {

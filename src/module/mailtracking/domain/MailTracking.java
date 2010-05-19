@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -121,10 +120,12 @@ public class MailTracking extends MailTracking_Base {
 	return this.getEntries(CorrespondenceEntryState.DELETED, type);
     }
 
-    public java.util.List<CorrespondenceEntry> getAbleToViewActiveEntries(final CorrespondenceType type) {
+    public java.util.List<CorrespondenceEntry> getAbleToViewEntries(final CorrespondenceType type, boolean onlyActiveEntries) {
 	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
-	CollectionUtils.select(getActiveEntries(type), new Predicate() {
+	java.util.List<CorrespondenceEntry> baseEntries = onlyActiveEntries ? getActiveEntries(type) : getAnyStateEntries(type);
+
+	CollectionUtils.select(baseEntries, new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
@@ -161,48 +162,14 @@ public class MailTracking extends MailTracking_Base {
 	return activeEntries;
     }
 
-    public java.util.List<CorrespondenceEntry> find(CorrespondenceType type, final String sender, final String recipient,
-	    final String subject, final DateTime whenReceivedBegin, final DateTime whenReceivedEnd) {
-	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
-
-	final String normalizedSender = StringNormalizer.normalize(sender);
-	final String normalizedRecipient = StringNormalizer.normalize(recipient);
-	final String normalizedSubject = StringNormalizer.normalize(subject);
-
-	if (StringUtils.isEmpty(sender) && StringUtils.isEmpty(recipient) && whenReceivedBegin == null && whenReceivedEnd == null)
-	    return entries;
-
-	CollectionUtils.select(this.getActiveEntries(type), new Predicate() {
-
-	    @Override
-	    public boolean evaluate(Object arg0) {
-		CorrespondenceEntry entry = (CorrespondenceEntry) arg0;
-		String normalizedEntrySender = StringNormalizer.normalize(entry.getSender());
-		String normalizedEntryRecipient = StringNormalizer.normalize(entry.getRecipient());
-		String normalizedEntrySubject = StringNormalizer.normalize(entry.getSubject());
-
-		DateTime whenReceivedEntry = entry.getWhenReceived();
-
-		return (StringUtils.isEmpty(sender) || normalizedEntrySender.indexOf(normalizedSender) > -1)
-			&& (StringUtils.isEmpty(normalizedRecipient) || normalizedEntryRecipient.indexOf(normalizedRecipient) > -1)
-			&& (StringUtils.isEmpty(normalizedSubject) || normalizedEntrySubject.indexOf(normalizedSubject) > -1)
-			&& (whenReceivedBegin == null || !whenReceivedEntry.isBefore(whenReceivedBegin))
-			&& (whenReceivedEnd == null || !whenReceivedEntry.isAfter(whenReceivedEnd));
-	    }
-
-	}, entries);
-
-	return entries;
-    }
-
-    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key) {
+    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
 	java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
 	if (StringUtils.isEmpty(key)) {
 	    return entries;
 	}
 
-	CollectionUtils.select(this.getAbleToViewActiveEntries(type), new Predicate() {
+	CollectionUtils.select(this.getAbleToViewEntries(type, onlyActiveEntries), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {

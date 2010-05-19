@@ -139,12 +139,6 @@
 </logic:equal>
 --%>
 
-<fr:form id="search.parameters.simple.form" action="/mailtracking.do?method=prepare">
-	<fr:edit id="search.parameters.simple.bean" name="searchParametersBean" visible="false" />
-</fr:form>
-
-
-
 <logic:equal name="mailTracking" property="currentUserAbleToCreateEntries" value="true">
 	<ul class="mtop05 mbottom2">
 		<li>
@@ -204,13 +198,30 @@
 <logic:notEmpty name="searchEntries">
 
 
+<bean:define id="filterDeletedEntries" name="filterDeletedEntriesBean" property="value" />
+
+<bean:define id="mailTrackingUrl" type="String">
+	<%= String.format("/mailtracking.do?method=prepare&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;filterDeletedEntries=%s", correspondenceType, mailTrackingId, String.valueOf(filterDeletedEntries)) %>
+</bean:define>
+
+
+<bean:define id="listMailTrackingUrl" type="String">
+	<%= mailTrackingUrl + "&amp;method=prepare" %>
+</bean:define>
+
 <p>
-	<fr:form id="mail.tracking.select.years" action="<%= String.format("/mailtracking.do?method=prepare&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>">
+	<fr:form id="mail.tracking.select.years" action="<%= listMailTrackingUrl %>">
+	
 	<fr:edit id="year.bean" name="yearBean" schema="module.mail.tracking.choose.year" >
 		<fr:layout name="tabular" >
-			<fr:destination name="postback" path="<%= String.format("/mailtracking.do?method=prepare&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>" />
+			<fr:destination name="postback" path="<%= listMailTrackingUrl %>" />
 		</fr:layout>
 	</fr:edit>
+	
+	<fr:edit id="filter.deleted.entries.bean" name="filterDeletedEntriesBean" schema="module.mail.tracking.set.filter.deleted.entries">
+		<fr:destination name="postback" path="<%= listMailTrackingUrl %>"/>
+	</fr:edit>
+	
 	</fr:form>
 </p>
 
@@ -226,21 +237,21 @@
 		
 		<fr:property name="ajaxSourceUrl" value="/mailtracking.do" />
 
-		<fr:property name="linkFormat(view)" value="<%= String.format("/mailtracking.do?method=viewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType,  mailTrackingId) %>" />
+		<fr:property name="linkFormat(view)" value="<%= mailTrackingUrl + "&amp;method=viewEntry&amp;entryId=${externalId}" %>" />
 		<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
 		<fr:property name="visibleIf(view)" value="userAbleToView" />
 		<fr:property name="icon(view)" value="view" />
 
-		<fr:property name="linkFormat(edit)" value="<%= String.format("/mailtracking.do?method=prepareEditEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType, mailTrackingId) %>"/>
+		<fr:property name="linkFormat(edit)" value="<%= mailTrackingUrl + "&amp;method=prepareEditEntry&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(edit)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(edit)" value="link.edit"/>
 		<fr:property name="order(edit)" value="3" />
 		<fr:property name="visibleIf(edit)" value="userAbleToEdit" />
 		<fr:property name="icon(edit)" value="edit" />
 
-		<fr:property name="linkFormat(delete)" value="<%= String.format("/mailtracking.do?method=prepareDeleteEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s&amp;entryId=${externalId}", correspondenceType, mailTrackingId) %>"/>
+		<fr:property name="linkFormat(delete)" value="<%= mailTrackingUrl + "&amp;method=prepareDeleteEntry&amp;entryId=${externalId}" %>"/>
 		<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 		<fr:property name="key(delete)" value="link.delete"/>
 		<fr:property name="order(delete)" value="4" />
@@ -265,6 +276,7 @@
 		<fr:property name="extraParameter(correspondenceType)" value="<%= (String) correspondenceType %>" />
 		<fr:property name="extraParameter(mailTrackingId)" value="<%= (String) mailTrackingId %>" />
 		<fr:property name="extraParameter(yearId)" value="<%= yearId %>" />
+		<fr:property name="extraParameter(filterDeletedEntries)" value="<%= String.valueOf(filterDeletedEntries) %>" />
 	</fr:layout>
 </fr:view>
 

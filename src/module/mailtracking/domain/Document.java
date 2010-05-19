@@ -60,8 +60,9 @@ public class Document extends Document_Base {
 
     public void deleteDomainObject() {
 	removeCorrespondenceEntry();
-//	removeMyOrg();
+	// removeMyOrg();
 	removeStorage();
+	removeFileSupport();
 
 	super.deleteDomainObject();
     }

@@ -397,3 +397,8 @@
  	</slot>
  </schema>
  
+<schema name="module.mail.tracking.set.filter.deleted.entries" type="module.mailtracking.presentationTier.MailTrackingAction$FilterDeletedEntriesBean" bundle="MAIL_TRACKING_RESOURCES">
+	<slot name="value" layout="radio-postback" key="label.filter.deleted.entries">
+ 	</slot>
+</schema>
+ 
