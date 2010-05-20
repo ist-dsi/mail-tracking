@@ -1,8 +1,13 @@
 package module.mailtracking.domain;
 
+import java.util.Comparator;
+
+import myorg.domain.MyOrg;
 import myorg.domain.exceptions.DomainException;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -10,10 +15,12 @@ public class Document extends Document_Base {
 
     public static final Integer MAX_DOCUMENT_FILE_SIZE = 3145728;
 
-    // public static final Integer MAX_DOCUMENT_FILE_SIZE = 145728;
+    public static Comparator<Document> SORT_DOCUMENTS_BY_DATE = new BeanComparator("creationDate");
 
     public Document() {
 	super();
+	setMyOrg(MyOrg.getInstance());
+	setCreationDate(new DateTime());
     }
 
     public Document(String displayName, String filename, byte[] content, String description, DocumentType type) {
@@ -58,6 +65,14 @@ public class Document extends Document_Base {
 	return new Document(displayName, filename, content, description, type);
     }
 
+    public Boolean isMainDocument() {
+	return DocumentType.MAIN_DOCUMENT.equals(getType());
+    }
+
+    public Boolean isOtherDocument() {
+	return DocumentType.OTHER_DOCUMENT.equals(getType());
+    }
+
     public void deleteDomainObject() {
 	removeCorrespondenceEntry();
 	// removeMyOrg();
@@ -65,5 +80,9 @@ public class Document extends Document_Base {
 	removeFileSupport();
 
 	super.deleteDomainObject();
+    }
+
+    public boolean isDocumentDeleted() {
+	return DocumentState.DELETED.equals(getState());
     }
 }

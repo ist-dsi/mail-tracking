@@ -93,6 +93,7 @@
 	}
 	
 	function submitForm(linkToUse) {
+		fastEntryCreationModal.dialog('disable');
 		$.ajax({
 			type: "POST",
 			dataType: 'html',
@@ -101,6 +102,9 @@
 			success: function(data) {
 				$('.fast-entry-creation').html(data);
 				oTable.fnDraw();
+			},
+			complete: function() {
+				fastEntryCreationModal.dialog('enable');
 			}
 		});
 	}

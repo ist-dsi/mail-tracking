@@ -521,7 +521,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
-		return DocumentType.MAIN_DOCUMENT.equals(((Document) arg0).getType());
+		return !((Document) arg0).isDocumentDeleted() && DocumentType.MAIN_DOCUMENT.equals(((Document) arg0).getType());
 	    }
 
 	});
@@ -557,5 +557,25 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	super.deleteDomainObject();
 
+    }
+
+    public java.util.List<Document> geDocumentsSortedByDate() {
+	return getDocumentsSortedBy(Document.SORT_DOCUMENTS_BY_DATE);
+    }
+
+    public java.util.List<Document> getDocumentsSortedBy(Comparator<Document> comparator) {
+	java.util.List<Document> documents = new java.util.ArrayList<Document>(getDocuments());
+	Collections.sort(documents, comparator);
+
+	return documents;
+    }
+
+    @Service
+    public void deleteDocument(Document document) {
+	if (document.isMainDocument() && !getDocuments().isEmpty()) {
+	    getDocuments().get(0).setType(DocumentType.MAIN_DOCUMENT);
+	}
+
+	document.deleteDocument();
     }
 }

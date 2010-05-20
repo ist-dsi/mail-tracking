@@ -508,7 +508,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public ActionForward deleteDocument(ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	readDocument(request).deleteDocument();
+	readDocument(request).getCorrespondenceEntry().deleteDocument(readDocument(request));
 
 	return prepareEditEntry(mapping, form, request, response);
     }

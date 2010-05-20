@@ -5,11 +5,19 @@ class module.mailtracking.domain.Document extends pt.ist.fenixframework.plugins.
 	String description;
 	DocumentType type;
 	DocumentState state;
+	DateTime creationDate;
 }
 
 relation MyOrgCorrespondenceEntry {
 	myorg.domain.MyOrg playsRole myOrg;
 	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntries {
+		multiplicity *;
+	}
+}
+
+relation MyOrgDocument {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.Document playsRole mailTrackingDocuments {
 		multiplicity *;
 	}
 }

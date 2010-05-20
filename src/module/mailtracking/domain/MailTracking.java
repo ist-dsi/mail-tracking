@@ -464,10 +464,10 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public Integer getTotalNumberOfActiveDocuments() {
-	return this.getTotalActiveDocuments().size();
+	return this.getTotalDocuments().size();
     }
 
-    private java.util.List<Document> getTotalActiveDocuments() {
+    public java.util.List<Document> getTotalDocuments() {
 	java.util.List<CorrespondenceEntry> entries = this.getEntries();
 
 	java.util.List<Document> allDocuments = new java.util.ArrayList<Document>();
