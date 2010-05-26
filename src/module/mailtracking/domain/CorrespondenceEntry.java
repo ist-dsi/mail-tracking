@@ -578,4 +578,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
 	document.deleteDocument();
     }
+
+    public boolean isActive() {
+	return CorrespondenceEntryState.ACTIVE.equals(getState());
+    }
 }

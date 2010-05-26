@@ -117,13 +117,15 @@
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
+<!--  	
 	<slot name="sender" key="label.sender">
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 	</slot>
-<!--  	
+-->	
+  	
 	<slot name="sender" key="label.sender" layout="simpleAutoComplete">
 		<property name="minChars" value="3"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderOnReceivedEntryAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
@@ -135,7 +137,6 @@
 		</validator>
 		<property name="size" value="60" />
 	</slot>
--->	
 	<slot name="whenSent" key="label.correspondence.date">
 		<property name="dateFormat" value="dd/MM/yyyy" />
 		<property name="size" value="10" />

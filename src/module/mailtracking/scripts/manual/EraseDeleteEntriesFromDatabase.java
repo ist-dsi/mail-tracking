@@ -19,13 +19,13 @@ public class EraseDeleteEntriesFromDatabase extends WriteCustomTask {
 	out.println("Sent entries");
 	for (CorrespondenceEntry sentEntry : sentDeletedEntryList) {
 	    out.println("Entry nº: " + sentEntry.getReference() + " deleted");
-	    sentEntry.deleteDomainObject();
+	    // sentEntry.deleteDomainObject();
 	}
 
 	out.println("Received entries");
 	for (CorrespondenceEntry receivedEntry : receivedDeletedEntryList) {
 	    out.println("Entry nº: " + receivedEntry.getReference() + " deleted");
-	    receivedEntry.deleteDomainObject();
+	    // receivedEntry.deleteDomainObject();
 	}
     }
 

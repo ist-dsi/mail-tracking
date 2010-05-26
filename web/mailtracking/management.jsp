@@ -38,6 +38,13 @@
 	.spinner {
 		display: none;
 	}
+	
+	.entry_deleted {
+		opacity: 0.5;
+		filter: alpha(opacity = 20);
+		zoom: 1;
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -122,8 +129,15 @@
 		$('.fast-entry-creation').css('font-size', "80%");
 	});
 
+	function rowCallBackImpl(nRow, aData, iDisplayIndex) {
+		if(aData[6] == "false" || aData[7] == "false") {
+			$(nRow).addClass("entry_deleted");
+		}
+		
+		$(nRow).find("td.width0").remove();
 
-
+		return nRow;
+	}
 	
 </script>
 

@@ -40,7 +40,9 @@ public class SimpleAutoCompleteInputRenderer extends AutoCompleteInputRenderer {
 
 		container.addChild(valueField);
 
-		if (object != null) {
+		if (object != null && object instanceof String) {
+		    valueField.setValue((String) object);
+		} else if (object != null) {
 		    Object oid = RendererPropertyUtils.getProperty(object, getValueField(), false);
 		    valueField.setValue(oid == null ? null : oid.toString());
 		}
@@ -58,7 +60,9 @@ public class SimpleAutoCompleteInputRenderer extends AutoCompleteInputRenderer {
 		textField.setSize(getSize());
 		container.addChild(textField);
 
-		if (object != null && getLabelField() != null) {
+		if (object != null && getLabelField() != null && object instanceof String) {
+		    textField.setValue((String) object);
+		} else if (object != null && getLabelField() != null) {
 		    String label = (String) RendererPropertyUtils.getProperty(object, getLabelField(), false);
 		    textField.setValue(label);
 		} else if (getRawSlotName() != null) {

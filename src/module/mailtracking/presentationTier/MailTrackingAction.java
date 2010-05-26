@@ -536,13 +536,17 @@ public class MailTrackingAction extends ContextBaseAction {
 		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
 			    : "permission_not_granted").append(",");
 
-	    stringBuilder.append(
-		    entry.isUserAbleToEdit(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryEdition(request, entry)
-			    : "permission_not_granted").append(",");
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+				    request, entry)
+				    : "permission_not_granted").append(",");
 
-	    stringBuilder.append(
-		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
-			    entry) : "permission_not_granted").append(",");
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
+				    request, entry)
+				    : "permission_not_granted").append(",");
 
 	    stringBuilder
 		    .append(
@@ -552,7 +556,9 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	    stringBuilder.append(
 		    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
-			    entry) : "permission_not_granted").append("\" ], ");
+			    entry) : "permission_not_granted").append("\",");
+
+	    stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
 
 	}
 
@@ -600,13 +606,17 @@ public class MailTrackingAction extends ContextBaseAction {
 		    entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request, entry)
 			    : "permission_not_granted").append(",");
 
-	    stringBuilder.append(
-		    entry.isUserAbleToEdit(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryEdition(request, entry)
-			    : "permission_not_granted").append(",");
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+				    request, entry)
+				    : "permission_not_granted").append(",");
 
-	    stringBuilder.append(
-		    entry.isUserAbleToDelete(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryRemoval(request,
-			    entry) : "permission_not_granted").append(",");
+	    stringBuilder
+		    .append(
+			    entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
+				    request, entry)
+				    : "permission_not_granted").append(",");
 
 	    stringBuilder
 		    .append(
@@ -616,7 +626,9 @@ public class MailTrackingAction extends ContextBaseAction {
 
 	    stringBuilder.append(
 		    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
-			    entry) : "permission_not_granted").append("\" ], ");
+			    entry) : "permission_not_granted").append("\",");
+
+	    stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
 
 	}
 

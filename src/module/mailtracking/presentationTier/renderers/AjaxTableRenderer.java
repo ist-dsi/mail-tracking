@@ -131,6 +131,11 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    scriptValue += "'success': fnCallback\n";
 	    scriptValue += "});\n";
 	    scriptValue += "},\n";
+
+	    scriptValue += "'fnRowCallback': function(nRow, aData, iDisplayIndex) {\n";
+	    scriptValue += "		return rowCallBackImpl(nRow, aData, iDisplayIndex);\n";
+	    scriptValue += "},\n";
+
 	    scriptValue += "'aoColumns': [\n";
 	    for (int i = 0; i < (columnNumber - (getSortedLinksSize() > 0 ? 1 : 0)); i++) {
 		scriptValue += "/*" + ((HtmlText) getHeaderComponent(i)).getText() + " */ ";
@@ -138,9 +143,10 @@ public class AjaxTableRenderer extends CollectionRenderer {
 	    }
 
 	    if (AjaxTableRenderer.this.getSortedLinksSize() > 0) {
-		scriptValue += "/*Links */ { 'bSortable': false,\n";
-		scriptValue += String.format("\"sClass\" : \"%s\",", getColumnClassesFor(columnNumber - 1));
-		scriptValue += "'fnRender': function(oObj) {\n";
+		scriptValue += "/*Links */ { \n";
+		scriptValue += "\t'bSortable': false,\n";
+		scriptValue += String.format("\t\"sClass\" : \"%s\",", getColumnClassesFor(columnNumber - 1));
+		scriptValue += "\t'fnRender': function(oObj) {\n";
 		scriptValue += "var links='';\n";
 
 		for (int i = 0; i < getSortedLinksSize(); i++) {
@@ -175,9 +181,18 @@ public class AjaxTableRenderer extends CollectionRenderer {
 
 	    }
 
-	    scriptValue += "}\n";
-	    scriptValue += "}\n";
-	    scriptValue += "]\n";
+	    scriptValue += "}\n"; /* Close fnRender function */
+	    scriptValue += "},\n"; /* Close Links aoColumn */
+
+	    scriptValue += "{ /* Active */\n";
+	    scriptValue += "\t'bSortable': false,\n";
+	    scriptValue += "\t'sClass' : 'width0'\n";
+	    // scriptValue += "\t'fnRender': function(oObj) {\n";
+	    // scriptValue += "\t return \"\"";
+	    // scriptValue += "\t}\n";
+	    scriptValue += "}\n"; /* Close Active aoColumn */
+
+	    scriptValue += "]\n"; /* Close aoColumns array */
 	    scriptValue += "});\n";
 	    scriptValue += "}\n";
 	    scriptValue += ");\n";
