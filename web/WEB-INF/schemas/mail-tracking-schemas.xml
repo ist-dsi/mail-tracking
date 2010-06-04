@@ -52,12 +52,8 @@
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
-	<slot name="recipient" key="label.recipient" layout="simpleAutoComplete">
-		<property name="minChars" value="3"/>
-		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.RecipientOnSentEntryAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
-			<property name="allowsCustom" value="true" />
-		</validator>
+	<slot name="recipient" key="label.recipient">
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="255" />
 		</validator>
@@ -117,21 +113,11 @@
 			<property name="dateFormat" value="dd/MM/yyyy" />
 		</validator>
 	</slot>
-<!--  	
-	<slot name="sender" key="label.sender">
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
-			<property name="length" value="255" />
-		</validator>
-		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
-	</slot>
--->	
   	
-	<slot name="sender" key="label.sender" layout="simpleAutoComplete">
+	<slot name="sender" key="label.sender">
 		<property name="minChars" value="3"/>
+		<validator class="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
 		<property name="args" value="provider=module.mailtracking.presentationTier.renderers.providers.SenderOnReceivedEntryAutoCompleteProvider,mailTrackingId=${mailTracking.externalId}"/>
-		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.RequiredAutoCompleteSelectionValidator">
-			<property name="allowsCustom" value="true" />
-		</validator>	
 		<validator class="pt.ist.fenixWebFramework.rendererExtensions.validators.TextLengthValidator">
 			<property name="length" value="100" />
 		</validator>
