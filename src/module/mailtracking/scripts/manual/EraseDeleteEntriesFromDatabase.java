@@ -10,7 +10,7 @@ import myorg.domain.scheduler.WriteCustomTask;
 public class EraseDeleteEntriesFromDatabase extends WriteCustomTask {
 
     @Override
-    public void doIt() {
+    protected void doService() {
 	final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
 	List<CorrespondenceEntry> sentDeletedEntryList = mailtracking.getDeletedEntries(CorrespondenceType.SENT);

@@ -7,7 +7,7 @@ import myorg.domain.scheduler.WriteCustomTask;
 public class SetCreationDateOnDocuments extends WriteCustomTask {
 
     @Override
-    public void doIt() {
+    protected void doService() {
 	MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
 
 	for (Document document : mailTracking.getTotalDocuments()) {

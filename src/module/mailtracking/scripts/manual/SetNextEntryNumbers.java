@@ -7,7 +7,7 @@ import myorg.domain.scheduler.WriteCustomTask;
 public class SetNextEntryNumbers extends WriteCustomTask {
 
     @Override
-    public void doIt() {
+    protected void doService() {
 	setCountersOnYear();
     }
 
