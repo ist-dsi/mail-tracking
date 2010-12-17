@@ -138,7 +138,6 @@ public class AjaxTableRenderer extends CollectionRenderer {
 
 	    scriptValue += "'aoColumns': [\n";
 	    for (int i = 0; i < (columnNumber - (getSortedLinksSize() > 0 ? 1 : 0)); i++) {
-		scriptValue += "/*" + ((HtmlText) getHeaderComponent(i)).getText() + " */ ";
 		scriptValue += String.format("{ \"sClass\": \"%s\" },\n", getColumnClassesFor(i));
 	    }
 
