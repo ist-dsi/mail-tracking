@@ -75,7 +75,7 @@ public class Year extends Year_Base {
     @Service
     public static Year createYearFor(MailTracking mailTracking, Integer forYear) {
 
-	if (forYear < 2007 || forYear > 2010) {
+	if (forYear < 2007) {
 	    throw new DomainException("error.mail.tracking.year.invalid");
 	}
 
