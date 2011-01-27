@@ -55,7 +55,7 @@
 		
 		if(fastEntryCreationModal != null) {
 			fastEntryCreationModal.dialog('open');
-		} else {			
+		} else {
 			fastEntryCreationModal = $('.fast-entry-creation').dialog({
 				bgiframe: true,
 				height: 600,
@@ -63,6 +63,8 @@
 				modal: true
 			});
 		}
+
+		$('.fast-entry-creation').html("<b>Hello</b>");
 
 		$.ajax({
 			type: "POST",
@@ -72,6 +74,7 @@
 				$('.fast-entry-creation').html(data);
 			}
 		});
+
 	}
 
 	function loadFastCopyEntryPage(entryId) {
@@ -298,18 +301,16 @@
 	</fr:layout>
 </fr:view>
 
+</logic:notEmpty>
+
 <div class="fast-entry-creation">
 </div>
 
 <div class="spinner">
-	<img src="<%= request.getContextPath() + "/images/ajax-loader.gif" %>" />
 </div>
-
 
 <html:link  styleClass="hidden-link fast-sent-entry-creation-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.SENT.name(), mailTrackingId) %>"></html:link>
 <html:link  styleClass="hidden-link fast-received-entry-creation-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCreateFastNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.RECEIVED.name(), mailTrackingId) %>"></html:link>
 <html:link  styleClass="hidden-link fast-sent-entry-creation-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.SENT.name(), mailTrackingId) %>"></html:link>
 <html:link  styleClass="hidden-link fast-received-entry-creation-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=addNewEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", CorrespondenceType.RECEIVED.name(), mailTrackingId) %>"></html:link>
 <html:link  styleClass="hidden-link fast-entry-copy-submission-link" page="<%= String.format("/ajax-mailtracking.do?method=prepareCopyEntry&amp;correspondenceType=%s&amp;mailTrackingId=%s", correspondenceType, mailTrackingId) %>"></html:link>
-
-</logic:notEmpty>
