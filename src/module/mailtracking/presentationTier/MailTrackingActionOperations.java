@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.Helper;
-import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 import myorg.domain.User;

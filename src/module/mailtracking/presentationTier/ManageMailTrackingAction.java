@@ -39,7 +39,9 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward removeOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	MailTrackingActionOperations.removeOperator(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+	MailTrackingActionOperations.removeOperator(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
@@ -55,7 +57,10 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward removeViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	MailTrackingActionOperations.removeViewer(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
+	MailTrackingActionOperations.removeViewer(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
@@ -73,7 +78,10 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward removeManager(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	MailTrackingActionOperations.removeManager(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
+	MailTrackingActionOperations.removeManager(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
