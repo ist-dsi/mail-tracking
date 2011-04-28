@@ -41,13 +41,17 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 	    HttpServletResponse response) {
 	MailTracking mailTracking = readMailTracking(request);
 	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
 	MailTrackingActionOperations.removeOperator(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward addOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	MailTrackingActionOperations.addOperator(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
+	MailTrackingActionOperations.addOperator(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
@@ -66,13 +70,19 @@ public class ManageMailTrackingAction extends ContextBaseAction {
 
     public ActionForward addViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    HttpServletResponse response) {
-	MailTrackingActionOperations.addViewer(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
+	MailTrackingActionOperations.addViewer(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
     public ActionForward addManager(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
-	MailTrackingActionOperations.addManager(readMailTrackingBean(request), readUser(request));
+	MailTracking mailTracking = readMailTracking(request);
+	MailTrackingBean bean = new MailTrackingBean(mailTracking);
+
+	MailTrackingActionOperations.addManager(bean, readUser(request));
 	return prepareUsersManagement(mapping, form, request, response);
     }
 
