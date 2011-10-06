@@ -5,7 +5,6 @@ class module.mailtracking.domain.Document extends pt.ist.fenixframework.plugins.
 	String description;
 	DocumentType type;
 	DocumentState state;
-	DateTime creationDate;
 }
 
 relation MyOrgCorrespondenceEntry {
