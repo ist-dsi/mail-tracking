@@ -26,7 +26,7 @@ class CorrespondenceEntry {
 	String reference;
 }
 
-class MailTracking {
+class MailTracking implements .myorg.domain.VirtualHostAware {
 	MultiLanguageString name;
 	Boolean active;
 }

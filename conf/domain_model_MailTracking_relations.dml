@@ -121,3 +121,12 @@ relation YearCorrespondenceEntry {
 	module.mailtracking.domain.Year playsRole year;
 }
 
+relation VirtualHostMailTracking {
+	myorg.domain.VirtualHost playsRole virtualHost {
+		multiplicity 0..1;
+	}
+	
+	module.mailtracking.domain.MailTracking playsRole mailTracking {
+		multiplicity *;
+	}
+}

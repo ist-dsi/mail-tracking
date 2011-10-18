@@ -10,6 +10,7 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.RoleType;
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 import myorg.domain.exceptions.DomainException;
 import myorg.domain.groups.NamedGroup;
 import myorg.domain.groups.People;
@@ -28,7 +29,6 @@ public class MailTracking extends MailTracking_Base {
     private MailTracking() {
 	super();
 	setMyOrg(MyOrg.getInstance());
-
     }
 
     private MailTracking(Unit unit) {
@@ -42,6 +42,7 @@ public class MailTracking extends MailTracking_Base {
 	this.setUnit(unit);
 	this.setName(unit.getPartyName());
 	this.setActive(Boolean.TRUE);
+	this.setVirtualHost(VirtualHost.getVirtualHostForThread());
     }
 
     private void checkParameters(Unit unit) {
@@ -268,11 +269,12 @@ public class MailTracking extends MailTracking_Base {
 
     public static java.util.List<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
 
-	if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER))
-	    return MyOrg.getInstance().getMailTrackings();
+	if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER)) {
+	    return MailTrackingsOnVirtualHost.retrieve();
+	}
 
 	java.util.List<MailTracking> unitsWithMailTrackings = new java.util.ArrayList<MailTracking>();
-	CollectionUtils.select(MyOrg.getInstance().getMailTrackings(), new Predicate() {
+	CollectionUtils.select(MailTrackingsOnVirtualHost.retrieve(), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
@@ -520,7 +522,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public static MailTracking readMailTrackingByName(String name) {
-	for (MailTracking mailTracking : MyOrg.getInstance().getMailTrackings()) {
+	for (MailTracking mailTracking : MailTrackingsOnVirtualHost.retrieve()) {
 	    if (name.equals(mailTracking.getName().getContent(Language.pt))
 		    || name.equals(mailTracking.getName().getContent(Language.en))) {
 		return mailTracking;
@@ -528,5 +530,12 @@ public class MailTracking extends MailTracking_Base {
 	}
 
 	return null;
+    }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
+
+	return getVirtualHost() == virtualHostForThread;
     }
 }
