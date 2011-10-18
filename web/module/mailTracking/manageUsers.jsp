@@ -34,6 +34,7 @@
 			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeViewer&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>" />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
+			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
 			<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
 		</fr:layout>	
@@ -52,6 +53,7 @@
 			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeOperator&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>" />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
+			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
 			<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
 		</fr:layout>
@@ -67,9 +69,10 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeManager&amp;orgnizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>" />
+			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeManager&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>" />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
+			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
 			<fr:property name="confirmationTitleKey(remove)" value="title.confirm.user.removal" /> 
 		</fr:layout>

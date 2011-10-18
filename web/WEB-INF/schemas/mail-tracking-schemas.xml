@@ -217,7 +217,7 @@
 		<property name="fileContentTypeSlot" value="mimetype" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.FileValidator" >
 			<property name="required" value="true" />
-			<property name="maxSize" value="3145728" />
+			<property name="maxSize" value="8388608" />
 		</validator>
 		<property name="size" value="40" />
 	</slot>
@@ -237,7 +237,7 @@
 		<property name="fileContentTypeSlot" value="mimetype" />
 		<validator class="pt.ist.fenixWebFramework.renderers.validators.FileValidator" >
 			<property name="required" value="false" />
-			<property name="maxSize" value="3145728" />
+			<property name="maxSize" value="8388608" />
 		</validator>
 		<property name="size" value="40" />
 	</slot>

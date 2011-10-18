@@ -13,7 +13,7 @@ import pt.ist.fenixWebFramework.services.Service;
 
 public class Document extends Document_Base {
 
-    public static final Integer MAX_DOCUMENT_FILE_SIZE = 3145728;
+    public static final Integer MAX_DOCUMENT_FILE_SIZE = 8388608;
 
     public static Comparator<Document> SORT_DOCUMENTS_BY_DATE = new BeanComparator("creationDate");
 
