@@ -1,2 +1,2 @@
 name=mail-tracking
-depends=core,content,organization,fileSupport
+depends=core,content,organization,fileSupport,scheduler
