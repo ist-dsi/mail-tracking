@@ -33,7 +33,7 @@ public class SetVirtualHostForMailTrackingsOnDot extends CustomTask implements T
 		return virtualHost;
 	    }
 
-	    out.println(virtualHost.getHostname() + " is not equal to 'dot.local'");
+	    out.println(virtualHost.getHostname() + " is not equal to 'dot.ist.utl.pt'");
 	}
 	
 	throw new RuntimeException("could not find virtual host for dot");
