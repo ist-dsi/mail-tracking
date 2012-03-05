@@ -1,31 +1,36 @@
 /*
-NaturalOrderComparator.java -- Perform 'natural order' comparisons of strings in Java.
-Copyright (C) 2003 by Pierre-Luc Paour <natorder@paour.com>
-
-Based on the C version by Martin Pool, of which this is more or less a straight conversion.
-Copyright (C) 2000 by Martin Pool <mbp@humbug.org.au>
-
-This software is provided 'as-is', without any express or implied
-warranty.  In no event will the authors be held liable for any damages
-arising from the use of this software.
-
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute it
-freely, subject to the following restrictions:
-
-1. The origin of this software must not be misrepresented; you must not
-claim that you wrote the original software. If you use this software
-in a product, an acknowledgment in the product documentation would be
-appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be
-misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
-*/
-
+ * @(#)NaturalOrderComparator.java
+ *
+ * Copyright 2010 Instituto Superior Tecnico
+ * Founding Authors: Anil Kassamali
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the Correspondence Registry Module.
+ *
+ *   The Correspondence Registry Module is free software: you can
+ *   redistribute it and/or modify it under the terms of the GNU Lesser General
+ *   Public License as published by the Free Software Foundation, either version 
+ *   3 of the License, or (at your option) any later version.
+ *
+ *   The Correspondence Registry Module is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with the Correspondence Registry Module. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 package module.mailtracking.utilities;
 
 import java.util.Comparator;
 
+/**
+ * 
+ * @author Anil Kassamali
+ * 
+ */
 public class NaturalOrderComparator implements Comparator<String> {
 
     int compareRight(String a, String b) {
