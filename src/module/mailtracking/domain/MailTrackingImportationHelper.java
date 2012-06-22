@@ -29,6 +29,7 @@ import module.mailtracking.presentationTier.renderers.converters.LocalDateConver
 import myorg.domain.exceptions.DomainException;
 import myorg.util.BundleUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.renderers.components.converters.ConversionException;
@@ -66,11 +67,11 @@ public class MailTrackingImportationHelper {
 		String[] fields = line.split(";", -1);
 
 		CorrespondenceEntryBean bean = new CorrespondenceEntryBean(mailTracking);
-		bean.setWhenSent(convertToLocalDate(fields[SENT_DATE_IDX]));
-		bean.setRecipient(fields[SENT_RECIPIENT_IDX]);
-		bean.setSubject(fields[SENT_SUBJECT_IDX]);
-		bean.setSender(fields[SENT_SENDER_IDX]);
-		bean.setObservations(fields[SENT_OBSERVATIONS_IDX]);
+		bean.setWhenSent(convertToLocalDate(fields[SENT_DATE_IDX].trim(), false));
+		bean.setRecipient(fields[SENT_RECIPIENT_IDX].trim());
+		bean.setSubject(fields[SENT_SUBJECT_IDX].trim());
+		bean.setSender(fields[SENT_SENDER_IDX].trim());
+		// bean.setObservations(fields[SENT_OBSERVATIONS_IDX]);
 
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.SENT, null);
 		entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[SENT_ID_IDX]));
@@ -104,9 +105,9 @@ public class MailTrackingImportationHelper {
     private static final Integer RECEIVED_SENDER_IDX = 2;
     private static final Integer RECEIVED_SENT_DATE_IDX = 3;
     private static final Integer RECEIVED_SENDER_LETTER_NUMBER_IDX = 4;
-    private static final Integer RECEIVED_SUBJECT_IDX = 5;
-    private static final Integer RECEIVED_RECIPIENT_IDX = 6;
-    private static final Integer DISPATCHED_TO_WHOM_IDX = 7;
+    private static final Integer RECEIVED_SUBJECT_IDX = 7;
+    private static final Integer RECEIVED_RECIPIENT_IDX = 8;
+    private static final Integer DISPATCHED_TO_WHOM_IDX = 9;
 
     @Service
     public static void importReceivedMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
@@ -127,16 +128,18 @@ public class MailTrackingImportationHelper {
 		String[] fields = line.split(";", -1);
 
 		CorrespondenceEntryBean bean = new CorrespondenceEntryBean(mailTracking);
-		bean.setWhenReceived(convertToLocalDate(fields[RECEIVED_RECEIVED_DATE_IDX]));
-		bean.setSender(fields[RECEIVED_SENDER_IDX]);
-		bean.setWhenSent(convertToLocalDate(fields[RECEIVED_SENT_DATE_IDX]));
-		bean.setSenderLetterNumber(fields[RECEIVED_SENDER_LETTER_NUMBER_IDX]);
-		bean.setSubject(fields[RECEIVED_SUBJECT_IDX]);
-		bean.setRecipient(fields[RECEIVED_RECIPIENT_IDX]);
-		bean.setDispatchedToWhom(fields[DISPATCHED_TO_WHOM_IDX]);
+		bean.setWhenReceived(convertToLocalDate(fields[RECEIVED_RECEIVED_DATE_IDX].trim(), false));
+		bean.setSender(fields[RECEIVED_SENDER_IDX].trim());
+
+		System.out.println("---> " + fields[RECEIVED_SENT_DATE_IDX].trim());
+		bean.setWhenSent(convertToLocalDate(fields[RECEIVED_SENT_DATE_IDX].trim(), true));
+		bean.setSenderLetterNumber(fields[RECEIVED_SENDER_LETTER_NUMBER_IDX].trim());
+		bean.setSubject(fields[RECEIVED_SUBJECT_IDX].trim());
+		bean.setRecipient(fields[RECEIVED_RECIPIENT_IDX].trim());
+		bean.setDispatchedToWhom(fields[DISPATCHED_TO_WHOM_IDX].trim());
 
 		CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.RECEIVED, null);
-		entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[RECEIVED_ID_IDX]));
+		entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[RECEIVED_ID_IDX].trim()));
 
 		resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
 			MESSAGE_LINE_IMPORTATION_OK));
@@ -162,7 +165,11 @@ public class MailTrackingImportationHelper {
 	}
     }
 
-    private static LocalDate convertToLocalDate(String value) throws ConversionException {
+    private static LocalDate convertToLocalDate(String value, Boolean allowEmpty) throws ConversionException {
+	if (StringUtils.isEmpty(value.trim())) {
+	    return null;
+	}
+
 	try {
 	    return (LocalDate) new LocalDateConverter("dd.MM.yyyy").convert(LocalDate.class, value);
 	} catch (ConversionException e) {
