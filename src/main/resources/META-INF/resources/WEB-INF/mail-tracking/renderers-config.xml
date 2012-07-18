@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE renderers-config SYSTEM "../fenix-renderers-config.dtd" []>
+<renderers-config>
+	<renderer mode="input" type="java.lang.String" layout="simpleAutoComplete" class="module.mailtracking.presentationTier.renderers.SimpleAutoCompleteInputRenderer" >
+        <property name="autoCompleteItemsStyleClass" value="autoCompleteItems"/>
+        <property name="autoCompleteStyleClass" value="autoComplete"/>
+        <property name="minChars" value="3"/>
+        <property name="valueField" value="value"/>
+        <property name="labelField" value="value"/>
+	</renderer></renderers-config>

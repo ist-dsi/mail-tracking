@@ -1,0 +1,132 @@
+enum module.mailtracking.domain.DocumentType as DocumentType;
+enum module.mailtracking.domain.DocumentState as DocumentState;
+
+class module.mailtracking.domain.Document extends pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile {
+	String description;
+	DocumentType type;
+	DocumentState state;
+}
+
+relation MyOrgCorrespondenceEntry {
+	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntries {
+		multiplicity *;
+	}
+}
+
+relation MyOrgDocument {
+	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.Document playsRole mailTrackingDocuments {
+		multiplicity *;
+	}
+}
+
+relation CorrepondenceEntryDocument {
+	module.mailtracking.domain.Document playsRole documents {
+		multiplicity *;
+	}
+	
+	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
+}
+
+relation MyOrgMailTracking {
+	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.MailTracking playsRole mailTrackings {
+		multiplicity *;
+	}
+}
+
+relation MyOrgMailTrackingInitializer {
+	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.MailTrackingInitializer playsRole mailTrackingInitializer;
+}
+
+relation MailTrackingUnit {
+	module.organization.domain.Unit playsRole unit;
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+}
+
+relation MailTrackingOperators {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForOperations;
+	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole operatorsGroup;
+}
+
+relation MailTrackingViewers {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForView;
+	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole viewersGroup;
+}
+
+relation MailTrackingManagers {
+	module.mailtracking.domain.MailTracking playsRole mailTrackingForManagement;
+	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole managersGroup;
+}
+
+relation MaiTrackingCorrespondenceEntry {
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+}
+
+relation CorrespondenceEntryUserCreator {
+	module.mailtracking.domain.CorrespondenceEntry playsRole createdCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	pt.ist.bennu.core.domain.User playsRole creator;
+}
+
+relation CorrespondenceEntryLastEditor {
+	module.mailtracking.domain.CorrespondenceEntry playsRole editedCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	pt.ist.bennu.core.domain.User playsRole lastEditor;
+}
+
+relation CorrespondenceEntryDeletionResponsible {
+	module.mailtracking.domain.CorrespondenceEntry playsRole deletedCorrespondenceEntries {
+		multiplicity *;
+	}
+	
+	pt.ist.bennu.core.domain.User playsRole deletionResponsible;
+}
+
+relation CorrespondenceEntryOwner {
+	module.organization.domain.Person playsRole owner;
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+}
+
+relation MyOrgMailTrackingYears {
+	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+	module.mailtracking.domain.Year playsRole years {
+		multiplicity *;
+	}
+} 
+
+relation MailTrackingYear {
+	module.mailtracking.domain.MailTracking playsRole mailTracking;
+	module.mailtracking.domain.Year playsRole years {
+		multiplicity *;
+	}
+}
+
+relation YearCorrespondenceEntry {
+	module.mailtracking.domain.CorrespondenceEntry playsRole entries {
+		multiplicity *;
+	}
+	
+	module.mailtracking.domain.Year playsRole year;
+}
+
+relation VirtualHostMailTracking {
+	pt.ist.bennu.core.domain.VirtualHost playsRole virtualHost {
+		multiplicity 0..1;
+	}
+	
+	module.mailtracking.domain.MailTracking playsRole mailTracking {
+		multiplicity *;
+	}
+}
