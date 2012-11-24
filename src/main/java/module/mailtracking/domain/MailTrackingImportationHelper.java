@@ -131,7 +131,6 @@ public class MailTrackingImportationHelper {
 		bean.setWhenReceived(convertToLocalDate(fields[RECEIVED_RECEIVED_DATE_IDX].trim(), false));
 		bean.setSender(fields[RECEIVED_SENDER_IDX].trim());
 
-		System.out.println("---> " + fields[RECEIVED_SENT_DATE_IDX].trim());
 		bean.setWhenSent(convertToLocalDate(fields[RECEIVED_SENT_DATE_IDX].trim(), true));
 		bean.setSenderLetterNumber(fields[RECEIVED_SENDER_LETTER_NUMBER_IDX].trim());
 		bean.setSubject(fields[RECEIVED_SUBJECT_IDX].trim());
