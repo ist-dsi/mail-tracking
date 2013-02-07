@@ -36,6 +36,6 @@ public class PermissionDeniedException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public PermissionDeniedException() {
-	super("error.mail.tracking.lack.permissions");
+        super("error.mail.tracking.lack.permissions");
     }
 }

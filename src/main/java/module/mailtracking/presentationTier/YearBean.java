@@ -53,54 +53,54 @@ public class YearBean implements java.io.Serializable {
     }
 
     public YearBean(final MailTracking mailTracking) {
-	setMailTracking(mailTracking);
+        setMailTracking(mailTracking);
     }
 
     public YearBean(MailTracking mailTracking, Year chosenYear) {
-	setMailTracking(mailTracking);
-	setChosenYear(chosenYear);
-	setNextSentEntryNumber(chosenYear.getNextSentEntryNumber());
-	setNextReceivedEntryNumber(chosenYear.getNextReceivedEntryNumber());
+        setMailTracking(mailTracking);
+        setChosenYear(chosenYear);
+        setNextSentEntryNumber(chosenYear.getNextSentEntryNumber());
+        setNextReceivedEntryNumber(chosenYear.getNextReceivedEntryNumber());
     }
 
     public Integer getYear() {
-	return this.year;
+        return this.year;
     }
 
     public void setYear(final Integer year) {
-	this.year = year;
+        this.year = year;
     }
 
     public MailTracking getMailTracking() {
-	return this.mailTracking;
+        return this.mailTracking;
     }
 
     public void setMailTracking(final MailTracking mailTracking) {
-	this.mailTracking = mailTracking;
+        this.mailTracking = mailTracking;
     }
 
     public Year getChosenYear() {
-	return this.chosenYear;
+        return this.chosenYear;
     }
 
     public void setChosenYear(final Year chosenYear) {
-	this.chosenYear = chosenYear;
+        this.chosenYear = chosenYear;
     }
 
     public Integer getNextSentEntryNumber() {
-	return nextSentEntryNumber;
+        return nextSentEntryNumber;
     }
 
     public void setNextSentEntryNumber(Integer nextSentEntryNumber) {
-	this.nextSentEntryNumber = nextSentEntryNumber;
+        this.nextSentEntryNumber = nextSentEntryNumber;
     }
 
     public Integer getNextReceivedEntryNumber() {
-	return nextReceivedEntryNumber;
+        return nextReceivedEntryNumber;
     }
 
     public void setNextReceivedEntryNumber(Integer nextReceivedEntryNumber) {
-	this.nextReceivedEntryNumber = nextReceivedEntryNumber;
+        this.nextReceivedEntryNumber = nextReceivedEntryNumber;
     }
 
 }

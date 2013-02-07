@@ -46,40 +46,40 @@ public class RecipientAutoCompleteProvider implements AutoCompleteProvider {
 
     @Override
     public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
-	final List<Person> persons = new ArrayList<Person>();
-	MailTracking mailTracking = readMailTracking(argsMap);
+        final List<Person> persons = new ArrayList<Person>();
+        MailTracking mailTracking = readMailTracking(argsMap);
 
-	final String trimmedValue = value.trim();
-	final String[] input = trimmedValue.split(" ");
-	StringNormalizer.normalize(input);
+        final String trimmedValue = value.trim();
+        final String[] input = trimmedValue.split(" ");
+        StringNormalizer.normalize(input);
 
-	for (final User user : mailTracking.getTotalUsers()) {
-	    if (user.hasPerson()) {
-		final String unitName = StringNormalizer.normalize(user.getPerson().getPartyName().getContent());
-		if (hasMatch(input, unitName)) {
-		    persons.add(user.getPerson());
-		}
-	    }
-	}
+        for (final User user : mailTracking.getTotalUsers()) {
+            if (user.hasPerson()) {
+                final String unitName = StringNormalizer.normalize(user.getPerson().getPartyName().getContent());
+                if (hasMatch(input, unitName)) {
+                    persons.add(user.getPerson());
+                }
+            }
+        }
 
-	Collections.sort(persons, Party.COMPARATOR_BY_NAME);
+        Collections.sort(persons, Party.COMPARATOR_BY_NAME);
 
-	return persons;
+        return persons;
 
     }
 
     private boolean hasMatch(final String[] input, final String unitNameParts) {
-	for (final String namePart : input) {
-	    if (unitNameParts.indexOf(namePart) == -1) {
-		return false;
-	    }
-	}
-	return true;
+        for (final String namePart : input) {
+            if (unitNameParts.indexOf(namePart) == -1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private MailTracking readMailTracking(Map<String, String> argsMap) {
-	String mailTrackingId = argsMap.get("mailTrackingId");
+        String mailTrackingId = argsMap.get("mailTrackingId");
 
-	return MailTracking.fromExternalId(mailTrackingId);
+        return MailTracking.fromExternalId(mailTrackingId);
     }
 }

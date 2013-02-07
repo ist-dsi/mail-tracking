@@ -44,25 +44,25 @@ public class RecipientOnSentEntryAutoCompleteProvider implements AutoCompletePro
 
     @Override
     public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
-	Set<AutoCompleteValueWrapper> matchedRecipients = new HashSet<AutoCompleteValueWrapper>();
+        Set<AutoCompleteValueWrapper> matchedRecipients = new HashSet<AutoCompleteValueWrapper>();
 
-	MailTracking mailTracking = readMailTracking(argsMap);
+        MailTracking mailTracking = readMailTracking(argsMap);
 
-	String normalizedValue = StringNormalizer.normalize(value);
+        String normalizedValue = StringNormalizer.normalize(value);
 
-	for (CorrespondenceEntry entry : mailTracking.getActiveEntries(CorrespondenceType.SENT)) {
-	    if (StringNormalizer.normalize(entry.getRecipient()).contains(normalizedValue)) {
-		matchedRecipients.add(new AutoCompleteValueWrapper(entry.getRecipient()));
-	    }
-	}
+        for (CorrespondenceEntry entry : mailTracking.getActiveEntries(CorrespondenceType.SENT)) {
+            if (StringNormalizer.normalize(entry.getRecipient()).contains(normalizedValue)) {
+                matchedRecipients.add(new AutoCompleteValueWrapper(entry.getRecipient()));
+            }
+        }
 
-	return matchedRecipients;
+        return matchedRecipients;
     }
 
     private MailTracking readMailTracking(Map<String, String> argsMap) {
-	String mailTrackingId = argsMap.get("mailTrackingId");
+        String mailTrackingId = argsMap.get("mailTrackingId");
 
-	return MailTracking.fromExternalId(mailTrackingId);
+        return MailTracking.fromExternalId(mailTrackingId);
     }
 
 }

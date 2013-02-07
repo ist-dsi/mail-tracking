@@ -39,14 +39,14 @@ public class DeactivateEntry extends CustomTask implements TransactionalCommand 
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
     @Override
     public void doIt() {
-	CorrespondenceEntry entry = CorrespondenceEntry.fromExternalId("730144443922");
-	entry.setState(CorrespondenceEntryState.DELETED);
+        CorrespondenceEntry entry = CorrespondenceEntry.fromExternalId("730144443922");
+        entry.setState(CorrespondenceEntryState.DELETED);
 
     }
 

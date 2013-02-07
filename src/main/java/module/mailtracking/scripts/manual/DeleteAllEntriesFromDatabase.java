@@ -39,15 +39,15 @@ public class DeleteAllEntriesFromDatabase extends CustomTask implements Transact
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
     @Override
     public void doIt() {
-	final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
+        final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
-	new Helper().removeEntriesFromConcelhoGestaoAndResetCounters(mailtracking);
+        new Helper().removeEntriesFromConcelhoGestaoAndResetCounters(mailtracking);
 
     }
 

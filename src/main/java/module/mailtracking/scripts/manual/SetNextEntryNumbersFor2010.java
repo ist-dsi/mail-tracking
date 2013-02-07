@@ -40,21 +40,21 @@ public class SetNextEntryNumbersFor2010 extends CustomTask implements Transactio
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
     @Override
     public void doIt() {
-	setCountersOnYear();
+        setCountersOnYear();
     }
 
     @Service
     public void setCountersOnYear() {
-	final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
+        final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
-	Year year = mailtracking.getYearFor(2010);
-	year.setNextReceivedEntryNumber(203);
-	year.setNextSentEntryNumber(63);
+        Year year = mailtracking.getYearFor(2010);
+        year.setNextReceivedEntryNumber(203);
+        year.setNextSentEntryNumber(63);
     }
 }

@@ -42,36 +42,36 @@ public class SetVirtualHostForMailTrackingsOnDot extends CustomTask implements T
 
     @Override
     public void doIt() {
-	Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
-	VirtualHost virtualHostForDot = getVirtualHostForDot();
+        Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
+        VirtualHost virtualHostForDot = getVirtualHostForDot();
 
-	for (MailTracking mailTracking : mailTrackings) {
-	    if (mailTracking.hasVirtualHost()) {
-		continue;
-	    }
+        for (MailTracking mailTracking : mailTrackings) {
+            if (mailTracking.hasVirtualHost()) {
+                continue;
+            }
 
-	    mailTracking.setVirtualHost(virtualHostForDot);
-	}
+            mailTracking.setVirtualHost(virtualHostForDot);
+        }
     }
 
     private VirtualHost getVirtualHostForDot() {
-	Set<VirtualHost> virtualHostsSet = MyOrg.getInstance().getVirtualHostsSet();
-	
-	for (VirtualHost virtualHost : virtualHostsSet) {
-	    if ("dot.ist.utl.pt".equals(virtualHost.getHostname())) {
-		return virtualHost;
-	    }
+        Set<VirtualHost> virtualHostsSet = MyOrg.getInstance().getVirtualHostsSet();
 
-	    out.println(virtualHost.getHostname() + " is not equal to 'dot.ist.utl.pt'");
-	}
-	
-	throw new RuntimeException("could not find virtual host for dot");
+        for (VirtualHost virtualHost : virtualHostsSet) {
+            if ("dot.ist.utl.pt".equals(virtualHost.getHostname())) {
+                return virtualHost;
+            }
+
+            out.println(virtualHost.getHostname() + " is not equal to 'dot.ist.utl.pt'");
+        }
+
+        throw new RuntimeException("could not find virtual host for dot");
     }
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
 }

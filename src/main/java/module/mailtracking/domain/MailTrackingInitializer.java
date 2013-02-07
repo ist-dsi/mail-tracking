@@ -41,44 +41,44 @@ public class MailTrackingInitializer extends MailTrackingInitializer_Base implem
     private static ThreadLocal<MailTrackingInitializer> init = null;
 
     public static MailTrackingInitializer getInstance() {
-	if (init != null) {
-	    return init.get();
-	}
+        if (init != null) {
+            return init.get();
+        }
 
-	if (!isInitialized) {
-	    initialize();
-	}
-	final MyOrg myOrg = MyOrg.getInstance();
-	return myOrg.getMailTrackingInitializer();
+        if (!isInitialized) {
+            initialize();
+        }
+        final MyOrg myOrg = MyOrg.getInstance();
+        return myOrg.getMailTrackingInitializer();
     }
 
     @Service
     public synchronized static void initialize() {
-	if (!isInitialized) {
-	    try {
-		final MyOrg myOrg = MyOrg.getInstance();
-		final MailTrackingInitializer initializer = myOrg.getMailTrackingInitializer();
-		if (initializer == null) {
-		    new MailTrackingInitializer();
-		}
-		init = new ThreadLocal<MailTrackingInitializer>();
-		init.set(myOrg.getMailTrackingInitializer());
+        if (!isInitialized) {
+            try {
+                final MyOrg myOrg = MyOrg.getInstance();
+                final MailTrackingInitializer initializer = myOrg.getMailTrackingInitializer();
+                if (initializer == null) {
+                    new MailTrackingInitializer();
+                }
+                init = new ThreadLocal<MailTrackingInitializer>();
+                init.set(myOrg.getMailTrackingInitializer());
 
-		isInitialized = true;
-	    } finally {
-		init = null;
-	    }
-	}
+                isInitialized = true;
+            } finally {
+                init = null;
+            }
+        }
     }
 
     public MailTrackingInitializer() {
-	super();
-	setMyOrg(MyOrg.getInstance());
+        super();
+        setMyOrg(MyOrg.getInstance());
     }
 
     @Override
     public void init(MyOrg root) {
-	OrganizationModelAction.partyViewHookManager.register(new MailTrackingView());
+        OrganizationModelAction.partyViewHookManager.register(new MailTrackingView());
     }
 
 }

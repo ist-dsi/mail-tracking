@@ -38,11 +38,11 @@ public class SetCreationDateOnDocuments extends WriteCustomTask {
 
     @Override
     protected void doService() {
-	MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
+        MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
 
-	for (Document document : mailTracking.getTotalDocuments()) {
-	    document.setCreationDate(document.getCorrespondenceEntry().getCreationDate());
-	}
+        for (Document document : mailTracking.getTotalDocuments()) {
+            document.setCreationDate(document.getCorrespondenceEntry().getCreationDate());
+        }
     }
 
 }

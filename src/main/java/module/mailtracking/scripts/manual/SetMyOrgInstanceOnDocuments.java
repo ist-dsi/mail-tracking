@@ -39,13 +39,13 @@ public class SetMyOrgInstanceOnDocuments extends WriteCustomTask {
 
     @Override
     protected void doService() {
-	MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
+        MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
 
-	for (Document document : mailTracking.getTotalDocuments()) {
-	    if (!document.hasMyOrg()) {
-		document.setMyOrg(MyOrg.getInstance());
-	    }
-	}
+        for (Document document : mailTracking.getTotalDocuments()) {
+            if (!document.hasMyOrg()) {
+                document.setMyOrg(MyOrg.getInstance());
+            }
+        }
 
     }
 }

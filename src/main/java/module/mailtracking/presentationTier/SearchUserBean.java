@@ -34,19 +34,19 @@ import pt.ist.bennu.core.util.BundleUtil;
 public class SearchUserBean implements java.io.Serializable {
 
     public static enum SearchUserMode {
-	NAME, USERNAME;
+        NAME, USERNAME;
 
-	public String getSimpleName() {
-	    return this.name();
-	}
+        public String getSimpleName() {
+            return this.name();
+        }
 
-	public String getQualifiedName() {
-	    return this.getClass().getName() + "." + this.getSimpleName();
-	}
+        public String getQualifiedName() {
+            return this.getClass().getName() + "." + this.getSimpleName();
+        }
 
-	public String getDescription() {
-	    return BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources", this.getQualifiedName());
-	}
+        public String getDescription() {
+            return BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources", this.getQualifiedName());
+        }
     }
 
     private static final long serialVersionUID = 1L;
@@ -59,19 +59,19 @@ public class SearchUserBean implements java.io.Serializable {
     }
 
     public String getValue() {
-	return value;
+        return value;
     }
 
     public void setValue(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     public SearchUserMode getMode() {
-	return mode;
+        return mode;
     }
 
     public void setMode(SearchUserMode mode) {
-	this.mode = mode;
+        this.mode = mode;
     }
 
 }

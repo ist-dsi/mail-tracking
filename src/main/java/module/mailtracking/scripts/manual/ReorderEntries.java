@@ -42,32 +42,32 @@ public class ReorderEntries extends CustomTask implements TransactionalCommand {
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
     @Override
     public void doIt() {
-	MailTracking tracking = MailTracking.readMailTrackingByName("Conselho de Gestão");
+        MailTracking tracking = MailTracking.readMailTrackingByName("Conselho de Gestão");
 
-	for (int i = 482, j = 477; i < 550; i++) {
-	    List<CorrespondenceEntry> entries = tracking.simpleSearch(CorrespondenceType.RECEIVED, "2010/" + i, false);
+        for (int i = 482, j = 477; i < 550; i++) {
+            List<CorrespondenceEntry> entries = tracking.simpleSearch(CorrespondenceType.RECEIVED, "2010/" + i, false);
 
-	    if (entries.isEmpty()) {
-		break;
-	    }
+            if (entries.isEmpty()) {
+                break;
+            }
 
-	    String oldReference = entries.get(0).getReference();
-	    entries.get(0).setReference("2010/" + j++);
-	    out.println(String.format("Old value: %s, New value: %s", oldReference, entries.get(0).getReference()));
-	}
+            String oldReference = entries.get(0).getReference();
+            entries.get(0).setReference("2010/" + j++);
+            out.println(String.format("Old value: %s, New value: %s", oldReference, entries.get(0).getReference()));
+        }
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-	// TODO Auto-generated method stub
+        // TODO Auto-generated method stub
 
     }
 

@@ -34,17 +34,17 @@ import pt.ist.bennu.core.presentationTier.Context;
  * 
  */
 public class EmptyContextLayout extends Context {
-    
+
     public EmptyContextLayout() {
-	super();
+        super();
     }
 
     public EmptyContextLayout(String path) {
-	super(path);
+        super(path);
     }
 
     @Override
     public ActionForward forward(String forward) {
-	return new ActionForward(forward);
+        return new ActionForward(forward);
     }
 }

@@ -38,17 +38,17 @@ import pt.ist.bennu.core.domain.MyOrg;
 public class MailTrackingsOnVirtualHost {
 
     public static final List<MailTracking> retrieve() {
-	Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
+        Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
 
-	List<MailTracking> result = new ArrayList<MailTracking>();
+        List<MailTracking> result = new ArrayList<MailTracking>();
 
-	for (MailTracking tracking : mailTrackings) {
-	    if (tracking.isConnectedToCurrentHost()) {
-		result.add(tracking);
-	    }
-	}
-	
-	return result;
+        for (MailTracking tracking : mailTrackings) {
+            if (tracking.isConnectedToCurrentHost()) {
+                result.add(tracking);
+            }
+        }
+
+        return result;
     }
 
 }
