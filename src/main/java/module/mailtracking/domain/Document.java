@@ -32,7 +32,7 @@ import org.joda.time.DateTime;
 
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -84,12 +84,12 @@ public class Document extends Document_Base {
         }
     }
 
-    @Service
+    @Atomic
     public void deleteDocument() {
         this.setState(DocumentState.DELETED);
     }
 
-    @Service
+    @Atomic
     public static Document saveDocument(String displayName, String filename, byte[] content, String description, DocumentType type) {
         return new Document(displayName, filename, content, description, type);
     }

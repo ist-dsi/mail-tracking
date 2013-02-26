@@ -28,7 +28,7 @@ import module.mailtracking.presentationTier.MailTrackingView;
 import module.organization.presentationTier.actions.OrganizationModelAction;
 import pt.ist.bennu.core.domain.ModuleInitializer;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -52,7 +52,7 @@ public class MailTrackingInitializer extends MailTrackingInitializer_Base implem
         return myOrg.getMailTrackingInitializer();
     }
 
-    @Service
+    @Atomic
     public synchronized static void initialize() {
         if (!isInitialized) {
             try {

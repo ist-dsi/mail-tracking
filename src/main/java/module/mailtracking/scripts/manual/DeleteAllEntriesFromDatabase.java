@@ -24,27 +24,19 @@
  */
 package module.mailtracking.scripts.manual;
 
-import jvstm.TransactionalCommand;
 import module.mailtracking.domain.Helper;
 import module.mailtracking.domain.MailTracking;
-import pt.ist.bennu.core.domain.scheduler.CustomTask;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class DeleteAllEntriesFromDatabase extends CustomTask implements TransactionalCommand {
+public class DeleteAllEntriesFromDatabase extends WriteCustomTask {
 
     @Override
-    public void run() {
-        Transaction.withTransaction(false, this);
-        out.println("Done.");
-    }
-
-    @Override
-    public void doIt() {
+    public void doService() {
         final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
         new Helper().removeEntriesFromConcelhoGestaoAndResetCounters(mailtracking);

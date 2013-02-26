@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -101,7 +101,7 @@ public class Year extends Year_Base {
         return getYearFor(mailTracking, time);
     }
 
-    @Service
+    @Atomic
     public static Year createYearFor(MailTracking mailTracking, Integer forYear) {
 
         if (forYear < 2007) {
@@ -235,7 +235,7 @@ public class Year extends Year_Base {
         super.setNextReceivedEntryNumber(1);
     }
 
-    @Service
+    @Atomic
     public void setCounters(Integer nextSentEntryNumber, Integer nextReceivedEntryNumber) {
         if (nextSentEntryNumber < 0) {
             throw new DomainException("error.mail.tracking.next.sent.entry.number.invalid");

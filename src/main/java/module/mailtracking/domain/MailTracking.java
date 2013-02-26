@@ -44,7 +44,7 @@ import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.domain.groups.NamedGroup;
 import pt.ist.bennu.core.domain.groups.People;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -80,7 +80,7 @@ public class MailTracking extends MailTracking_Base {
         }
     }
 
-    @Service
+    @Atomic
     public static MailTracking createMailTracking(Unit unit) {
         if (unit.hasMailTracking()) {
             throw new DomainException("error.mail.tracking.exists.for.unit");
@@ -108,37 +108,37 @@ public class MailTracking extends MailTracking_Base {
         return mailTracking;
     }
 
-    @Service
+    @Atomic
     public void removeOperator(final User user) {
         ((People) this.getOperatorsGroup()).removeUsers(user);
     }
 
-    @Service
+    @Atomic
     public void addOperator(final User user) {
         ((People) this.getOperatorsGroup()).addUsers(user);
     }
 
-    @Service
+    @Atomic
     public void addViewer(final User user) {
         ((People) this.getViewersGroup()).addUsers(user);
     }
 
-    @Service
+    @Atomic
     public void removeViewer(final User user) {
         ((People) this.getViewersGroup()).removeUsers(user);
     }
 
-    @Service
+    @Atomic
     public void addManager(final User user) {
         ((People) this.getManagersGroup()).addUsers(user);
     }
 
-    @Service
+    @Atomic
     public void removeManager(final User user) {
         ((People) this.getManagersGroup()).removeUsers(user);
     }
 
-    @Service
+    @Atomic
     public void edit(MailTrackingBean bean) {
 
         this.setName(bean.getName());
@@ -178,8 +178,9 @@ public class MailTracking extends MailTracking_Base {
         return filterEntriesByTypeAndState(this.getEntries(), state, type);
     }
 
-    static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(final java.util.List<CorrespondenceEntry> entries,
-            final CorrespondenceEntryState state, final CorrespondenceType type) {
+    static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(
+            final java.util.Collection<CorrespondenceEntry> entries, final CorrespondenceEntryState state,
+            final CorrespondenceType type) {
         java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
         CollectionUtils.select(entries, new Predicate() {
@@ -214,7 +215,7 @@ public class MailTracking extends MailTracking_Base {
         return entries;
     }
 
-    @Service
+    @Atomic
     public CorrespondenceEntry createNewEntry(CorrespondenceEntryBean bean, CorrespondenceType type, Document mainDocument)
             throws Exception {
 
@@ -227,7 +228,7 @@ public class MailTracking extends MailTracking_Base {
         return entry;
     }
 
-    @Service
+    @Atomic
     public CorrespondenceEntry editEntry(CorrespondenceEntryBean bean) {
         bean.getEntry().edit(bean);
         return bean.getEntry();
@@ -504,7 +505,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public java.util.List<Document> getTotalDocuments() {
-        java.util.List<CorrespondenceEntry> entries = this.getEntries();
+        java.util.Collection<CorrespondenceEntry> entries = this.getEntries();
 
         java.util.List<Document> allDocuments = new java.util.ArrayList<Document>();
 
@@ -533,12 +534,12 @@ public class MailTracking extends MailTracking_Base {
         return Year.getYearFor(this, date);
     }
 
-    @Service
+    @Atomic
     public Year createYearFor(Integer year) {
         return Year.createYearFor(this, year);
     }
 
-    @Service
+    @Atomic
     public void reIndexEntriesByYear() {
         for (CorrespondenceEntry entry : this.getEntries()) {
             entry.reIndexByYear();

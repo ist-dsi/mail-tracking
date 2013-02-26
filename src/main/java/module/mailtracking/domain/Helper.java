@@ -27,7 +27,7 @@ package module.mailtracking.domain;
 import java.util.Collections;
 import java.util.List;
 
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
@@ -37,7 +37,7 @@ import pt.utl.ist.fenix.tools.util.StringNormalizer;
  */
 public class Helper {
 
-    @Service
+    @Atomic
     public void reNumberEntries(final MailTracking mailTracking) {
         for (Year year : mailTracking.getYears()) {
             year.resetCounters();
@@ -63,7 +63,7 @@ public class Helper {
 
     }
 
-    @Service
+    @Atomic
     public void removeEntriesFromConcelhoGestaoAndResetCounters(final MailTracking mailtracking) {
         for (CorrespondenceEntry entry : mailtracking.getEntries()) {
             entry.deleteDomainObject();
@@ -106,7 +106,7 @@ public class Helper {
         year.setNextSentEntryNumber(nextSentEntryNumber);
     }
 
-    @Service
+    @Atomic
     public void setCountersOnYear() {
         final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 

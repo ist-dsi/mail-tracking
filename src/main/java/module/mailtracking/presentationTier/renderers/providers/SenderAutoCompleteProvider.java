@@ -35,6 +35,7 @@ import module.organization.domain.Party;
 import module.organization.domain.Person;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+import pt.ist.fenixframework.FenixFramework;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
@@ -80,7 +81,7 @@ public class SenderAutoCompleteProvider implements AutoCompleteProvider {
     private MailTracking readMailTracking(Map<String, String> argsMap) {
         String mailTrackingId = argsMap.get("mailTrackingId");
 
-        return MailTracking.fromExternalId(mailTrackingId);
+        return FenixFramework.getDomainObject(mailTrackingId);
     }
 
 }

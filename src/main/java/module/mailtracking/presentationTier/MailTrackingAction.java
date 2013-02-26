@@ -66,6 +66,7 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.FenixFramework;
 
 /**
  * 
@@ -90,7 +91,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
         if (mailTracking == null) {
             String mailTrackingId = request.getParameter("mailTrackingId");
-            mailTracking = MailTracking.fromExternalId(mailTrackingId);
+            mailTracking = FenixFramework.getDomainObject(mailTrackingId);
         }
 
         request.setAttribute("mailTracking", mailTracking);
@@ -450,7 +451,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     protected CorrespondenceEntry getCorrespondenceEntryWithExternalId(final HttpServletRequest request) {
         String entryId = this.getAttribute(request, "entryId");
-        return CorrespondenceEntry.fromExternalId(entryId);
+        return FenixFramework.getDomainObject(entryId);
     }
 
     private static final java.util.Map<String, Object> SENT_CORRESPONDENCE_TABLE_COLUMNS_MAP =
@@ -795,7 +796,7 @@ public class MailTrackingAction extends ContextBaseAction {
         }
 
         String documentId = request.getParameter("fileId");
-        final Document document = CorrespondenceEntry.fromExternalId(documentId);
+        final Document document = FenixFramework.getDomainObject(documentId);
 
         return download(response, document.getFilename(), document.getContent(), document.getContentType());
     }
