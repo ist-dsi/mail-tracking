@@ -3,19 +3,19 @@
   <parent>
     <groupId>pt.ist</groupId>
     <artifactId>bennu-project</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
   <groupId>pt.ist</groupId>
   <artifactId>mail-tracking</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>mail-tracking</name>
   <properties>
-    <version.pt.ist.bennu.core>1.0-SNAPSHOT</version.pt.ist.bennu.core>
-    <version.pt.ist.content>1.0-SNAPSHOT</version.pt.ist.content>
-    <version.pt.ist.organization>1.1-SNAPSHOT</version.pt.ist.organization>
-    <version.pt.ist.file.support>1.0-SNAPSHOT</version.pt.ist.file.support>
-    <version.pt.ist.scheduler>1.0-SNAPSHOT</version.pt.ist.scheduler>
+    <version.pt.ist.bennu.core>1.0.0</version.pt.ist.bennu.core>
+    <version.pt.ist.content>1.0.0</version.pt.ist.content>
+    <version.pt.ist.organization>1.0.0</version.pt.ist.organization>
+    <version.pt.ist.file.support>1.0.0</version.pt.ist.file.support>
+    <version.pt.ist.scheduler>1.0.0</version.pt.ist.scheduler>
   </properties>
   <dependencies>
     <dependency>
