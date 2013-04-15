@@ -80,7 +80,7 @@ public class Year extends Year_Base {
             throw new DomainException("error.mail.tracking.year.end.before.start.date");
         }
 
-        for (Year year : getMailTracking().getYears()) {
+        for (Year year : getMailTracking().getYearsSet()) {
             if (this == year) {
                 continue;
             }
@@ -119,7 +119,7 @@ public class Year extends Year_Base {
     }
 
     static Year getYearFor(final MailTracking mailTracking, final DateTime date) {
-        for (Year year : mailTracking.getYears()) {
+        for (Year year : mailTracking.getYearsSet()) {
             if (year.isBetween(date)) {
                 return year;
             }
@@ -141,7 +141,7 @@ public class Year extends Year_Base {
     }
 
     private java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
-        return MailTracking.filterEntriesByTypeAndState(this.getEntries(), state, type);
+        return MailTracking.filterEntriesByTypeAndState(this.getEntriesSet(), state, type);
     }
 
     // TODO REFACTOR

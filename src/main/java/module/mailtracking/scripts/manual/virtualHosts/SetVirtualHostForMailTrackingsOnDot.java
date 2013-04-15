@@ -44,7 +44,7 @@ public class SetVirtualHostForMailTrackingsOnDot extends WriteCustomTask {
         VirtualHost virtualHostForDot = getVirtualHostForDot();
 
         for (MailTracking mailTracking : mailTrackings) {
-            if (mailTracking.hasVirtualHost()) {
+            if (mailTracking.getVirtualHost() != null) {
                 continue;
             }
 

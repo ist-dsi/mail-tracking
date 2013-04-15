@@ -104,10 +104,10 @@ public class Document extends Document_Base {
 
     @Override
     public void deleteDomainObject() {
-        removeCorrespondenceEntry();
+        setCorrespondenceEntry(null);
         // removeMyOrg();
-        removeStorage();
-        removeFileSupport();
+        setStorage(null);
+        setFileSupport(null);
 
         super.deleteDomainObject();
     }

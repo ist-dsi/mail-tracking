@@ -82,7 +82,7 @@ public class MailTracking extends MailTracking_Base {
 
     @Atomic
     public static MailTracking createMailTracking(Unit unit) {
-        if (unit.hasMailTracking()) {
+        if (unit.getMailTracking() != null) {
             throw new DomainException("error.mail.tracking.exists.for.unit");
         }
 
@@ -98,7 +98,7 @@ public class MailTracking extends MailTracking_Base {
 
         People viewers = new NamedGroup("viewers");
         for (Person person : unit.getChildPersons()) {
-            if (person.hasUser()) {
+            if (person.getUser() != null) {
                 viewers.addUsers(person.getUser());
             }
         }
@@ -175,7 +175,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
-        return filterEntriesByTypeAndState(this.getEntries(), state, type);
+        return filterEntriesByTypeAndState(this.getEntriesSet(), state, type);
     }
 
     static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(
@@ -505,12 +505,12 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public java.util.List<Document> getTotalDocuments() {
-        java.util.Collection<CorrespondenceEntry> entries = this.getEntries();
+        java.util.Collection<CorrespondenceEntry> entries = this.getEntriesSet();
 
         java.util.List<Document> allDocuments = new java.util.ArrayList<Document>();
 
         for (CorrespondenceEntry entry : entries) {
-            allDocuments.addAll(entry.getDocuments());
+            allDocuments.addAll(entry.getDocumentsSet());
         }
 
         return allDocuments;
@@ -541,13 +541,13 @@ public class MailTracking extends MailTracking_Base {
 
     @Atomic
     public void reIndexEntriesByYear() {
-        for (CorrespondenceEntry entry : this.getEntries()) {
+        for (CorrespondenceEntry entry : this.getEntriesSet()) {
             entry.reIndexByYear();
         }
     }
 
     public Year getCurrentYear() {
-        for (Year year : getYears()) {
+        for (Year year : getYearsSet()) {
             if (year.isBetween(new DateTime())) {
                 return year;
             }

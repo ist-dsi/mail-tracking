@@ -55,7 +55,7 @@ public class SenderAutoCompleteProvider implements AutoCompleteProvider {
         StringNormalizer.normalize(input);
 
         for (final User user : mailTracking.getTotalUsers()) {
-            if (user.hasPerson()) {
+            if (user.getPerson() != null) {
                 final String unitName = StringNormalizer.normalize(user.getPerson().getPartyName().getContent());
                 if (hasMatch(input, unitName)) {
                     persons.add(user.getPerson());

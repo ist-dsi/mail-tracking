@@ -230,7 +230,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public static java.util.List<CorrespondenceEntry> getActiveEntries() {
-        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntries();
+        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntriesSet();
         java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
         CollectionUtils.select(allEntries, new Predicate() {
@@ -246,7 +246,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public static java.util.List<CorrespondenceEntry> getActiveEntries(final CorrespondenceType type) {
-        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntries();
+        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntriesSet();
         java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
         CollectionUtils.select(allEntries, new Predicate() {
@@ -516,7 +516,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     public java.util.List<Document> getActiveDocuments() {
         java.util.List<Document> associatedDocuments = new java.util.ArrayList<Document>();
 
-        CollectionUtils.select(this.getDocuments(), new Predicate() {
+        CollectionUtils.select(this.getDocumentsSet(), new Predicate() {
 
             @Override
             public boolean evaluate(Object arg0) {
@@ -565,7 +565,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public Document getMainDocument() {
-        return (Document) CollectionUtils.find(this.getDocuments(), new Predicate() {
+        return (Document) CollectionUtils.find(this.getDocumentsSet(), new Predicate() {
 
             @Override
             public boolean evaluate(Object arg0) {
@@ -591,18 +591,18 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     @Override
     public void deleteDomainObject() {
-        removeCreator();
-        removeDeletionResponsible();
+        setCreator(null);
+        setDeletionResponsible(null);
 
-        for (Document document : getDocuments()) {
+        for (Document document : getDocumentsSet()) {
             document.deleteDomainObject();
         }
 
-        removeLastEditor();
-        removeMailTracking();
-        removeMyOrg();
-        removeOwner();
-        removeYear();
+        setLastEditor(null);
+        setMailTracking(null);
+        setMyOrg(null);
+        setOwner(null);
+        setYear(null);
 
         super.deleteDomainObject();
 
@@ -613,7 +613,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public java.util.List<Document> getDocumentsSortedBy(Comparator<Document> comparator) {
-        java.util.List<Document> documents = new java.util.ArrayList<Document>(getDocuments());
+        java.util.List<Document> documents = new java.util.ArrayList<Document>(getDocumentsSet());
         Collections.sort(documents, comparator);
 
         return documents;
@@ -621,8 +621,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     @Atomic
     public void deleteDocument(Document document) {
-        if (document.isMainDocument() && !getDocuments().isEmpty()) {
-            getDocuments().iterator().next().setType(DocumentType.MAIN_DOCUMENT);
+        if (document.isMainDocument() && !getDocumentsSet().isEmpty()) {
+            getDocumentsSet().iterator().next().setType(DocumentType.MAIN_DOCUMENT);
         }
 
         document.deleteDocument();

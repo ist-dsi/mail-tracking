@@ -39,7 +39,7 @@ public class Helper {
 
     @Atomic
     public void reNumberEntries(final MailTracking mailTracking) {
-        for (Year year : mailTracking.getYears()) {
+        for (Year year : mailTracking.getYearsSet()) {
             year.resetCounters();
         }
 
@@ -65,11 +65,11 @@ public class Helper {
 
     @Atomic
     public void removeEntriesFromConcelhoGestaoAndResetCounters(final MailTracking mailtracking) {
-        for (CorrespondenceEntry entry : mailtracking.getEntries()) {
+        for (CorrespondenceEntry entry : mailtracking.getEntriesSet()) {
             entry.deleteDomainObject();
         }
 
-        for (Year year : mailtracking.getYears()) {
+        for (Year year : mailtracking.getYearsSet()) {
             year.resetCounters();
         }
     }

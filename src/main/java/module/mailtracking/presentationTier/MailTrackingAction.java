@@ -1053,7 +1053,7 @@ public class MailTrackingAction extends ContextBaseAction {
         @Override
         public Object provide(Object source, Object currentValue) {
             YearBean bean = (YearBean) source;
-            return bean.getMailTracking().getYears();
+            return bean.getMailTracking().getYearsSet();
         }
     }
 
