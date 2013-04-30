@@ -1,53 +1,59 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>pt.ist</groupId>
+        <artifactId>bennu-project</artifactId>
+        <version>1.1.0-rc1</version>
+    </parent>
+
     <groupId>pt.ist</groupId>
-    <artifactId>bennu-project</artifactId>
-    <version>1.1.0-rc1</version>
-  </parent>
-  <groupId>pt.ist</groupId>
-  <artifactId>mail-tracking</artifactId>
-  <version>1.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <name>mail-tracking</name>
-  <properties>
-    <version.pt.ist.bennu.core>1.1.0-rc1</version.pt.ist.bennu.core>
-    <version.pt.ist.content>1.1.0-rc1</version.pt.ist.content>
-    <version.pt.ist.organization>1.1.0-rc1</version.pt.ist.organization>
-    <version.pt.ist.file.support>1.1.0-rc1</version.pt.ist.file.support>
-    <version.pt.ist.scheduler>1.1.0-rc1</version.pt.ist.scheduler>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>bennu-core</artifactId>
-      <version>${version.pt.ist.bennu.core}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>content</artifactId>
-      <version>${version.pt.ist.content}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>organization</artifactId>
-      <version>${version.pt.ist.organization}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>file-support</artifactId>
-      <version>${version.pt.ist.file.support}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>scheduler</artifactId>
-      <version>${version.pt.ist.scheduler}</version>
-    </dependency>
-  </dependencies>
-  <repositories>
-    <repository>
-      <id>fenix-ashes-maven-repository</id>
-      <url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
-    </repository>
-  </repositories>
+    <artifactId>mail-tracking</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>mail-tracking</name>
+
+    <properties>
+        <version.pt.ist.bennu.core>1.1.0-rc1</version.pt.ist.bennu.core>
+        <version.pt.ist.content>1.1.0-rc1</version.pt.ist.content>
+        <version.pt.ist.organization>1.1.0-rc1</version.pt.ist.organization>
+        <version.pt.ist.file.support>1.1.0-rc1</version.pt.ist.file.support>
+        <version.pt.ist.scheduler>1.1.0-rc1</version.pt.ist.scheduler>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>bennu-core</artifactId>
+            <version>${version.pt.ist.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>content</artifactId>
+            <version>${version.pt.ist.content}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>organization</artifactId>
+            <version>${version.pt.ist.organization}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>file-support</artifactId>
+            <version>${version.pt.ist.file.support}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>scheduler</artifactId>
+            <version>${version.pt.ist.scheduler}</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>fenix-ashes-maven-repository</id>
+            <url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
+        </repository>
+    </repositories>
 </project>
