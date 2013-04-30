@@ -33,7 +33,8 @@ import org.joda.time.LocalDate;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.components.converters.ConversionException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.core.WriteOnReadError;
 
 /**
  * 
@@ -52,7 +53,7 @@ public class MailTrackingImportationHelper {
     private static final String MESSAGE_LINE_IMPORTATION_OK = "message.mail.tracking.importation.ok";
     private static final String MESSAGE_LINE_IMPORTATION_ERROR = "message.mail.tracking.importation.error";
 
-    @Service
+    @Atomic
     public static void importSentMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
             java.util.List<ImportationReportEntry> results) {
 
@@ -78,7 +79,7 @@ public class MailTrackingImportationHelper {
 
                 resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
                         MESSAGE_LINE_IMPORTATION_OK));
-            } catch (pt.ist.fenixframework.pstm.IllegalWriteException e) {
+            } catch (WriteOnReadError e) {
                 throw e;
             } catch (Exception e) {
                 errorOcurred = true;
@@ -109,7 +110,7 @@ public class MailTrackingImportationHelper {
     private static final Integer RECEIVED_RECIPIENT_IDX = 8;
     private static final Integer DISPATCHED_TO_WHOM_IDX = 9;
 
-    @Service
+    @Atomic
     public static void importReceivedMailTrackingFromCsv(MailTracking mailTracking, java.util.List<String> importationContents,
             java.util.List<ImportationReportEntry> results) {
 
@@ -143,7 +144,7 @@ public class MailTrackingImportationHelper {
 
                 resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
                         MESSAGE_LINE_IMPORTATION_OK));
-            } catch (pt.ist.fenixframework.pstm.IllegalWriteException e) {
+            } catch (WriteOnReadError e) {
                 throw e;
             } catch (Exception e) {
                 errorOcurred = true;

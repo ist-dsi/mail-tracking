@@ -33,6 +33,7 @@ import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+import pt.ist.fenixframework.FenixFramework;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
@@ -62,7 +63,7 @@ public class SenderOnReceivedEntryAutoCompleteProvider implements AutoCompletePr
     private MailTracking readMailTracking(Map<String, String> argsMap) {
         String mailTrackingId = argsMap.get("mailTrackingId");
 
-        return MailTracking.fromExternalId(mailTrackingId);
+        return FenixFramework.getDomainObject(mailTrackingId);
     }
 
 }

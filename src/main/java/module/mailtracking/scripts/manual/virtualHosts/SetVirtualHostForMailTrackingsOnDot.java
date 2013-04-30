@@ -26,27 +26,25 @@ package module.mailtracking.scripts.manual.virtualHosts;
 
 import java.util.Set;
 
-import jvstm.TransactionalCommand;
 import module.mailtracking.domain.MailTracking;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.scheduler.CustomTask;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class SetVirtualHostForMailTrackingsOnDot extends CustomTask implements TransactionalCommand {
+public class SetVirtualHostForMailTrackingsOnDot extends WriteCustomTask {
 
     @Override
-    public void doIt() {
+    public void doService() {
         Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
         VirtualHost virtualHostForDot = getVirtualHostForDot();
 
         for (MailTracking mailTracking : mailTrackings) {
-            if (mailTracking.hasVirtualHost()) {
+            if (mailTracking.getVirtualHost() != null) {
                 continue;
             }
 
@@ -66,12 +64,6 @@ public class SetVirtualHostForMailTrackingsOnDot extends CustomTask implements T
         }
 
         throw new RuntimeException("could not find virtual host for dot");
-    }
-
-    @Override
-    public void run() {
-        Transaction.withTransaction(false, this);
-        out.println("Done.");
     }
 
 }

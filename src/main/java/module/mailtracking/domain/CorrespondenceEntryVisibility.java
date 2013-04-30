@@ -54,7 +54,7 @@ public enum CorrespondenceEntryVisibility {
     ONLY_OWNER_AND_OPERATOR {
         @Override
         public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
-            return (entry.hasOwner() && entry.getOwner().equals(user.getPerson()))
+            return (entry.getOwner() != null && entry.getOwner().equals(user.getPerson()))
                     || (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
                     || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
         }

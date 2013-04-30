@@ -43,7 +43,7 @@ public class MailTrackingYearProvider implements DataProvider {
 
     @Override
     public Object provide(Object source, Object currentValue) {
-        return ((YearBean) source).getMailTracking().getYears();
+        return ((YearBean) source).getMailTracking().getYearsSet();
     }
 
 }
