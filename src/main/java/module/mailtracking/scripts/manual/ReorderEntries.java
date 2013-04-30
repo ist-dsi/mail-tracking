@@ -26,28 +26,20 @@ package module.mailtracking.scripts.manual;
 
 import java.util.List;
 
-import jvstm.TransactionalCommand;
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
-import pt.ist.bennu.core.domain.scheduler.CustomTask;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class ReorderEntries extends CustomTask implements TransactionalCommand {
+public class ReorderEntries extends WriteCustomTask {
 
     @Override
-    public void run() {
-        Transaction.withTransaction(false, this);
-        out.println("Done.");
-    }
-
-    @Override
-    public void doIt() {
+    public void doService() {
         MailTracking tracking = MailTracking.readMailTrackingByName("Conselho de Gestão");
 
         for (int i = 482, j = 477; i < 550; i++) {

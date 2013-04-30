@@ -50,6 +50,7 @@ import pt.ist.bennu.core.presentationTier.Context;
 import pt.ist.bennu.core.presentationTier.LayoutContext;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.FenixFramework;
 
 @Mapping(path = "/mailTrackingOrganizationModel")
 /**
@@ -164,7 +165,7 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
     }
 
     private User readUser(HttpServletRequest request) {
-        return User.fromExternalId(request.getParameter("userId"));
+        return FenixFramework.getDomainObject(request.getParameter("userId"));
     }
 
     private SearchUserBean readSearchUserBean(HttpServletRequest request) {

@@ -42,7 +42,7 @@ public class SetMyOrgInstanceOnDocuments extends WriteCustomTask {
         MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
 
         for (Document document : mailTracking.getTotalDocuments()) {
-            if (!document.hasMyOrg()) {
+            if (document.getMyOrg() == null) {
                 document.setMyOrg(MyOrg.getInstance());
             }
         }
