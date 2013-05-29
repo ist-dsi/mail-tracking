@@ -24,28 +24,21 @@
  */
 package module.mailtracking.scripts.manual;
 
-import jvstm.TransactionalCommand;
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceEntryState;
-import pt.ist.bennu.core.domain.scheduler.CustomTask;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.fenixframework.FenixFramework;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class DeactivateEntry extends CustomTask implements TransactionalCommand {
+public class DeactivateEntry extends WriteCustomTask {
 
     @Override
-    public void run() {
-        Transaction.withTransaction(false, this);
-        out.println("Done.");
-    }
-
-    @Override
-    public void doIt() {
-        CorrespondenceEntry entry = CorrespondenceEntry.fromExternalId("730144443922");
+    public void doService() {
+        CorrespondenceEntry entry = FenixFramework.getDomainObject("730144443922");
         entry.setState(CorrespondenceEntryState.DELETED);
 
     }

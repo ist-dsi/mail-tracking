@@ -42,6 +42,7 @@ import pt.ist.bennu.core.presentationTier.Context;
 import pt.ist.bennu.core.presentationTier.LayoutContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.FenixFramework;
 
 @Mapping(path = "/manageMailTracking")
 /**
@@ -85,7 +86,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
     }
 
     private static User readUser(HttpServletRequest request) {
-        return User.fromExternalId(request.getParameter("userId"));
+        return FenixFramework.getDomainObject(request.getParameter("userId"));
     }
 
     public ActionForward removeViewer(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

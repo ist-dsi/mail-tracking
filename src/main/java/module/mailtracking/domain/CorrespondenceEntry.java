@@ -42,7 +42,7 @@ import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -79,7 +79,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     };
 
     public static class CorrespondenceEntryFieldComparator implements Comparator<CorrespondenceEntry> {
-        private Comparator beanComparator;
+        private final Comparator beanComparator;
 
         public CorrespondenceEntryFieldComparator(final String property) {
             beanComparator = new BeanComparator(property);
@@ -230,7 +230,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public static java.util.List<CorrespondenceEntry> getActiveEntries() {
-        java.util.List<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntries();
+        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntriesSet();
         java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
         CollectionUtils.select(allEntries, new Predicate() {
@@ -246,7 +246,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public static java.util.List<CorrespondenceEntry> getActiveEntries(final CorrespondenceType type) {
-        java.util.List<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntries();
+        java.util.Collection<CorrespondenceEntry> allEntries = MyOrg.getInstance().getCorrespondenceEntriesSet();
         java.util.List<CorrespondenceEntry> activeEntries = new java.util.ArrayList<CorrespondenceEntry>();
 
         CollectionUtils.select(allEntries, new Predicate() {
@@ -492,7 +492,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
         return new CorrespondenceEntryBean(this);
     }
 
-    @Service
+    @Atomic
     public void delete(String reason) {
         if (StringUtils.isEmpty(reason)) {
             throw new DomainException("error.mailtracking.deletion.reason.cannot.be.null");
@@ -504,7 +504,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
         this.setDeletionDate(new DateTime());
     }
 
-    @Service
+    @Atomic
     public void associateDocument(Document document) {
         if (document == null) {
             throw new DomainException("error.mailtracking.associate.document.is.null");
@@ -516,7 +516,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     public java.util.List<Document> getActiveDocuments() {
         java.util.List<Document> associatedDocuments = new java.util.ArrayList<Document>();
 
-        CollectionUtils.select(this.getDocuments(), new Predicate() {
+        CollectionUtils.select(this.getDocumentsSet(), new Predicate() {
 
             @Override
             public boolean evaluate(Object arg0) {
@@ -565,7 +565,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public Document getMainDocument() {
-        return (Document) CollectionUtils.find(this.getDocuments(), new Predicate() {
+        return (Document) CollectionUtils.find(this.getDocumentsSet(), new Predicate() {
 
             @Override
             public boolean evaluate(Object arg0) {
@@ -591,18 +591,18 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     @Override
     public void deleteDomainObject() {
-        removeCreator();
-        removeDeletionResponsible();
+        setCreator(null);
+        setDeletionResponsible(null);
 
-        for (Document document : getDocuments()) {
+        for (Document document : getDocumentsSet()) {
             document.deleteDomainObject();
         }
 
-        removeLastEditor();
-        removeMailTracking();
-        removeMyOrg();
-        removeOwner();
-        removeYear();
+        setLastEditor(null);
+        setMailTracking(null);
+        setMyOrg(null);
+        setOwner(null);
+        setYear(null);
 
         super.deleteDomainObject();
 
@@ -613,16 +613,16 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public java.util.List<Document> getDocumentsSortedBy(Comparator<Document> comparator) {
-        java.util.List<Document> documents = new java.util.ArrayList<Document>(getDocuments());
+        java.util.List<Document> documents = new java.util.ArrayList<Document>(getDocumentsSet());
         Collections.sort(documents, comparator);
 
         return documents;
     }
 
-    @Service
+    @Atomic
     public void deleteDocument(Document document) {
-        if (document.isMainDocument() && !getDocuments().isEmpty()) {
-            getDocuments().get(0).setType(DocumentType.MAIN_DOCUMENT);
+        if (document.isMainDocument() && !getDocumentsSet().isEmpty()) {
+            getDocumentsSet().iterator().next().setType(DocumentType.MAIN_DOCUMENT);
         }
 
         document.deleteDocument();
