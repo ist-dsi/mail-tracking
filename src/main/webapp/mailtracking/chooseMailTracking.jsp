@@ -51,14 +51,14 @@
 								</html:link>
 							</li>
 							<% } %>
-							
-							<% if(((MailTracking) mailTracking).isCurrentUserAbleToImportEntries()) { %>
+                            <%-- Currently disabled functionality							
+                                                       <% if(((MailTracking) mailTracking).isCurrentUserAbleToImportEntries()) { %>
 							<li>
 								<html:link page="<%= String.format("") %>" >
 									<bean:message key="label.mail.tracking.entries.importation.action" bundle="MAIL_TRACKING_RESOURCES" />
 								</html:link>
 							</li>
-							<% } %>
+							<% } %> --%>
 						</ul>
 					</td>
 				</tr>
