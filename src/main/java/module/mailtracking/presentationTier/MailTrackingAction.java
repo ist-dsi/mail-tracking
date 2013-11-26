@@ -327,13 +327,15 @@ public class MailTrackingAction extends ContextBaseAction {
         }
 
         final String reference = correspondenceEntryBean.getReference();
+        final CorrespondenceEntry entry = correspondenceEntryBean.getEntry();
 
         if (CollectionUtils.select(correspondenceEntryBean.getMailTracking().getActiveEntries(correspondenceType),
                 new Predicate() {
 
                     @Override
                     public boolean evaluate(Object arg0) {
-                        return ((CorrespondenceEntry) arg0).getReference().equals(reference);
+                        return ((CorrespondenceEntry) arg0).getReference().equals(reference)
+                                && ((CorrespondenceEntry) arg0) != entry; // if they are the same
                     }
                 }).size() >= 1) {
             addMessage(request, "error.mail.tracking.reference.duplicated");
