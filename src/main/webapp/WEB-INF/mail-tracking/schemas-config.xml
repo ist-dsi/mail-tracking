@@ -9,6 +9,12 @@
 	<slot name="sender" key="label.sender" />
 </schema>
 
+<schema name="module.mailtracking.logs" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
+	<slot name="whenOperation" key="label.logs.whenOperation" />
+	<slot name="username" key="label.logs.username" />
+	<slot name="operationDescription" key="label.logs.operationDescription" />
+</schema>
+
 <schema name="module.mailtracking.correspondence.sent.entries.view.detailed" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
 	<slot name="reference" key="label.registry.number.detailed" />
 	<slot name="whenSent" key="label.whenSent" />

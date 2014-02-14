@@ -29,6 +29,13 @@ relation CorrepondenceEntryDocument {
 	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
 }
 
+relation CorrepondenceEntryCorrespondenceEntryLog {
+	module.mailtracking.domain.CorrespondenceEntryLog playsRole logs {
+		multiplicity *;
+	}
+	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
+}
+
 relation MyOrgMailTracking {
 	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
 	module.mailtracking.domain.MailTracking playsRole mailTrackings {
