@@ -43,3 +43,8 @@ class Year {
 	Integer nextReceivedEntryNumber;
 }
 
+class CorrespondenceEntryLog {
+	DateTime whenOperation;
+	String username;
+	String operationDescription;
+}

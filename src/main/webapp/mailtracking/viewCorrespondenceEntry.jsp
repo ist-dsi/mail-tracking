@@ -47,6 +47,27 @@
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="order(view)" value="2" />
 		<fr:property name="icon(view)" value="view" />
-	</fr:layout> 
+	</fr:layout>
 </fr:view>
 </logic:notEmpty>
+
+<h3 class="mtop2 mbottom05"><bean:message key="title.entry.logs" bundle="MAIL_TRACKING_RESOURCES" /></h3>
+
+<logic:empty name="correspondenceEntryBean" property="entry.logs" >
+	<p class="mtop05">
+		<em><bean:message key="message.logs.empty" bundle="MAIL_TRACKING_RESOURCES" /></em>
+	</p>
+</logic:empty>
+
+<logic:notEmpty name="correspondenceEntryBean" property="entry.logs" >
+
+<bean:define id="logs" name="correspondenceEntryBean" property="entry.sortedLogs"/>
+
+<fr:view name="logs" schema="module.mailtracking.logs" >
+	<fr:layout name="tabular">
+		<fr:property name="classes" value="tstyle2"/>
+	</fr:layout>
+</fr:view>
+</logic:notEmpty>
+
+

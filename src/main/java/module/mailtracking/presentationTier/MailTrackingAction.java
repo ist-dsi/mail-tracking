@@ -402,6 +402,7 @@ public class MailTrackingAction extends ContextBaseAction {
     public ActionForward viewEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
         CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
+        entry.logView();
 
         request.setAttribute("correspondenceEntryBean", entry.createBean());
 
@@ -791,12 +792,15 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws IOException {
-        if (!getCorrespondenceEntryWithExternalId(request).isUserAbleToViewMainDocument(UserView.getCurrentUser())) {
+	final CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
+        if (!entry.isUserAbleToViewMainDocument(UserView.getCurrentUser())) {
             throw new PermissionDeniedException();
         }
 
         String documentId = request.getParameter("fileId");
         final Document document = FenixFramework.getDomainObject(documentId);
+
+        entry.logDownload(document);
 
         return download(response, document.getFilename(), document.getContent(), document.getContentType());
     }
