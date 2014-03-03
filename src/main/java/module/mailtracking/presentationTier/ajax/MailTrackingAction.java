@@ -75,7 +75,7 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
             throw new PermissionDeniedException();
         }
 
-        if (!preValidate(readCorrespondenceEntryBean(request), request)) {
+        if (!preValidate(readCorrespondenceEntryBean(request), request, readCorrespondenceTypeView(request))) {
             RenderUtils.invalidateViewState("associate.document.bean");
             setAssociateDocumentBean(request, null);
             return prepareCreateNewEntry(mapping, form, request, response);

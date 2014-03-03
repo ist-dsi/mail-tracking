@@ -44,6 +44,8 @@ import module.mailtracking.domain.Year;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -258,7 +260,7 @@ public class MailTrackingAction extends ContextBaseAction {
             throw new PermissionDeniedException();
         }
 
-        if (!preValidate(readCorrespondenceEntryBean(request), request)) {
+        if (!preValidate(readCorrespondenceEntryBean(request), request, readCorrespondenceTypeView(request))) {
             RenderUtils.invalidateViewState("associate.document.bean");
             setAssociateDocumentBean(request, null);
             return prepareCreateNewEntry(mapping, form, request, response);
@@ -301,7 +303,8 @@ public class MailTrackingAction extends ContextBaseAction {
     private static final Integer MAX_SENDER_SIZE = 50;
     private static final Integer MAX_RECIPIENT_SIZE = 50;
 
-    protected boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request) {
+    protected boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request,
+            CorrespondenceType correspondenceType) {
         if (StringUtils.isEmpty(correspondenceEntryBean.getSender())) {
             addMessage(request, "error.mail.tracking.sender.is.required");
             return false;
@@ -320,6 +323,22 @@ public class MailTrackingAction extends ContextBaseAction {
         if (correspondenceEntryBean.getRecipient().length() > MAX_RECIPIENT_SIZE) {
             addMessage(request, "error.mail.tracking.recipient.length.must.be.less.than",
                     new String[] { MAX_RECIPIENT_SIZE.toString() });
+            return false;
+        }
+
+        final String reference = correspondenceEntryBean.getReference();
+        final CorrespondenceEntry entry = correspondenceEntryBean.getEntry();
+
+        if (CollectionUtils.select(correspondenceEntryBean.getMailTracking().getActiveEntries(correspondenceType),
+                new Predicate() {
+
+                    @Override
+                    public boolean evaluate(Object arg0) {
+                        return ((CorrespondenceEntry) arg0).getReference().equals(reference)
+                                && ((CorrespondenceEntry) arg0) != entry; // if they are the same
+                    }
+                }).size() >= 1) {
+            addMessage(request, "error.mail.tracking.reference.duplicated");
             return false;
         }
 
@@ -343,7 +362,7 @@ public class MailTrackingAction extends ContextBaseAction {
             final HttpServletResponse response) throws Exception {
         MailTracking mailTracking = readMailTracking(request);
 
-        if (!preValidate(readCorrespondenceEntryBean(request), request)) {
+        if (!preValidate(readCorrespondenceEntryBean(request), request, readCorrespondenceTypeView(request))) {
             return prepareEditEntry(mapping, form, request, response);
         }
 
