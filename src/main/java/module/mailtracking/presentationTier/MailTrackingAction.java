@@ -507,11 +507,12 @@ public class MailTrackingAction extends ContextBaseAction {
         Integer iDisplayStart = Integer.valueOf(request.getParameter("iDisplayStart"));
         Integer iDisplayLength = Integer.valueOf(request.getParameter("iDisplayLength"));
 
-        Comparator[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols, readCorrespondenceTypeView(request));
-        Integer[] orderToUse = getOrdering(request, iSortingCols, readCorrespondenceTypeView(request));
+        final CorrespondenceType correspondenceType = readCorrespondenceTypeView(request);
+        Comparator[] propertiesToCompare = getPropertiesToCompare(request, iSortingCols, correspondenceType);
+        Integer[] orderToUse = getOrdering(request, iSortingCols, correspondenceType);
 
         if (propertiesToCompare.length == 0) {
-            if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
+            if (CorrespondenceType.SENT.equals(correspondenceType)) {
                 propertiesToCompare = new Comparator[] { new BeanComparator("whenSent") };
                 orderToUse = new Integer[] { -1 };
             } else {
@@ -524,25 +525,18 @@ public class MailTrackingAction extends ContextBaseAction {
         YearBean yearBean = readYearBean(request);
         FilterDeletedEntriesBean filterDeletedBean = readFilterDeletedEntriesBean(request);
 
+        final MailTracking mailTracking = readMailTracking(request);
         if (StringUtils.isEmpty(sSearch)) {
             if (yearBean.getChosenYear() != null) {
-                entries =
-                        yearBean.getChosenYear().getAbleToViewEntries(readCorrespondenceTypeView(request),
-                                filterDeletedBean.getValue());
+                entries = yearBean.getChosenYear().getAbleToViewEntries(correspondenceType, filterDeletedBean.getValue());
             } else {
-                entries =
-                        readMailTracking(request).getAbleToViewEntries(readCorrespondenceTypeView(request),
-                                filterDeletedBean.getValue());
+                entries = mailTracking.getAbleToViewEntries(correspondenceType, filterDeletedBean.getValue());
             }
         } else {
             if (yearBean.getChosenYear() != null) {
-                entries =
-                        yearBean.getChosenYear().simpleSearch(readCorrespondenceTypeView(request), sSearch,
-                                filterDeletedBean.getValue());
+                entries = yearBean.getChosenYear().simpleSearch(correspondenceType, sSearch, filterDeletedBean.getValue());
             } else {
-                entries =
-                        readMailTracking(request).simpleSearch(readCorrespondenceTypeView(request), sSearch,
-                                filterDeletedBean.getValue());
+                entries = mailTracking.simpleSearch(correspondenceType, sSearch, filterDeletedBean.getValue());
             }
         }
 
@@ -551,15 +545,13 @@ public class MailTrackingAction extends ContextBaseAction {
                 limitAndOrderSearchedEntries(entries, propertiesToCompare, orderToUse, iDisplayStart, iDisplayLength);
 
         String jsonResponseString = null;
-        if (CorrespondenceType.SENT.equals(readCorrespondenceTypeView(request))) {
+        if (CorrespondenceType.SENT.equals(correspondenceType)) {
             jsonResponseString =
-                    serializeAjaxFilterResponseForSentMail(sEcho,
-                            readMailTracking(request).getActiveEntries(readCorrespondenceTypeView(request)).size(),
+                    serializeAjaxFilterResponseForSentMail(sEcho, mailTracking.countActiveEntries(correspondenceType),
                             numberOfRecordsMatched, limitedEntries, request);
-        } else if (CorrespondenceType.RECEIVED.equals(readCorrespondenceTypeView(request))) {
+        } else if (CorrespondenceType.RECEIVED.equals(correspondenceType)) {
             jsonResponseString =
-                    serializeAjaxFilterResponseForReceivedMail(sEcho,
-                            readMailTracking(request).getActiveEntries(readCorrespondenceTypeView(request)).size(),
+                    serializeAjaxFilterResponseForReceivedMail(sEcho, mailTracking.countActiveEntries(correspondenceType),
                             numberOfRecordsMatched, limitedEntries, request);
         }
 
@@ -811,7 +803,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws IOException {
-	final CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
+        final CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
         if (!entry.isUserAbleToViewMainDocument(UserView.getCurrentUser())) {
             throw new PermissionDeniedException();
         }
