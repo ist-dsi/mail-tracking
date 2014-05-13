@@ -145,6 +145,10 @@ public class MailTracking extends MailTracking_Base {
         this.setActive(bean.getActive());
     }
 
+    public int countActiveEntries(final CorrespondenceType type) {
+        return this.countEntries(CorrespondenceEntryState.ACTIVE, type);
+    }
+
     public java.util.List<CorrespondenceEntry> getActiveEntries(final CorrespondenceType type) {
         return this.getEntries(CorrespondenceEntryState.ACTIVE, type);
     }
@@ -174,10 +178,26 @@ public class MailTracking extends MailTracking_Base {
         return this.getEntries(null, type);
     }
 
+    int countEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
+        return countEntriesByTypeAndState(this.getEntriesSet(), state, type);
+    }
+
     java.util.List<CorrespondenceEntry> getEntries(final CorrespondenceEntryState state, final CorrespondenceType type) {
         return filterEntriesByTypeAndState(this.getEntriesSet(), state, type);
     }
 
+    static int countEntriesByTypeAndState(
+            final java.util.Collection<CorrespondenceEntry> entries, final CorrespondenceEntryState state,
+            final CorrespondenceType type) {
+        int result = 0;
+        for (final CorrespondenceEntry entry : entries) {
+            if ((state == null || state.equals(entry.getState())) && (type == null || type.equals(entry.getType()))) {
+                result++;
+            }
+        }
+        return result;
+    }
+            
     static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(
             final java.util.Collection<CorrespondenceEntry> entries, final CorrespondenceEntryState state,
             final CorrespondenceType type) {
