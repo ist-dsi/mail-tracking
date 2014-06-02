@@ -1,21 +1,21 @@
 enum module.mailtracking.domain.DocumentType as DocumentType;
 enum module.mailtracking.domain.DocumentState as DocumentState;
 
-class module.mailtracking.domain.Document extends pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile {
+class module.mailtracking.domain.Document extends org.fenixedu.bennu.io.domain.GenericFile {
 	String description;
 	DocumentType type;
 	DocumentState state;
 }
 
-relation MyOrgCorrespondenceEntry {
-	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+relation BennuCorrespondenceEntry {
+	org.fenixedu.bennu.core.domain.Bennu playsRole bennu;
 	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntries {
 		multiplicity *;
 	}
 }
 
-relation MyOrgDocument {
-	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+relation BennuDocument {
+	org.fenixedu.bennu.core.domain.Bennu playsRole bennu;
 	module.mailtracking.domain.Document playsRole mailTrackingDocuments {
 		multiplicity *;
 	}
@@ -36,16 +36,11 @@ relation CorrepondenceEntryCorrespondenceEntryLog {
 	module.mailtracking.domain.CorrespondenceEntry playsRole correspondenceEntry;
 }
 
-relation MyOrgMailTracking {
-	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+relation BennuMailTracking {
+	org.fenixedu.bennu.core.domain.Bennu playsRole bennu;
 	module.mailtracking.domain.MailTracking playsRole mailTrackings {
 		multiplicity *;
 	}
-}
-
-relation MyOrgMailTrackingInitializer {
-	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
-	module.mailtracking.domain.MailTrackingInitializer playsRole mailTrackingInitializer;
 }
 
 relation MailTrackingUnit {
@@ -55,17 +50,23 @@ relation MailTrackingUnit {
 
 relation MailTrackingOperators {
 	module.mailtracking.domain.MailTracking playsRole mailTrackingForOperations;
-	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole operatorsGroup;
+	protected org.fenixedu.bennu.core.domain.groups.PersistentGroup playsRole operatorsAccessGroup {
+		multiplicity 1..1;
+	}
 }
 
 relation MailTrackingViewers {
 	module.mailtracking.domain.MailTracking playsRole mailTrackingForView;
-	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole viewersGroup;
+	protected org.fenixedu.bennu.core.domain.groups.PersistentGroup playsRole viewersAccessGroup {
+		multiplicity 1..1;
+	}
 }
 
 relation MailTrackingManagers {
 	module.mailtracking.domain.MailTracking playsRole mailTrackingForManagement;
-	pt.ist.bennu.core.domain.groups.PersistentGroup playsRole managersGroup;
+	protected org.fenixedu.bennu.core.domain.groups.PersistentGroup playsRole managersAccessGroup {
+		multiplicity 1..1;
+	}
 }
 
 relation MaiTrackingCorrespondenceEntry {
@@ -80,7 +81,7 @@ relation CorrespondenceEntryUserCreator {
 		multiplicity *;
 	}
 	
-	pt.ist.bennu.core.domain.User playsRole creator;
+	org.fenixedu.bennu.core.domain.User playsRole creator;
 }
 
 relation CorrespondenceEntryLastEditor {
@@ -88,7 +89,7 @@ relation CorrespondenceEntryLastEditor {
 		multiplicity *;
 	}
 	
-	pt.ist.bennu.core.domain.User playsRole lastEditor;
+	org.fenixedu.bennu.core.domain.User playsRole lastEditor;
 }
 
 relation CorrespondenceEntryDeletionResponsible {
@@ -96,7 +97,7 @@ relation CorrespondenceEntryDeletionResponsible {
 		multiplicity *;
 	}
 	
-	pt.ist.bennu.core.domain.User playsRole deletionResponsible;
+	org.fenixedu.bennu.core.domain.User playsRole deletionResponsible;
 }
 
 relation CorrespondenceEntryOwner {
@@ -106,8 +107,8 @@ relation CorrespondenceEntryOwner {
 	}
 }
 
-relation MyOrgMailTrackingYears {
-	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+relation BennuMailTrackingYears {
+	org.fenixedu.bennu.core.domain.Bennu playsRole bennu;
 	module.mailtracking.domain.Year playsRole years {
 		multiplicity *;
 	}
@@ -126,14 +127,4 @@ relation YearCorrespondenceEntry {
 	}
 	
 	module.mailtracking.domain.Year playsRole year;
-}
-
-relation VirtualHostMailTracking {
-	pt.ist.bennu.core.domain.VirtualHost playsRole virtualHost {
-		multiplicity 0..1;
-	}
-	
-	module.mailtracking.domain.MailTracking playsRole mailTracking {
-		multiplicity *;
-	}
 }

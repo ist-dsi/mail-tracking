@@ -29,11 +29,10 @@ import module.mailtracking.presentationTier.YearBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.domain.Bennu;
+import org.fenixedu.bennu.core.security.Authenticate;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -45,7 +44,7 @@ public class Year extends Year_Base {
 
     protected Year() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
     protected Year(final MailTracking mailTracking, final String name, final DateTime startDate, final DateTime endDate) {
@@ -61,23 +60,23 @@ public class Year extends Year_Base {
 
     private void checkParameters() {
         if (getMailTracking() == null) {
-            throw new DomainException("error.mail.tracking.year.mail.tracking.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.year.mail.tracking.invalid");
         }
 
         if (StringUtils.isEmpty(getName())) {
-            throw new DomainException("error.mail.tracking.year.name.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.year.name.invalid");
         }
 
         if (getStartDate() == null) {
-            throw new DomainException("error.mail.tracking.year.start.date.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.year.start.date.invalid");
         }
 
         if (getEndDate() == null) {
-            throw new DomainException("error.mail.tracking.year.end.date.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.year.end.date.invalid");
         }
 
         if (!getEndDate().isAfter(getStartDate())) {
-            throw new DomainException("error.mail.tracking.year.end.before.start.date");
+            throw new MailTrackingDomainException("error.mail.tracking.year.end.before.start.date");
         }
 
         for (Year year : getMailTracking().getYearsSet()) {
@@ -86,11 +85,11 @@ public class Year extends Year_Base {
             }
 
             if (year.getName().equalsIgnoreCase(getName())) {
-                throw new DomainException("error.mail.tracking.year.name.exists");
+                throw new MailTrackingDomainException("error.mail.tracking.year.name.exists");
             }
 
             if (intersect(year.getStartDate(), year.getEndDate(), getStartDate(), getEndDate())) {
-                throw new DomainException("error.mail.tracking.year.intersect");
+                throw new MailTrackingDomainException("error.mail.tracking.year.intersect");
             }
         }
     }
@@ -105,11 +104,11 @@ public class Year extends Year_Base {
     public static Year createYearFor(MailTracking mailTracking, Integer forYear) {
 
         if (forYear < 2007) {
-            throw new DomainException("error.mail.tracking.year.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.year.invalid");
         }
 
         if (getYearFor(mailTracking, forYear) != null) {
-            throw new DomainException("error.mail.tracking.year.already.created");
+            throw new MailTrackingDomainException("error.mail.tracking.year.already.created");
         }
 
         DateTime startDate = new DateTime(forYear, 01, 01, 0, 0, 0, 0);
@@ -154,7 +153,7 @@ public class Year extends Year_Base {
 
             @Override
             public boolean evaluate(Object arg0) {
-                return ((CorrespondenceEntry) arg0).isUserAbleToView(UserView.getCurrentUser());
+                return ((CorrespondenceEntry) arg0).isUserAbleToView(Authenticate.getUser());
             }
 
         }, entries);
@@ -193,11 +192,11 @@ public class Year extends Year_Base {
     private static boolean intersect(final DateTime startLeft, final DateTime endLeft, final DateTime startRight,
             final DateTime endRight) {
         if (!endLeft.isAfter(startLeft)) {
-            throw new DomainException("error.mail.tracking.end.date.before.start.date");
+            throw new MailTrackingDomainException("error.mail.tracking.end.date.before.start.date");
         }
 
         if (!endRight.isAfter(startRight)) {
-            throw new DomainException("error.mail.tracking.end.date.before.start.date");
+            throw new MailTrackingDomainException("error.mail.tracking.end.date.before.start.date");
         }
 
         return isDateTimeBetween(startLeft, endLeft, startRight) || isDateTimeBetween(startLeft, endLeft, endRight)
@@ -238,11 +237,11 @@ public class Year extends Year_Base {
     @Atomic
     public void setCounters(Integer nextSentEntryNumber, Integer nextReceivedEntryNumber) {
         if (nextSentEntryNumber < 0) {
-            throw new DomainException("error.mail.tracking.next.sent.entry.number.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.next.sent.entry.number.invalid");
         }
 
         if (nextReceivedEntryNumber < 0) {
-            throw new DomainException("error.mail.tracking.next.received.entry.number.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.next.received.entry.number.invalid");
         }
 
         setNextSentEntryNumber(nextSentEntryNumber);

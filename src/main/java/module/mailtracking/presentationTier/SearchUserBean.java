@@ -24,7 +24,7 @@
  */
 package module.mailtracking.presentationTier;
 
-import pt.ist.bennu.core.util.BundleUtil;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class SearchUserBean implements java.io.Serializable {
         }
 
         public String getDescription() {
-            return BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources", this.getQualifiedName());
+            return BundleUtil.getString("resources/MailTrackingResources", this.getQualifiedName());
         }
     }
 

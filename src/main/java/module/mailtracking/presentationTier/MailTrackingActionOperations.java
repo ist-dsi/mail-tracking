@@ -31,13 +31,14 @@ import java.io.InputStreamReader;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.Helper;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.MailTrackingDomainException;
 import module.mailtracking.domain.MailTrackingImportationHelper;
 import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
 import module.mailtracking.domain.exception.PermissionDeniedException;
 
+import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.domain.User;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.converters.IntegerNumberConverter;
@@ -113,7 +114,7 @@ public class MailTrackingActionOperations {
             } else {
                 throw new RuntimeException("wrong.type");
             }
-        } catch (MailTrackingImportationHelper.ImportationErrorException e) {
+        } catch (MailTrackingDomainException e) {
             errorOccurred = false;
         }
 

@@ -36,11 +36,9 @@ import module.organization.domain.Person;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.presentationTier.Context;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -50,7 +48,7 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Anil Kassamali
  * 
  */
-public class ManageMailTrackingAction extends ContextBaseAction {
+public class ManageMailTrackingAction extends BaseAction {
 
     @Override
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -64,7 +62,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
         request.setAttribute("searchUserBean", new SearchUserBean());
         request.setAttribute("mailTrackingBean", readMailTracking(request).createBean());
 
-        return forward(request, "/mailtracking/management/manageUsers.jsp");
+        return forward("/mailtracking/management/manageUsers.jsp");
     }
 
     public ActionForward removeOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -129,7 +127,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
             final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         request.setAttribute("mailTrackingBean", readMailTracking(request).createBean());
 
-        return forward(request, "/mailtracking//management/manageAttributes.jsp");
+        return forward("/mailtracking//management/manageAttributes.jsp");
     }
 
     public ActionForward editMailTrackingAttributes(final ActionMapping mapping, final ActionForm form,
@@ -181,7 +179,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
             final HttpServletRequest request, final HttpServletResponse response) {
         request.setAttribute("importationFileBean", new ImportationFileBean());
 
-        return forward(request, "/mailtracking/manager/importMailTracking.jsp");
+        return forward("/mailtracking/manager/importMailTracking.jsp");
     }
 
     public ActionForward importMailTracking(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -192,7 +190,7 @@ public class ManageMailTrackingAction extends ContextBaseAction {
                 readImportationFileBean(request), importationResults));
         request.setAttribute("importationFileResults", importationResults);
 
-        return forward(request, "/mailtracking/manager/viewImportationResults.jsp");
+        return forward("/mailtracking/manager/viewImportationResults.jsp");
     }
 
     private ImportationFileBean readImportationFileBean(final HttpServletRequest request) {
@@ -213,10 +211,10 @@ public class ManageMailTrackingAction extends ContextBaseAction {
         return this.getRenderedObject("search.user.bean");
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
-        context.addHead("/mailtracking/layoutHead.jsp");
-        return context;
-    }
+//    @Override
+//    public Context createContext(String contextPathString, HttpServletRequest request) {
+//        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+//        context.addHead("/mailtracking/layoutHead.jsp");
+//        return context;
+//    }
 }

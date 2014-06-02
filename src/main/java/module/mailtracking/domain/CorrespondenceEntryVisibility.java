@@ -24,8 +24,8 @@
  */
 package module.mailtracking.domain;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 /**
  * 
@@ -42,13 +42,13 @@ public enum CorrespondenceEntryVisibility {
         @Override
         public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
             return entry.getMailTracking().isUserOperator(user) || entry.getMailTracking().isUserManager(user)
-                    || MailTracking.isMyOrgManager(user);
+                    || MailTracking.isBennuManager(user);
         }
 
         @Override
         public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
             return entry.getMailTracking().isUserOperator(user) || entry.getMailTracking().isUserManager(user)
-                    || MailTracking.isMyOrgManager(user);
+                    || MailTracking.isBennuManager(user);
         }
     },
     ONLY_OWNER_AND_OPERATOR {
@@ -56,48 +56,48 @@ public enum CorrespondenceEntryVisibility {
         public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
             return (entry.getOwner() != null && entry.getOwner().equals(user.getPerson()))
                     || (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
 
         @Override
         public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
             return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
 
         @Override
         public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
             return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
     },
     ONLY_OPERATOR {
         @Override
         public boolean isUserAbleToView(CorrespondenceEntry entry, User user) {
             return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
 
         @Override
         public boolean isUserAbleToEdit(CorrespondenceEntry entry, User user) {
             return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
 
         @Override
         public boolean isUserAbleToDelete(CorrespondenceEntry entry, User user) {
             return (entry.getMailTracking().isUserOperator(user) && entry.getLastEditor().equals(user))
-                    || entry.getMailTracking().isUserManager(user) || MailTracking.isMyOrgManager(user);
+                    || entry.getMailTracking().isUserManager(user) || MailTracking.isBennuManager(user);
         }
     };
 
     public String getVisibilityDescriptionForSentEntry() {
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/MailTrackingResources",
+        return BundleUtil.getString("resources/MailTrackingResources",
                 "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".sent.entry.description");
     }
 
     public String getVisibilityDescriptionForReceivedEntry() {
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/MailTrackingResources",
+        return BundleUtil.getString("resources/MailTrackingResources",
                 "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".received.entry.description");
     }
 
