@@ -19,23 +19,23 @@
 	<bean:define id="mailTracking" name="party" property="mailTracking" />
 	<bean:define id="mailTrackingId" name="mailTracking" property="externalId" />
 	
-	<html:link action="<%= String.format("/mailTrackingOrganizationModel.do?method=prepareMailTrackingAttributesManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+	<html:link action='<%= String.format("/mailTrackingOrganizationModel.do?method=prepareMailTrackingAttributesManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 		<bean:message key="label.mail.tracking.module.management" bundle="MAIL_TRACKING_RESOURCES"/>
 	</html:link>
 	|
-	<html:link action="<%= String.format("/mailTrackingOrganizationModel.do?method=prepareUsersManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>" >
+	<html:link action='<%= String.format("/mailTrackingOrganizationModel.do?method=prepareUsersManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>' >
 		<bean:message key="label.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES"/>
 	</html:link>
 	|
-	<html:link action="<%= String.format("/mailTrackingOrganizationModel.do?method=prepareMailTrackingImportation&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>" >
+	<html:link action='<%= String.format("/mailTrackingOrganizationModel.do?method=prepareMailTrackingImportation&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>' >
 		<bean:message key="label.mail.tracking.entries.importation" bundle="MAIL_TRACKING_RESOURCES"/>
 	</html:link>
 	|
-	<html:link action="<%= String.format("/mailTrackingOrganizationModel.do?method=prepareYearsManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+	<html:link action='<%= String.format("/mailTrackingOrganizationModel.do?method=prepareYearsManagement&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 		<bean:message key="label.mail.tracking.entries.manage.years" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 	|
-	<html:link action="<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>">
+	<html:link action='<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>'>
 		<bean:message key="label.mail.tracking.view.entries" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 

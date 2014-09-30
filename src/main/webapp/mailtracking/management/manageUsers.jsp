@@ -25,7 +25,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/manageMailTracking.do?method=removeViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/manageMailTracking.do?method=removeViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
@@ -43,7 +43,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/manageMailTracking.do?method=removeOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId)  %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/manageMailTracking.do?method=removeOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId)  %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
@@ -64,7 +64,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/manageMailTracking.do?method=removeManager&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId)  %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/manageMailTracking.do?method=removeManager&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId)  %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationKey(remove)" value="message.confirm.user.removal" />
@@ -77,7 +77,7 @@
 
 <p><em><bean:message key="message.mail.tracking.add.operator.explanation" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 
-<fr:form action="<%= String.format("/manageMailTracking.do?method=searchUser&amp;mailTrackingId=%s", mailTrackingId) %>" >
+<fr:form action='<%= String.format("/manageMailTracking.do?method=searchUser&amp;mailTrackingId=%s", mailTrackingId) %>' >
 	<fr:edit id="search.user.bean" name="searchUserBean" schema="module.mailtracking.manage.operators.search"/>		
 	<p><html:submit><bean:message key="label.search" bundle="MAIL_TRACKING_RESOURCES" /></html:submit></p>
 </fr:form>
@@ -89,15 +89,15 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 
-			<fr:property name="linkFormat(addViewer)" value="<%=  String.format("/manageMailTracking.do?method=addViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(addViewer)" value='<%=  String.format("/manageMailTracking.do?method=addViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(addViewer)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addViewer)" value="label.add.user.as.viewer" />
 			
-			<fr:property name="linkFormat(addOperator)" value="<%= String.format("/manageMailTracking.do?method=addOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(addOperator)" value='<%= String.format("/manageMailTracking.do?method=addOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(addOperator)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addOperator)" value="label.add.user.as.operator" />				
 
-			<fr:property name="linkFormat(addManager)" value="<%= String.format("/manageMailTracking.do?method=addManager&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(addManager)" value='<%= String.format("/manageMailTracking.do?method=addManager&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(addManager)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addManager)" value="label.add.user.as.manager" />				
 
@@ -114,11 +114,11 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 
-			<fr:property name="linkFormat(addViewer)" value="<%=  String.format("/manageMailTracking.do?method=addViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(addViewer)" value='<%=  String.format("/manageMailTracking.do?method=addViewer&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(addViewer)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addViewer)" value="label.add.user.as.viewer" />
 			
-			<fr:property name="linkFormat(addOperator)" value="<%= String.format("/manageMailTracking.do?method=addOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>" />
+			<fr:property name="linkFormat(addOperator)" value='<%= String.format("/manageMailTracking.do?method=addOperator&amp;mailTrackingId=%s&amp;userId=${externalId}", mailTrackingId) %>' />
 			<fr:property name="bundle(addOperator)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addOperator)" value="label.add.user.as.operator" />				
 

@@ -14,7 +14,7 @@
 <h3><bean:message key="title.mail.tracking.importation.results" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <p>
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 </p>
@@ -39,7 +39,7 @@
 </fr:view>
 
 <p>
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 </p>

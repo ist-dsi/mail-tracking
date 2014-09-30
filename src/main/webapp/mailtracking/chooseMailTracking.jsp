@@ -30,7 +30,7 @@
 						<ul style="margin: 0 0 0 2em; padding: 0;">
 							<% if(((MailTracking) mailTracking).isCurrentUserAbleToViewMailTracking()) { %>
 							<li>
-								<html:link page="<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>" >
+								<html:link page='<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>' >
 									<bean:message key="label.mail.tracking.view.entries.action" bundle="MAIL_TRACKING_RESOURCES" />
 								</html:link>
 							</li>
@@ -38,7 +38,7 @@
 							
 							<% if(((MailTracking) mailTracking).isCurrentUserAbleToManageUsers()) { %>
 							<li>
-								<html:link page="<%= String.format("/manageMailTracking.do?method=prepareUsersManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
+								<html:link page='<%= String.format("/manageMailTracking.do?method=prepareUsersManagement&amp;mailTrackingId=%s", mailTrackingId) %>' >
 									<bean:message key="label.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES" />
 								</html:link>
 							</li>
@@ -46,7 +46,7 @@
 							
 							<% if(((MailTracking) mailTracking).isCurrentUserAbleToEditMailTrackingAttributes()) { %>
 							<li>
-								<html:link page="<%= String.format("/manageMailTracking.do?method=prepareMailTrackingAttributesManagement&amp;mailTrackingId=%s", mailTrackingId) %>" >
+								<html:link page='<%= String.format("/manageMailTracking.do?method=prepareMailTrackingAttributesManagement&amp;mailTrackingId=%s", mailTrackingId) %>' >
 									<bean:message key="label.mail.tracking.module.management" bundle="MAIL_TRACKING_RESOURCES" />
 								</html:link>
 							</li>

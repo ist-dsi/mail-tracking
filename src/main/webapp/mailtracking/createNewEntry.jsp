@@ -20,15 +20,15 @@
 </div>
 
 
-<fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" encoding="multipart/form-data">
+<fr:form id="add.new.entry.form" action='<%= "/mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' encoding="multipart/form-data">
 	
 	<h3><bean:message key="label.correspondence.details" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
-	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.create" : "module.mailtracking.correspondence.sent.entry.create" %>" >
-		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema='<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.create" : "module.mailtracking.correspondence.sent.entry.create" %>' >
+		<fr:destination name="invalid" path='<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
+		<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
 		<fr:layout name="tabular">
 			<fr:property name="columnClasses" value=",,tderror"/>
 			<fr:property name="requiredMarkShown" value="true" />
@@ -39,9 +39,9 @@
 	
 	<p class="mtop15 mbottom05"><bean:message key="message.correspondence.sent.entry.visibility" bundle="MAIL_TRACKING_RESOURCES" /></p>
 	
-	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" >
-		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema='<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>' >
+		<fr:destination name="invalid" path='<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
+		<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="mtop05"/>
 			<fr:property name="columnClasses" value=",,tderror"/>
@@ -52,8 +52,8 @@
 	<h3><bean:message key="label.correspondence.document" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 	<fr:edit id="associate.document.bean" name="associateDocumentBean" schema="module.mailtracking.associate.document.create" >
-		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
+		<fr:destination name="invalid" path='<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
+		<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
 		<fr:layout name="tabular">
 			<fr:property name="requiredMarkShown" value="true" />
 		</fr:layout>

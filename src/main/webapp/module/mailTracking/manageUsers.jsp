@@ -12,7 +12,7 @@
 <h3><bean:message key="title.mail.tracking.users.management" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <p>
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 </p>
@@ -31,7 +31,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeViewer&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/mailTrackingOrganizationModel.do?method=removeViewer&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
@@ -50,7 +50,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeOperator&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/mailTrackingOrganizationModel.do?method=removeOperator&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
@@ -69,7 +69,7 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
-			<fr:property name="linkFormat(remove)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=removeManager&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>" />
+			<fr:property name="linkFormat(remove)" value='<%=  String.format("/mailTrackingOrganizationModel.do?method=removeManager&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid)  %>' />
 			<fr:property name="bundle(remove)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(remove)" value="label.remove" />
 			<fr:property name="confirmationBundle(remove)" value="MAIL_TRACKING_RESOURCES" />
@@ -81,7 +81,7 @@
 
 <p><em><bean:message key="message.mail.tracking.add.operator.explanation" bundle="MAIL_TRACKING_RESOURCES" /></em></p>
 
-<fr:form action="<%= String.format("/mailTrackingOrganizationModel.do?method=searchUser&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>" >
+<fr:form action='<%= String.format("/mailTrackingOrganizationModel.do?method=searchUser&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>' >
 	<fr:edit id="search.user.bean" name="searchUserBean" schema="module.mailtracking.manage.operators.search"/>		
 	<p><html:submit><bean:message key="label.search" bundle="MAIL_TRACKING_RESOURCES" /></html:submit></p>
 </fr:form>
@@ -91,15 +91,15 @@
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 
-			<fr:property name="linkFormat(addViewer)" value="<%=  String.format("/mailTrackingOrganizationModel.do?method=addViewer&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>" />
+			<fr:property name="linkFormat(addViewer)" value='<%=  String.format("/mailTrackingOrganizationModel.do?method=addViewer&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>' />
 			<fr:property name="bundle(addViewer)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addViewer)" value="label.add.user.as.viewer" />
 			
-			<fr:property name="linkFormat(addOperator)" value="<%= String.format("/mailTrackingOrganizationModel.do?method=addOperator&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>" />
+			<fr:property name="linkFormat(addOperator)" value='<%= String.format("/mailTrackingOrganizationModel.do?method=addOperator&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>' />
 			<fr:property name="bundle(addOperator)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addOperator)" value="label.add.user.as.operator" />				
 
-			<fr:property name="linkFormat(addManager)" value="<%= String.format("/mailTrackingOrganizationModel.do?method=addManager&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>" />
+			<fr:property name="linkFormat(addManager)" value='<%= String.format("/mailTrackingOrganizationModel.do?method=addManager&amp;organizationalModelOid=%s&amp;partyOid=%s&amp;userId=${externalId}", organizationalModelOid, partyOid) %>' />
 			<fr:property name="bundle(addManager)" value="MAIL_TRACKING_RESOURCES" />
 			<fr:property name="key(addManager)" value="label.add.user.as.manager" />				
 
@@ -109,7 +109,7 @@
 </logic:equal>
 
 <p>
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 </p>

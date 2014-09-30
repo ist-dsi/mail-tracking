@@ -12,7 +12,7 @@
 <h3><bean:message key="title.mail.tracking.years.management" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 <p>
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=back&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 </p>
@@ -38,7 +38,7 @@
 
 
 <p><strong></strong><bean:message key="label.mail.tracking.create.year" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-<fr:form action="<%= String.format("/mailTrackingOrganizationModel.do?method=createYear&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<fr:form action='<%= String.format("/mailTrackingOrganizationModel.do?method=createYear&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<fr:edit id="mail.tracking.year.bean" name="yearBean" schema="module.mail.tracking.years.create" />
 	
 	<html:submit><bean:message key="label.mail.tracking.years.create" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>
@@ -47,6 +47,6 @@
 
 <p><strong><bean:message key="label.mail.tracking.rearrange.entries.by.year" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
 
-<html:link page="<%= String.format("/mailTrackingOrganizationModel.do?method=rearrangeEntries&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>">
+<html:link page='<%= String.format("/mailTrackingOrganizationModel.do?method=rearrangeEntries&amp;organizationalModelOid=%s&amp;partyOid=%s", organizationalModelOid, partyOid) %>'>
 	<bean:message key="label.mail.tracking.organize.entries" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>

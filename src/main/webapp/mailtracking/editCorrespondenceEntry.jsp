@@ -14,7 +14,7 @@
 <bean:define id="entryId" name="correspondenceEntryBean" property="entry.externalId" />
 
 <p class="mbottom05">
-	<html:link href="<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>" >
+	<html:link href='<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>' >
 		« <bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 </p>
@@ -28,12 +28,12 @@
 </div>
 
 
-<fr:form id="add.new.entry.form" action="<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId="+ entryId + "&amp;correspondenceType=" + correspondenceType %>">
+<fr:form id="add.new.entry.form" action='<%= "/mailtracking.do?method=editEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;entryId="+ entryId + "&amp;correspondenceType=" + correspondenceType %>'>
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
-	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>" >
-		<fr:destination name="invalid" path="<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" />
-		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>" />
+	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema='<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.edit" : "module.mailtracking.correspondence.sent.entry.edit" %>' >
+		<fr:destination name="invalid" path='<%= "/mailtracking.do?method=addNewEntryInvalid&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' />
+		<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>' />
 		<fr:layout name="tabular">
 			<fr:property name="columnClasses" value=",,tderror"/>
 		</fr:layout>		
@@ -41,8 +41,8 @@
 	
 	<p class="mbottom05"><bean:message key="message.correspondence.sent.entry.visibility" bundle="MAIL_TRACKING_RESOURCES" /></p>
 	
-	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>" >
-		<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>" />
+	<fr:edit id="correspondence.entry.bean.visibility" name="correspondenceEntryBean" schema='<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.visibility.edit" : "module.mailtracking.correspondence.sent.entry.visibility.edit" %>' >
+		<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>' />
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="mtop05"/>
 			<fr:property name="columnClasses" value=",,tderror"/>
@@ -108,12 +108,12 @@
 	<fr:view name="associatedDocuments" schema="module.mailtracking.associated.document.view" >
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="" />
-			<fr:property name="linkFormat(view)" value="<%= "/mailtracking.do?method=downloadFile&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>"/>
+			<fr:property name="linkFormat(view)" value='<%= "/mailtracking.do?method=downloadFile&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>'/>
 			<fr:property name="bundle(view)" value="MAIL_TRACKING_RESOURCES"/>
 			<fr:property name="key(view)" value="link.view"/>
 			<fr:property name="order(view)" value="2" />
 			<fr:property name="icon(view)" value="view" />
-			<fr:property name="linkFormat(delete)" value="<%= "/mailtracking.do?method=deleteDocument&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>"/>
+			<fr:property name="linkFormat(delete)" value='<%= "/mailtracking.do?method=deleteDocument&amp;fileId=${externalId}&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>'/>
 			<fr:property name="bundle(delete)" value="MAIL_TRACKING_RESOURCES"/>
 			<fr:property name="key(delete)" value="link.delete"/>
 			<fr:property name="order(delete)" value="3" />
@@ -131,7 +131,7 @@
 <p class="mtop2 mbottom05">
 	<strong><bean:message key="label.associate.new.document" bundle="MAIL_TRACKING_RESOURCES" /></strong>
 </p>
-<fr:form id="associate.document.entry.form" action="<%= "/mailtracking.do?method=associateDocument&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>" encoding="multipart/form-data">
+<fr:form id="associate.document.entry.form" action='<%= "/mailtracking.do?method=associateDocument&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType + "&amp;entryId=" + entryId %>' encoding="multipart/form-data">
 	<fr:edit id="associate.document.bean" name="associateDocumentBean" schema="module.mailtracking.associate.document.edit">
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="mtop05" />

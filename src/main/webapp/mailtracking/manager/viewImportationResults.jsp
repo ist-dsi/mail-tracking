@@ -12,7 +12,7 @@
 
 <bean:define id="partyId" name="party" property="externalId" />
 
-<html:link href="<%= request.getContextPath() + "/manageMailTracking.do?method=prepare&amp;partyOid=" + partyId %>" >
+<html:link href='<%= request.getContextPath() + "/manageMailTracking.do?method=prepare&amp;partyOid=" + partyId %>' >
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 
