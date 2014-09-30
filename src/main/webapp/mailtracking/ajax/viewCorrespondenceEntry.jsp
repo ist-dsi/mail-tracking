@@ -13,7 +13,7 @@
 
 <fr:view 	name="correspondenceEntryBean"
 			property="entry" 
-			schema="<%=  CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entries.view.detailed" : "module.mailtracking.correspondence.sent.entries.view.detailed" %>" >
+			schema='<%=  CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entries.view.detailed" : "module.mailtracking.correspondence.sent.entries.view.detailed" %>' >
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="tstyle2 thleft tdleft"/>
 	</fr:layout>

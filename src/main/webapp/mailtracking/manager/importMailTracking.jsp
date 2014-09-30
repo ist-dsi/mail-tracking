@@ -12,11 +12,11 @@
 
 <bean:define id="partyId" name="unit" property="externalId" />
 
-<html:link href="<%= request.getContextPath() + "/manageMailTracking.do?method=prepare&amp;partyOid=" + partyId %>" >
+<html:link href='<%= request.getContextPath() + "/manageMailTracking.do?method=prepare&amp;partyOid=" + partyId %>' >
 	<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 </html:link>
 
-<fr:form id="import.form" action="<%= "/manageMailTracking.do?method=importCGMailTracking&amp;partyOid=" + partyId %>" encoding="multipart/form-data">
+<fr:form id="import.form" action='<%= "/manageMailTracking.do?method=importCGMailTracking&amp;partyOid=" + partyId %>' encoding="multipart/form-data">
 	<fr:edit id="importation.file.bean" name="importationFileBean" visible="false" />
 	
 	<fr:edit id="importation.file.bean.set" name="importationFileBean" schema="module.mail.tracking.correspondence.importation.edit">

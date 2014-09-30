@@ -16,13 +16,13 @@
 	</html:messages>
 </div>
 
-<fr:form id="set.reference.counters" action="<%= "/mailtracking.do?method=setReferenceCounters&amp;mailTrackingId="+ mailTrackingId %>" >
+<fr:form id="set.reference.counters" action='<%= "/mailtracking.do?method=setReferenceCounters&amp;mailTrackingId="+ mailTrackingId %>' >
 	<fr:edit	id="year.bean" name="yearBean" visible="false" />
 
 	<fr:edit	name="yearBean"
 				id="year.bean.choose"
 				schema="module.mail.tracking.set.reference.counters.years.list" >
-		<fr:destination name="postback" path="<%= "/mailtracking.do?method=chooseYearForReferenceCountSet&amp;mailTrackingId=" + mailTrackingId %>" />
+		<fr:destination name="postback" path='<%= "/mailtracking.do?method=chooseYearForReferenceCountSet&amp;mailTrackingId=" + mailTrackingId %>' />
 	</fr:edit>
 	
 	<logic:empty name="yearBean" property="chosenYear">
@@ -37,8 +37,8 @@
 				<fr:property name="columnClasses" value=",,tderror"/>
 				<fr:property name="requiredMarkShown" value="true" />
 			</fr:layout>
-			<fr:destination name="invalid" path="<%= "/mailtracking.do?method=setReferenceCountersInvalid&amp;mailTrackingId=" + mailTrackingId %>" />
-			<fr:destination name="cancel" path="<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId %>" />			
+			<fr:destination name="invalid" path='<%= "/mailtracking.do?method=setReferenceCountersInvalid&amp;mailTrackingId=" + mailTrackingId %>' />
+			<fr:destination name="cancel" path='<%= "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId %>' />			
 		</fr:edit>
 		
 		<html:submit><bean:message key="label.edit" bundle="MAIL_TRACKING_RESOURCES" /></html:submit>

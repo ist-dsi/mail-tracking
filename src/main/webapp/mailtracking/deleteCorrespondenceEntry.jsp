@@ -12,14 +12,14 @@
 <bean:define id="correspondenceType" name="correspondenceType" />
 
 <p>
-	<html:link href="<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>" >
+	<html:link href='<%= request.getContextPath() + "/mailtracking.do?method=prepare&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType%>' >
 		<bean:message key="label.back" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 </p>
 
 <p><bean:message key="messsage.mail.tracking.deletion.reason.necessary" bundle="MAIL_TRACKING_RESOURCES"/></p>
 
-<fr:form id="delete.entry.form" action="<%= "/mailtracking.do?method=deleteEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>">
+<fr:form id="delete.entry.form" action='<%= "/mailtracking.do?method=deleteEntry&amp;mailTrackingId=" + mailTrackingId + "&amp;correspondenceType=" + correspondenceType %>'>
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
 	<fr:edit id="correspondence.entry.bean.delete" name="correspondenceEntryBean" schema="module.mailtracking.correspondence.entry.delete" >

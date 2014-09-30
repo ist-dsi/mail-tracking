@@ -19,13 +19,13 @@
 	</html:messages>
 </div>
 
-<fr:form id="entryForm" action="<%= "/mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>" encoding="multipart/form-data">
+<fr:form id="entryForm" action='<%= "/mailtracking.do?method=addNewEntry&amp;correspondenceType=" + correspondenceType + "&amp;mailTrackingId="+ mailTrackingId %>' encoding="multipart/form-data">
 	
 	<h3><bean:message key="label.correspondence.details" bundle="MAIL_TRACKING_RESOURCES" /></h3>
 
 	<fr:edit id="correspondence.entry.bean" name="correspondenceEntryBean" visible="false" />
 	
-	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema="<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.create" : "module.mailtracking.correspondence.sent.entry.create" %>" >
+	<fr:edit id="correspondence.entry.bean.data" name="correspondenceEntryBean" schema='<%= CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "module.mailtracking.correspondence.received.entry.create" : "module.mailtracking.correspondence.sent.entry.create" %>' >
 		<fr:layout name="tabular">
 			<fr:property name="columnClasses" value=",,tderror"/>
 			<fr:property name="requiredMarkShown" value="true" />
@@ -33,7 +33,7 @@
 	</fr:edit>
 
 	
-	<html:submit onclick="<%=  String.format("submitForm('%s'); return false;", CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "fast-received-entry-creation-submission-link" : "fast-sent-entry-creation-submission-link") %>">
+	<html:submit onclick='<%=  String.format("submitForm(\'%s\'); return false;", CorrespondenceType.RECEIVED.name().equals(correspondenceType) ? "fast-received-entry-creation-submission-link" : "fast-sent-entry-creation-submission-link") %>'>
 		<bean:message key="label.add" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:submit>
 	<html:cancel onclick="closeFastEntryCreation(); return false;">
