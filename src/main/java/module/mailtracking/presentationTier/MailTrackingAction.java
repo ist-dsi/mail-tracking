@@ -51,8 +51,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
 import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.struts.annotations.Mapping;
+import org.fenixedu.bennu.struts.base.BaseAction;
+import org.fenixedu.bennu.struts.portal.EntryPoint;
+import org.fenixedu.bennu.struts.portal.StrutsApplication;
+import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
@@ -60,7 +64,6 @@ import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -68,6 +71,9 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Anil Kassamali
  * 
  */
+@StrutsApplication(bundle = "MailTrackingResources", path = "mailTracking", titleKey = "link.sideBar.mailtracking.manageMailing",
+        accessGroup = "logged", hint = "Mail Tracking")
+@StrutsFunctionality(app = MailTrackingAction.class, path = "mailTracking", titleKey = "link.sideBar.mailtracking.manageMailing")
 @Mapping(path = "/mailtracking")
 public class MailTrackingAction extends BaseAction {
 
@@ -105,6 +111,7 @@ public class MailTrackingAction extends BaseAction {
         return type;
     }
 
+    @EntryPoint
     public final ActionForward prepare(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
         User currentUser = Authenticate.getUser();

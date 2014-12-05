@@ -37,10 +37,10 @@ import module.mailtracking.domain.exception.PermissionDeniedException;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.struts.annotations.Mapping;
 import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/ajax-mailtracking")
 /**

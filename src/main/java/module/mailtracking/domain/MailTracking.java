@@ -83,7 +83,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public Group getOperatorsGroup() {
-        return getOperatorsAccessGroup().toGroup();
+        return getOperatorsAccessGroup() == null ? null : getOperatorsAccessGroup().toGroup();
     }
 
     public void setViewersGroup(Group viewersGroup) {
@@ -91,7 +91,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public Group getViewersGroup() {
-        return getViewersAccessGroup().toGroup();
+        return getViewersAccessGroup() == null ? null : getViewersAccessGroup().toGroup();
     }
 
     public void setManagersGroup(Group viewersGroup) {
@@ -99,7 +99,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public Group getManagersGroup() {
-        return getManagersAccessGroup().toGroup();
+        return getManagersAccessGroup() == null ? null : getManagersAccessGroup().toGroup();
     }
 
     @Atomic
@@ -374,15 +374,18 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public boolean isUserManager(User user) {
-        return this.getManagersGroup().isMember(user);
+        final Group group = getManagersGroup();
+        return group != null && group.isMember(user);
     }
 
     public boolean isUserOperator(User user) {
-        return this.getOperatorsGroup().isMember(user);
+        final Group group = getOperatorsGroup();
+        return group != null && group.isMember(user);
     }
 
     public boolean isUserViewer(User user) {
-        return this.getViewersGroup().isMember(user);
+        final Group group = getViewersGroup();
+        return group != null && group.isMember(user);
     }
 
     public static boolean isBennuManager(final User user) {

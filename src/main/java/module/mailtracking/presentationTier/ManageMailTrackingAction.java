@@ -37,11 +37,14 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
+import org.fenixedu.bennu.struts.annotations.Mapping;
+import org.fenixedu.bennu.struts.base.BaseAction;
+import org.fenixedu.bennu.struts.portal.EntryPoint;
+import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
+@StrutsFunctionality(app = MailTrackingAction.class, path = "manageMailTracking", titleKey = "link.sideBar.mailtracking.manage")
 @Mapping(path = "/manageMailTracking")
 /**
  * 
@@ -56,6 +59,7 @@ public class ManageMailTrackingAction extends BaseAction {
         return super.execute(mapping, form, request, response);
     }
 
+    @EntryPoint
     public ActionForward prepareUsersManagement(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) {
 
