@@ -12,6 +12,7 @@
 
 <script type="text/javascript" src="<%= request.getContextPath() + "/javaScript/dataTables/media/js/jquery.dataTables.js"%>"></script>
 <script src='<%= request.getContextPath() + "/webjars/jquery-ui/1.11.1/jquery-ui.js" %>'></script>
+<link rel="stylesheet" href="<%= request.getContextPath() + "/webjars/jquery-ui-themes/1.11.0/smoothness/jquery-ui.css" %>">
 
 <style type="text/css" title="currentStyle">
 	@import "<%= request.getContextPath() + "/javaScript/dataTables/media/css/demo_table.css" %>";
@@ -45,7 +46,7 @@
 		filter: alpha(opacity = 20);
 		zoom: 1;
 	}
-	
+
 </style>
 
 <script type="text/javascript">
