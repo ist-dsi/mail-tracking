@@ -30,9 +30,10 @@ import module.organization.domain.OrganizationalModel;
 import module.organization.domain.Party;
 import module.organization.domain.Unit;
 import module.organization.presentationTier.actions.PartyViewHook;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.bennu.core.util.BundleUtil;
+
+import org.fenixedu.bennu.core.groups.DynamicGroup;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
+import org.fenixedu.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -43,8 +44,7 @@ public class MailTrackingView extends PartyViewHook {
 
     @Override
     public String getPresentationName() {
-        return BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                "title.mail.tracking.for.organization.management");
+        return BundleUtil.getString("resources/MailTrackingResources", "title.mail.tracking.for.organization.management");
     }
 
     public static final String VIEW_NAME = "04_mailTrackingView";
@@ -69,7 +69,7 @@ public class MailTrackingView extends PartyViewHook {
 
     @Override
     public boolean isAvailableFor(final Party party) {
-        return (party instanceof Unit) && UserView.getCurrentUser().hasRoleType(RoleType.MANAGER);
+        return (party instanceof Unit) && DynamicGroup.get("managers").isMember(Authenticate.getUser());
     }
 
 }

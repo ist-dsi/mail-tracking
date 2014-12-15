@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE schemas SYSTEM "../fenix-renderers-schemas.dtd" []>
 <schemas>
 <schema name="module.mailtracking.correspondence.sent.entries.view" type="module.mailtracking.domain.CorrespondenceEntry" bundle="MAIL_TRACKING_RESOURCES" >
 	<slot name="reference" key="label.registry.number" />
@@ -259,15 +258,15 @@
 	<slot name="active" key="label.isActive" />
 </schema>
 
-<schema name="module.mailtracking.manage.viewers.view" type="pt.ist.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
+<schema name="module.mailtracking.manage.viewers.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="presentationName" key="label.name" />
 </schema>
 
-<schema name="module.mailtracking.manage.operators.view" type="pt.ist.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
+<schema name="module.mailtracking.manage.operators.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="presentationName" key="label.name" />
 </schema>
 
-<schema name="module.mailtracking.manage.managers.view" type="pt.ist.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
+<schema name="module.mailtracking.manage.managers.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
 	<slot name="presentationName" key="label.name" />
 </schema>
 

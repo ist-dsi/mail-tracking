@@ -50,24 +50,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.struts.annotations.Mapping;
+import org.fenixedu.bennu.struts.base.BaseAction;
+import org.fenixedu.bennu.struts.portal.EntryPoint;
+import org.fenixedu.bennu.struts.portal.StrutsApplication;
+import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.contents.ActionNode;
-import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.bennu.core.domain.groups.UserGroup;
-import pt.ist.bennu.core.presentationTier.Context;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -75,8 +71,11 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Anil Kassamali
  * 
  */
+@StrutsApplication(bundle = "MailTrackingResources", path = "mailTracking", titleKey = "link.sideBar.mailtracking.manageMailing",
+        accessGroup = "logged", hint = "Mail Tracking")
+@StrutsFunctionality(app = MailTrackingAction.class, path = "mailTracking", titleKey = "link.sideBar.mailtracking.manageMailing")
 @Mapping(path = "/mailtracking")
-public class MailTrackingAction extends ContextBaseAction {
+public class MailTrackingAction extends BaseAction {
 
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -112,46 +111,34 @@ public class MailTrackingAction extends ContextBaseAction {
         return type;
     }
 
-    @CreateNodeAction(bundle = "MAIL_TRACKING_RESOURCES", key = "mail.tracking.interface", groupKey = "label.module.mailtracking")
-    public final ActionForward prepareCreateNewPage(final ActionMapping mapping, final ActionForm form,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
-        final Node node = getDomainObject(request, "parentOfNodesToManageId");
-
-        final Node mainNode =
-                ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare", "resources.MailTrackingResources",
-                        "link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
-
-        return forwardToMuneConfiguration(request, virtualHost, node);
-    }
-
+    @EntryPoint
     public final ActionForward prepare(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
-        User currentUser = UserView.getCurrentUser();
+        User currentUser = Authenticate.getUser();
         MailTracking mailTracking = readMailTracking(request);
 
         if (mailTracking != null) {
             if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking()) {
-                return forward(request, "/mailtracking/permissionDenied.jsp");
+                return forward("/mailtracking/permissionDenied.jsp");
             }
 
             request.setAttribute("searchEntries", mailTracking.getAbleToViewEntries(readCorrespondenceTypeView(request),
                     readFilterDeletedEntriesBean(request).getValue()));
             request.setAttribute("yearBean", readYearBean(request));
 
-            return forward(request, "/mailtracking/management.jsp");
+            return forward("/mailtracking/management.jsp");
         }
 
-        java.util.List<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
+        java.util.Set<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
 
-        if (mailTrackings.size() == 1 && mailTrackings.get(0).hasCurrentUserOnlyViewOrEditionOperations()) {
-            request.setAttribute("mailTracking", mailTrackings.get(0));
+        if (mailTrackings.size() == 1 && mailTrackings.iterator().next().hasCurrentUserOnlyViewOrEditionOperations()) {
+            request.setAttribute("mailTracking", mailTrackings.iterator().next());
             return prepare(mapping, form, request, response);
         }
 
         request.setAttribute("mailTrackings", mailTrackings);
 
-        return forward(request, "/mailtracking/chooseMailTracking.jsp");
+        return forward("/mailtracking/chooseMailTracking.jsp");
     }
 
     private FilterDeletedEntriesBean readFilterDeletedEntriesBean(HttpServletRequest request) {
@@ -355,7 +342,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
         setAssociateDocumentBean(request, entry);
 
-        return forward(request, "/mailtracking/editCorrespondenceEntry.jsp");
+        return forward("/mailtracking/editCorrespondenceEntry.jsp");
     }
 
     public final ActionForward editEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -383,7 +370,7 @@ public class MailTrackingAction extends ContextBaseAction {
         CorrespondenceEntryBean bean = entry.createBean();
         request.setAttribute("correspondenceEntryBean", bean);
 
-        return forward(request, "/mailtracking/deleteCorrespondenceEntry.jsp");
+        return forward("/mailtracking/deleteCorrespondenceEntry.jsp");
     }
 
     public final ActionForward deleteEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -425,7 +412,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
         request.setAttribute("correspondenceEntryBean", entry.createBean());
 
-        return forward(request, "/mailtracking/viewCorrespondenceEntry.jsp");
+        return forward("/mailtracking/viewCorrespondenceEntry.jsp");
     }
 
     private static final String DOCUMENT_NOT_SPECIFIED_MESSAGE = "error.correspondence.entry.document.not.specified";
@@ -571,7 +558,7 @@ public class MailTrackingAction extends ContextBaseAction {
         readCorrespondenceEntryBean(request);
         setAssociateDocumentBean(request, null);
 
-        return forward(request, "/mailtracking/createNewEntry.jsp");
+        return forward("/mailtracking/createNewEntry.jsp");
     }
 
     public ActionForward deleteDocument(ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -602,23 +589,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
             stringBuilder
                     .append("\"")
-                    .append(entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request,
+                    .append(entry.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request,
                             entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+                    .append(entry.isUserAbleToEdit(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
-                            request, entry) : "permission_not_granted").append(",");
-
-            stringBuilder
-                    .append(entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                    .append(entry.isUserAbleToDelete(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder.append(
-                    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+                    entry.isUserAbleToViewMainDocument(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                            request, entry) : "permission_not_granted").append(",");
+
+            stringBuilder
+                    .append(entry.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request,
                             entry) : "permission_not_granted").append("\",");
 
             stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
@@ -646,7 +633,7 @@ public class MailTrackingAction extends ContextBaseAction {
                                         .getExternalId());
         realLink +=
                 String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME,
-                        GenericChecksumRewriter.calculateChecksum(realLink));
+                        GenericChecksumRewriter.calculateChecksum(realLink, request.getSession()));
 
         return realLink;
     }
@@ -669,23 +656,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
             stringBuilder
                     .append("\"")
-                    .append(entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request,
+                    .append(entry.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request,
                             entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+                    .append(entry.isUserAbleToEdit(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
-                            request, entry) : "permission_not_granted").append(",");
-
-            stringBuilder
-                    .append(entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                    .append(entry.isUserAbleToDelete(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder.append(
-                    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+                    entry.isUserAbleToViewMainDocument(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                            request, entry) : "permission_not_granted").append(",");
+
+            stringBuilder
+                    .append(entry.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request,
                             entry) : "permission_not_granted").append("\",");
 
             stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
@@ -712,7 +699,7 @@ public class MailTrackingAction extends ContextBaseAction {
                                 entry.getExternalId(), entry.getMainDocument().getExternalId());
         realLink +=
                 String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME,
-                        GenericChecksumRewriter.calculateChecksum(realLink));
+                        GenericChecksumRewriter.calculateChecksum(realLink, request.getSession()));
 
         return realLink;
     }
@@ -727,7 +714,7 @@ public class MailTrackingAction extends ContextBaseAction {
                                         .getExternalId());
         realLink +=
                 String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME,
-                        GenericChecksumRewriter.calculateChecksum(realLink));
+                        GenericChecksumRewriter.calculateChecksum(realLink, request.getSession()));
 
         return realLink;
     }
@@ -742,7 +729,7 @@ public class MailTrackingAction extends ContextBaseAction {
                                         .getExternalId());
         realLink +=
                 String.format("&%s=%s", GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME,
-                        GenericChecksumRewriter.calculateChecksum(realLink));
+                        GenericChecksumRewriter.calculateChecksum(realLink, request.getSession()));
 
         return realLink;
     }
@@ -804,7 +791,7 @@ public class MailTrackingAction extends ContextBaseAction {
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws IOException {
         final CorrespondenceEntry entry = getCorrespondenceEntryWithExternalId(request);
-        if (!entry.isUserAbleToViewMainDocument(UserView.getCurrentUser())) {
+        if (!entry.isUserAbleToViewMainDocument(Authenticate.getUser())) {
             throw new PermissionDeniedException();
         }
 
@@ -821,7 +808,7 @@ public class MailTrackingAction extends ContextBaseAction {
         YearBean yearBean = new YearBean(readMailTracking(request));
         request.setAttribute("yearBean", yearBean);
 
-        return forward(request, "/mailtracking/setReferenceCounters.jsp");
+        return forward("/mailtracking/setReferenceCounters.jsp");
     }
 
     public ActionForward setReferenceCounters(final ActionMapping mapping, final ActionForm form,
@@ -843,7 +830,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
         request.setAttribute("yearBean", new YearBean(readMailTracking(request), yearBean.getChosenYear()));
 
-        return forward(request, "/mailtracking/setReferenceCounters.jsp");
+        return forward("/mailtracking/setReferenceCounters.jsp");
     }
 
     public static class FilterDeletedEntriesBean implements java.io.Serializable {
@@ -1051,12 +1038,12 @@ public class MailTrackingAction extends ContextBaseAction {
         return content;
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
-        context.addHead("/mailtracking/layoutHead.jsp");
-        return context;
-    }
+//    @Override
+//    public Context createContext(String contextPathString, HttpServletRequest request) {
+//        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+//        context.addHead("/mailtracking/layoutHead.jsp");
+//        return context;
+//    }
 
     public static class YearProvider implements DataProvider {
 

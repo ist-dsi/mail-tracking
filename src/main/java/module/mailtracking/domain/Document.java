@@ -28,10 +28,10 @@ import java.util.Comparator;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.domain.Bennu;
+import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -48,7 +48,7 @@ public class Document extends Document_Base {
 
     public Document() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
         setCreationDate(new DateTime());
     }
 
@@ -68,19 +68,19 @@ public class Document extends Document_Base {
 
     private void checkParameters(String displayName, String filename, byte[] content, String description, DocumentType type) {
         if (StringUtils.isEmpty(filename)) {
-            throw new DomainException("error.mail.tracking.document.filename.cannot.be.empty");
+            throw new MailTrackingDomainException("error.mail.tracking.document.filename.cannot.be.empty");
         }
 
         if (StringUtils.isEmpty(description)) {
-            throw new DomainException("error.mail.tracking.document.description.cannot.be.empty");
+            throw new MailTrackingDomainException("error.mail.tracking.document.description.cannot.be.empty");
         }
 
         if (content == null) {
-            throw new DomainException("error.mail.tracking.document.content.cannot.be.null");
+            throw new MailTrackingDomainException("error.mail.tracking.document.content.cannot.be.null");
         }
 
         if (type == null) {
-            throw new DomainException("error.mail.tracking.document.type.cannot.be.null");
+            throw new MailTrackingDomainException("error.mail.tracking.document.type.cannot.be.null");
         }
     }
 
@@ -115,4 +115,10 @@ public class Document extends Document_Base {
     public boolean isDocumentDeleted() {
         return DocumentState.DELETED.equals(getState());
     }
+
+    @Override
+    public boolean isAccessible(User user) {
+        return false;
+    }
+
 }

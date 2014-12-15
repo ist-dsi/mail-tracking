@@ -33,26 +33,30 @@ import java.util.Map;
 import module.mailtracking.domain.MailTracking;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+import org.fenixedu.commons.StringNormalizer;
+
 import pt.ist.fenixframework.FenixFramework;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class RecipientAutoCompleteProvider implements AutoCompleteProvider {
+public class RecipientAutoCompleteProvider implements AutoCompleteProvider<Person> {
 
     @Override
-    public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
+    public Collection<Person> getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
         final List<Person> persons = new ArrayList<Person>();
         MailTracking mailTracking = readMailTracking(argsMap);
 
         final String trimmedValue = value.trim();
         final String[] input = trimmedValue.split(" ");
-        StringNormalizer.normalize(input);
+        for (int i = 0; i < input.length; i++) {
+            input[i] = StringNormalizer.normalize(input[i]);
+        }
 
         for (final User user : mailTracking.getTotalUsers()) {
             if (user.getPerson() != null) {

@@ -26,6 +26,8 @@ package module.mailtracking.domain;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.Set;
 
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.organization.domain.Person;
@@ -34,19 +36,16 @@ import module.organization.domain.Unit;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.domain.Bennu;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.groups.DynamicGroup;
+import org.fenixedu.bennu.core.groups.Group;
+import org.fenixedu.bennu.core.groups.NobodyGroup;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.NamedGroup;
-import pt.ist.bennu.core.domain.groups.People;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.Language;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -57,7 +56,7 @@ public class MailTracking extends MailTracking_Base {
 
     private MailTracking() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
     private MailTracking(Unit unit) {
@@ -71,71 +70,93 @@ public class MailTracking extends MailTracking_Base {
         this.setUnit(unit);
         this.setName(unit.getPartyName());
         this.setActive(Boolean.TRUE);
-        this.setVirtualHost(VirtualHost.getVirtualHostForThread());
     }
 
     private void checkParameters(Unit unit) {
         if (unit == null) {
-            throw new DomainException("error.mail.tracking.unit.cannot.be.empty");
+            throw new MailTrackingDomainException("error.mail.tracking.unit.cannot.be.empty");
         }
+    }
+
+    public void setOperatorsGroup(Group operatorsGroup) {
+        setOperatorsAccessGroup(operatorsGroup.toPersistentGroup());
+    }
+
+    public Group getOperatorsGroup() {
+        return getOperatorsAccessGroup() == null ? null : getOperatorsAccessGroup().toGroup();
+    }
+
+    public void setViewersGroup(Group viewersGroup) {
+        setViewersAccessGroup(viewersGroup.toPersistentGroup());
+    }
+
+    public Group getViewersGroup() {
+        return getViewersAccessGroup() == null ? null : getViewersAccessGroup().toGroup();
+    }
+
+    public void setManagersGroup(Group viewersGroup) {
+        setManagersAccessGroup(viewersGroup.toPersistentGroup());
+    }
+
+    public Group getManagersGroup() {
+        return getManagersAccessGroup() == null ? null : getManagersAccessGroup().toGroup();
     }
 
     @Atomic
     public static MailTracking createMailTracking(Unit unit) {
         if (unit.getMailTracking() != null) {
-            throw new DomainException("error.mail.tracking.exists.for.unit");
+            throw new MailTrackingDomainException("error.mail.tracking.exists.for.unit");
         }
 
+        User authenticatedUser = Authenticate.getUser();
         MailTracking mailTracking = new MailTracking(unit);
 
-        People operators = new NamedGroup("operators");
-        operators.addUsers(UserView.getCurrentUser());
-        mailTracking.setOperatorsGroup(operators);
+        mailTracking.setOperatorsGroup(NobodyGroup.get());
+        mailTracking.addOperator(authenticatedUser);
 
-        People managers = new NamedGroup("managers");
-        managers.addUsers(UserView.getCurrentUser());
-        mailTracking.setManagersGroup(managers);
+        mailTracking.setManagersGroup(NobodyGroup.get());
+        mailTracking.addManager(authenticatedUser);
 
-        People viewers = new NamedGroup("viewers");
+        mailTracking.setViewersGroup(NobodyGroup.get());
+        mailTracking.addViewer(authenticatedUser);
+
         for (Person person : unit.getChildPersons()) {
             if (person.getUser() != null) {
-                viewers.addUsers(person.getUser());
+                mailTracking.addViewer(person.getUser());
             }
         }
-        viewers.addUsers(UserView.getCurrentUser());
-        mailTracking.setViewersGroup(viewers);
 
         return mailTracking;
     }
 
     @Atomic
     public void removeOperator(final User user) {
-        ((People) this.getOperatorsGroup()).removeUsers(user);
+        setOperatorsGroup(getOperatorsGroup().revoke(user));
     }
 
     @Atomic
     public void addOperator(final User user) {
-        ((People) this.getOperatorsGroup()).addUsers(user);
+        setOperatorsGroup(getOperatorsGroup().grant(user));
     }
 
     @Atomic
     public void addViewer(final User user) {
-        ((People) this.getViewersGroup()).addUsers(user);
+        setViewersGroup(getViewersGroup().grant(user));
     }
 
     @Atomic
     public void removeViewer(final User user) {
-        ((People) this.getViewersGroup()).removeUsers(user);
+        setViewersGroup(getViewersGroup().revoke(user));
     }
 
     @Atomic
     public void addManager(final User user) {
-        ((People) this.getManagersGroup()).addUsers(user);
+        setManagersGroup(getManagersGroup().grant(user));
     }
 
     @Atomic
     public void removeManager(final User user) {
-        ((People) this.getManagersGroup()).removeUsers(user);
+        setManagersGroup(getManagersGroup().revoke(user));
     }
 
     @Atomic
@@ -166,7 +187,7 @@ public class MailTracking extends MailTracking_Base {
 
             @Override
             public boolean evaluate(Object arg0) {
-                return ((CorrespondenceEntry) arg0).isUserAbleToView(UserView.getCurrentUser());
+                return ((CorrespondenceEntry) arg0).isUserAbleToView(Authenticate.getUser());
             }
 
         }, entries);
@@ -186,9 +207,8 @@ public class MailTracking extends MailTracking_Base {
         return filterEntriesByTypeAndState(this.getEntriesSet(), state, type);
     }
 
-    static int countEntriesByTypeAndState(
-            final java.util.Collection<CorrespondenceEntry> entries, final CorrespondenceEntryState state,
-            final CorrespondenceType type) {
+    static int countEntriesByTypeAndState(final java.util.Collection<CorrespondenceEntry> entries,
+            final CorrespondenceEntryState state, final CorrespondenceType type) {
         int result = 0;
         for (final CorrespondenceEntry entry : entries) {
             if ((state == null || state.equals(entry.getState())) && (type == null || type.equals(entry.getType()))) {
@@ -197,7 +217,7 @@ public class MailTracking extends MailTracking_Base {
         }
         return result;
     }
-            
+
     static java.util.List<CorrespondenceEntry> filterEntriesByTypeAndState(
             final java.util.Collection<CorrespondenceEntry> entries, final CorrespondenceEntryState state,
             final CorrespondenceType type) {
@@ -261,7 +281,7 @@ public class MailTracking extends MailTracking_Base {
 	 */
         private static final long serialVersionUID = 1L;
 
-        private MultiLanguageString name;
+        private LocalizedString name;
         private Boolean active;
         private MailTracking mailTracking;
 
@@ -271,11 +291,11 @@ public class MailTracking extends MailTracking_Base {
             this.active = mailTracking.getActive();
         }
 
-        public MultiLanguageString getName() {
+        public LocalizedString getName() {
             return name;
         }
 
-        public void setName(MultiLanguageString name) {
+        public void setName(LocalizedString name) {
             this.name = name;
         }
 
@@ -322,14 +342,14 @@ public class MailTracking extends MailTracking_Base {
         return entries.get(entries.size() - 1).getEntryNumber() + 1;
     }
 
-    public static java.util.List<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
+    public static Set<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
 
-        if (user.getPerson() == null && user.hasRoleType(RoleType.MANAGER)) {
-            return MailTrackingsOnVirtualHost.retrieve();
+        if (user.getPerson() == null && DynamicGroup.get("managers").isMember(Authenticate.getUser())) {
+            return Bennu.getInstance().getMailTrackingsSet();
         }
 
-        java.util.List<MailTracking> unitsWithMailTrackings = new java.util.ArrayList<MailTracking>();
-        CollectionUtils.select(MailTrackingsOnVirtualHost.retrieve(), new Predicate() {
+        java.util.Set<MailTracking> unitsWithMailTrackings = new java.util.HashSet<MailTracking>();
+        CollectionUtils.select(Bennu.getInstance().getMailTrackingsSet(), new Predicate() {
 
             @Override
             public boolean evaluate(Object arg0) {
@@ -354,95 +374,98 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public boolean isUserManager(User user) {
-        return this.getManagersGroup().isMember(user);
+        final Group group = getManagersGroup();
+        return group != null && group.isMember(user);
     }
 
     public boolean isUserOperator(User user) {
-        return this.getOperatorsGroup().isMember(user);
+        final Group group = getOperatorsGroup();
+        return group != null && group.isMember(user);
     }
 
     public boolean isUserViewer(User user) {
-        return this.getViewersGroup().isMember(user);
+        final Group group = getViewersGroup();
+        return group != null && group.isMember(user);
     }
 
-    public static boolean isMyOrgManager(final User user) {
-        return user.hasRoleType(RoleType.MANAGER);
+    public static boolean isBennuManager(final User user) {
+        return DynamicGroup.get("managers").isMember(Authenticate.getUser());
     }
 
     public boolean isCurrentUserOperator() {
-        return this.isUserOperator(UserView.getCurrentUser());
+        return this.isUserOperator(Authenticate.getUser());
     }
 
     public boolean isCurrentUserViewer() {
-        return this.isUserViewer(UserView.getCurrentUser());
+        return this.isUserViewer(Authenticate.getUser());
     }
 
     public boolean isCurrentUserManager() {
-        return this.isUserManager(UserView.getCurrentUser());
+        return this.isUserManager(Authenticate.getUser());
     }
 
     public boolean isUserAbleToCreateEntries(final User user) {
-        return this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserOperator(user) || this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToCreateEntries() {
-        return this.isUserAbleToCreateEntries(UserView.getCurrentUser());
+        return this.isUserAbleToCreateEntries(Authenticate.getUser());
     }
 
     public boolean isUserAbleToImportEntries(final User user) {
-        return this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToImportEntries() {
-        return this.isUserAbleToImportEntries(UserView.getCurrentUser());
+        return this.isUserAbleToImportEntries(Authenticate.getUser());
     }
 
     public boolean isUserAbleToManageViewers(final User user) {
-        return this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToManageViewers() {
-        return isUserAbleToManageViewers(UserView.getCurrentUser());
+        return isUserAbleToManageViewers(Authenticate.getUser());
     }
 
     public boolean isUserAbleToManageOperators(final User user) {
-        return this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToManageOperators() {
-        return this.isUserAbleToManageOperators(UserView.getCurrentUser());
+        return this.isUserAbleToManageOperators(Authenticate.getUser());
     }
 
     public boolean isUserAbleToManageManagers(final User user) {
-        return isMyOrgManager(user);
+        return isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToManageManagers() {
-        return isUserAbleToManageManagers(UserView.getCurrentUser());
+        return isUserAbleToManageManagers(Authenticate.getUser());
     }
 
     public static boolean isUserAbleToCreateMailTrackingModule(final User user) {
-        return isMyOrgManager(user);
+        return isBennuManager(user);
     }
 
     public static boolean isCurrentUserAbleToCreateMailTrackingModule() {
-        return isUserAbleToCreateMailTrackingModule(UserView.getCurrentUser());
+        return isUserAbleToCreateMailTrackingModule(Authenticate.getUser());
     }
 
     public boolean isUserAbleToEditMailTrackingAttributes(final User user) {
-        return isMyOrgManager(user);
+        return isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToEditMailTrackingAttributes() {
-        return this.isUserAbleToEditMailTrackingAttributes(UserView.getCurrentUser());
+        return this.isUserAbleToEditMailTrackingAttributes(Authenticate.getUser());
     }
 
     public boolean isUserAbleToViewMailTracking(final User user) {
-        return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToViewMailTracking() {
-        return this.isUserAbleToViewMailTracking(UserView.getCurrentUser());
+        return this.isUserAbleToViewMailTracking(Authenticate.getUser());
     }
 
     public boolean isUserAbleToManageUsers(final User user) {
@@ -451,23 +474,23 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public boolean isCurrentUserAbleToManageUsers() {
-        return this.isUserAbleToManageUsers(UserView.getCurrentUser());
+        return this.isUserAbleToManageUsers(Authenticate.getUser());
     }
 
     public boolean isUserWithSomeRoleOnThisMailTracking(final User user) {
-        return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserViewer(user) || this.isUserOperator(user) || this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserWithSomeRoleOnThisMailTracking() {
-        return isUserWithSomeRoleOnThisMailTracking(UserView.getCurrentUser());
+        return isUserWithSomeRoleOnThisMailTracking(Authenticate.getUser());
     }
 
     public boolean isUserAbleToRearrangeEntries(final User user) {
-        return isUserManager(user) || isMyOrgManager(user);
+        return isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToRearrangeEntries() {
-        return isUserAbleToRearrangeEntries(UserView.getCurrentUser());
+        return isUserAbleToRearrangeEntries(Authenticate.getUser());
     }
 
     public boolean hasUserOnlyViewOrEditionOperations(final User user) {
@@ -477,23 +500,23 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public boolean isCurrentUserAbleToManageYears() {
-        return isUserAbleToManageYears(UserView.getCurrentUser());
+        return isUserAbleToManageYears(Authenticate.getUser());
     }
 
     public boolean isUserAbleToManageYears(final User user) {
-        return this.isUserManager(user) || isMyOrgManager(user);
+        return this.isUserManager(user) || isBennuManager(user);
     }
 
     public boolean hasCurrentUserOnlyViewOrEditionOperations() {
-        return hasUserOnlyViewOrEditionOperations(UserView.getCurrentUser());
+        return hasUserOnlyViewOrEditionOperations(Authenticate.getUser());
     }
 
     public boolean isUserAbleToSetReferenceCounters(final User user) {
-        return isUserOperator(user) || isUserManager(user) || isMyOrgManager(user);
+        return isUserOperator(user) || isUserManager(user) || isBennuManager(user);
     }
 
     public boolean isCurrentUserAbleToSetReferenceCounters() {
-        return isUserAbleToSetReferenceCounters(UserView.getCurrentUser());
+        return isUserAbleToSetReferenceCounters(Authenticate.getUser());
     }
 
     public Integer getTotalNumberOfSentEntries() {
@@ -577,20 +600,12 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public static MailTracking readMailTrackingByName(String name) {
-        for (MailTracking mailTracking : MailTrackingsOnVirtualHost.retrieve()) {
-            if (name.equals(mailTracking.getName().getContent(Language.pt))
-                    || name.equals(mailTracking.getName().getContent(Language.en))) {
+        for (MailTracking mailTracking : Bennu.getInstance().getMailTrackingsSet()) {
+            if (name.equals(mailTracking.getName().getContent(new Locale("pt")))
+                    || name.equals(mailTracking.getName().getContent(Locale.ENGLISH))) {
                 return mailTracking;
             }
         }
-
         return null;
-    }
-
-    @Override
-    public boolean isConnectedToCurrentHost() {
-        VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
-
-        return getVirtualHost() == virtualHostForThread;
     }
 }

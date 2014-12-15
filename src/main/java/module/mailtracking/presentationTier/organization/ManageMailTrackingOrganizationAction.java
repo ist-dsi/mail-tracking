@@ -44,12 +44,10 @@ import module.organization.presentationTier.actions.OrganizationModelAction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.struts.annotations.Mapping;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.presentationTier.Context;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
 @Mapping(path = "/mailTrackingOrganizationModel")
@@ -100,7 +98,7 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
     public ActionForward prepareMailTrackingAttributesManagement(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         request.setAttribute("mailTrackingBean", readOrganizationalUnit(request).getMailTracking().createBean());
-        return forward(request, "/module/mailTracking/manageAttributes.jsp");
+        return forward("/module/mailTracking/manageAttributes.jsp");
     }
 
     public ActionForward prepareUsersManagement(final ActionMapping mapping, final ActionForm form,
@@ -108,7 +106,7 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
         request.setAttribute("searchUserBean", readSearchUserBean(request));
 
         request.setAttribute("mailTrackingBean", readOrganizationalUnit(request).getMailTracking().createBean());
-        return forward(request, "/module/mailTracking/manageUsers.jsp");
+        return forward("/module/mailTracking/manageUsers.jsp");
     }
 
     public ActionForward removeOperator(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -227,7 +225,7 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
             final HttpServletRequest request, final HttpServletResponse response) {
         request.setAttribute("importationFileBean", new ImportationFileBean());
 
-        return forward(request, "/module/mailTracking/importEntries.jsp");
+        return forward("/module/mailTracking/importEntries.jsp");
     }
 
     private ImportationFileBean readImportationFileBean(final HttpServletRequest request) {
@@ -248,7 +246,7 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
                 readImportationFileBean(request), importationResults));
         request.setAttribute("importationFileResults", importationResults);
 
-        return forward(request, "/mailtracking/manager/viewImportationResults.jsp");
+        return forward("/mailtracking/manager/viewImportationResults.jsp");
     }
 
     public ActionForward prepareYearsManagement(final ActionMapping mapping, final ActionForm form,
@@ -256,15 +254,15 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
         RenderUtils.invalidateViewState("mail.tracking.year.bean");
 
         request.setAttribute("yearBean", new YearBean(readMailTrackingBean(request).getMailTracking()));
-        return forward(request, "/module/mailTracking/manageYears.jsp");
+        return forward("/module/mailTracking/manageYears.jsp");
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
-        context.addHead("/mailtracking/layoutHead.jsp");
-        return context;
-    }
+//    @Override
+//    public Context createContext(String contextPathString, HttpServletRequest request) {
+//        LayoutContext context = (LayoutContext) super.createContext(contextPathString, request);
+//        context.addHead("/mailtracking/layoutHead.jsp");
+//        return context;
+//    }
 
     public ActionForward createYear(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
