@@ -27,10 +27,11 @@ package module.mailtracking.domain;
 import java.util.Comparator;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.DateTime;
+
+import com.google.common.base.Strings;
 
 import pt.ist.fenixframework.Atomic;
 
@@ -67,11 +68,11 @@ public class Document extends Document_Base {
     }
 
     private void checkParameters(String displayName, String filename, byte[] content, String description, DocumentType type) {
-        if (StringUtils.isEmpty(filename)) {
+        if (Strings.isNullOrEmpty(filename)) {
             throw new MailTrackingDomainException("error.mail.tracking.document.filename.cannot.be.empty");
         }
 
-        if (StringUtils.isEmpty(description)) {
+        if (Strings.isNullOrEmpty(description)) {
             throw new MailTrackingDomainException("error.mail.tracking.document.description.cannot.be.empty");
         }
 

@@ -46,7 +46,6 @@ import module.mailtracking.domain.exception.PermissionDeniedException;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -58,6 +57,8 @@ import org.fenixedu.bennu.struts.portal.EntryPoint;
 import org.fenixedu.bennu.struts.portal.StrutsApplication;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import org.joda.time.DateTime;
+
+import com.google.common.base.Strings;
 
 import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
@@ -101,7 +102,7 @@ public class MailTrackingAction extends BaseAction {
 
     protected CorrespondenceType readCorrespondenceTypeView(HttpServletRequest request) {
         String typeValue = request.getParameter("correspondenceType");
-        CorrespondenceType type = StringUtils.isEmpty(typeValue) ? null : CorrespondenceType.valueOf(typeValue);
+        CorrespondenceType type = Strings.isNullOrEmpty(typeValue) ? null : CorrespondenceType.valueOf(typeValue);
 
         if (type == null) {
             type = CorrespondenceType.SENT;
@@ -149,7 +150,7 @@ public class MailTrackingAction extends BaseAction {
         }
 
         if (bean == null) {
-            if (!StringUtils.isEmpty(request.getParameter("filterDeletedEntries"))) {
+            if (!Strings.isNullOrEmpty(request.getParameter("filterDeletedEntries"))) {
                 Boolean value = Boolean.parseBoolean(request.getParameter("filterDeletedEntries"));
                 bean = new FilterDeletedEntriesBean(value);
             }
@@ -172,7 +173,7 @@ public class MailTrackingAction extends BaseAction {
         }
 
         if (bean == null) {
-            if (!StringUtils.isEmpty(request.getParameter("yearId"))) {
+            if (!Strings.isNullOrEmpty(request.getParameter("yearId"))) {
                 Year chosenYear = this.getDomainObject(request, "yearId");
                 bean = new YearBean(chosenYear.getMailTracking(), chosenYear);
             }
@@ -292,7 +293,7 @@ public class MailTrackingAction extends BaseAction {
 
     protected boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request,
             CorrespondenceType correspondenceType) {
-        if (StringUtils.isEmpty(correspondenceEntryBean.getSender())) {
+        if (Strings.isNullOrEmpty(correspondenceEntryBean.getSender())) {
             addMessage(request, "error.mail.tracking.sender.is.required");
             return false;
         }
@@ -302,7 +303,7 @@ public class MailTrackingAction extends BaseAction {
                     new String[] { MAX_SENDER_SIZE.toString() });
         }
 
-        if (StringUtils.isEmpty(correspondenceEntryBean.getRecipient())) {
+        if (Strings.isNullOrEmpty(correspondenceEntryBean.getRecipient())) {
             addMessage(request, "error.mail.tracking.recipient.is.required");
             return false;
         }
@@ -427,7 +428,7 @@ public class MailTrackingAction extends BaseAction {
             throw new DocumentUploadException(DOCUMENT_NOT_SPECIFIED_MESSAGE);
         }
 
-        if (stream != null && StringUtils.isEmpty(description)) {
+        if (stream != null && Strings.isNullOrEmpty(description)) {
             throw new DocumentUploadException(DOCUMENT_DESCRIPTION_MANDATORY_MESSAGE);
         }
 
@@ -513,7 +514,7 @@ public class MailTrackingAction extends BaseAction {
         FilterDeletedEntriesBean filterDeletedBean = readFilterDeletedEntriesBean(request);
 
         final MailTracking mailTracking = readMailTracking(request);
-        if (StringUtils.isEmpty(sSearch)) {
+        if (Strings.isNullOrEmpty(sSearch)) {
             if (yearBean.getChosenYear() != null) {
                 entries = yearBean.getChosenYear().getAbleToViewEntries(correspondenceType, filterDeletedBean.getValue());
             } else {
@@ -925,12 +926,12 @@ public class MailTrackingAction extends BaseAction {
         }
 
         public Boolean isSimpleSearchActive() {
-            return !StringUtils.isEmpty(this.getAllStringFieldsFilter());
+            return !Strings.isNullOrEmpty(this.getAllStringFieldsFilter());
         }
 
         public Boolean isExtendedSearchActive() {
-            return !StringUtils.isEmpty(this.getSender()) || !StringUtils.isEmpty(this.getRecipient())
-                    || !StringUtils.isEmpty(this.getSubject()) || this.getWhenReceivedBegin() != null
+            return !Strings.isNullOrEmpty(this.getSender()) || !Strings.isNullOrEmpty(this.getRecipient())
+                    || !Strings.isNullOrEmpty(this.getSubject()) || this.getWhenReceivedBegin() != null
                     || this.getWhenReceivedEnd() != null;
         }
     }

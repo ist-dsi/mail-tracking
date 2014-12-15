@@ -27,13 +27,14 @@ package module.mailtracking.domain;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.mailtracking.presentationTier.renderers.converters.LocalDateConverter;
 
-import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.renderers.components.converters.ConversionException;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.core.WriteOnReadError;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -152,7 +153,7 @@ public class MailTrackingImportationHelper {
     }
 
     private static LocalDate convertToLocalDate(String value, Boolean allowEmpty) throws ConversionException {
-        if (StringUtils.isEmpty(value.trim())) {
+        if (Strings.isNullOrEmpty(value.trim())) {
             return null;
         }
 

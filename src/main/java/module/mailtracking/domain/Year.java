@@ -28,12 +28,13 @@ import module.mailtracking.presentationTier.YearBean;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.Atomic;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -63,7 +64,7 @@ public class Year extends Year_Base {
             throw new MailTrackingDomainException("error.mail.tracking.year.mail.tracking.invalid");
         }
 
-        if (StringUtils.isEmpty(getName())) {
+        if (Strings.isNullOrEmpty(getName())) {
             throw new MailTrackingDomainException("error.mail.tracking.year.name.invalid");
         }
 
@@ -165,7 +166,7 @@ public class Year extends Year_Base {
     public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
         java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
-        if (StringUtils.isEmpty(key)) {
+        if (Strings.isNullOrEmpty(key)) {
             return entries;
         }
 

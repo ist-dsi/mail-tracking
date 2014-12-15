@@ -36,12 +36,13 @@ import module.organization.domain.Person;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+
+import com.google.common.base.Strings;
 
 import pt.ist.fenixframework.Atomic;
 
@@ -131,7 +132,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
             this.setSender(bean.getSender());
             this.setYear(mailTracking.getYearFor(bean.getWhenSentAsDateTime()));
 
-            this.setReference(StringUtils.isEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
+            this.setReference(Strings.isNullOrEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
                     .getYear().nextSentEntryNumber()) : bean.getReference());
 
         } else if (CorrespondenceType.RECEIVED.equals(type)) {
@@ -144,7 +145,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
             this.setDispatchedToWhom(bean.getDispatchedToWhom());
             this.setYear(mailTracking.getYearFor(bean.getWhenReceivedAsDateTime()));
 
-            this.setReference(StringUtils.isEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
+            this.setReference(Strings.isNullOrEmpty(bean.getReference()) ? String.format("%s/%s", this.getYear().getName(), this
                     .getYear().nextRecievedEntryNumber()) : bean.getReference());
 
         }
@@ -153,15 +154,15 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     private void checkParameters() {
-        if (StringUtils.isEmpty(this.getSender())) {
+        if (Strings.isNullOrEmpty(this.getSender())) {
             throw new MailTrackingDomainException("error.correspondence.entry.sender.cannot.be.empty");
         }
 
-        if (StringUtils.isEmpty(this.getRecipient())) {
+        if (Strings.isNullOrEmpty(this.getRecipient())) {
             throw new MailTrackingDomainException("error.correspondence.entry.recipient.cannot.be.empty");
         }
 
-        if (StringUtils.isEmpty(this.getSubject())) {
+        if (Strings.isNullOrEmpty(this.getSubject())) {
             throw new MailTrackingDomainException("error.correspondence.entry.subject.cannot.be.empty");
         }
 
@@ -213,7 +214,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
             throw new MailTrackingDomainException("error.correspondence.entry.visibility.cannot.be.empty");
         }
 
-        if (StringUtils.isEmpty(this.getReference())) {
+        if (Strings.isNullOrEmpty(this.getReference())) {
             throw new MailTrackingDomainException("error.correspondence.entry.reference.cannot.be.empty");
         }
 
@@ -495,7 +496,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     @Atomic
     public void delete(String reason) {
-        if (StringUtils.isEmpty(reason)) {
+        if (Strings.isNullOrEmpty(reason)) {
             throw new MailTrackingDomainException("error.mailtracking.deletion.reason.cannot.be.null");
         }
 

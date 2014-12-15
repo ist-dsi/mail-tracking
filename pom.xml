@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -48,22 +49,22 @@
             <artifactId>bennu-scheduler</artifactId>
             <version>${version.org.fenixedu.bennu}</version>
         </dependency>
-	<dependency>
-	    <groupId>org.webjars</groupId>
-	    <artifactId>jquery-ui</artifactId>
-	    <version>${version.org.webjars.jquery-ui}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.webjars</groupId>
-	    <artifactId>jquery-ui-themes</artifactId>
-	    <version>${version.org.webjars.jquery-ui-themes}</version>
-	</dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>${version.org.webjars.jquery-ui}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui-themes</artifactId>
+            <version>${version.org.webjars.jquery-ui-themes}</version>
+        </dependency>
     </dependencies>
 
     <repositories>
-	<repository>
-		<id>fenixedu-maven-repository</id>
-		<url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
-	</repository>
+        <repository>
+            <id>fenixedu-maven-repository</id>
+            <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
+        </repository>
     </repositories>
 </project>

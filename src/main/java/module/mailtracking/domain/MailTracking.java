@@ -35,7 +35,6 @@ import module.organization.domain.Unit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.groups.DynamicGroup;
@@ -44,6 +43,8 @@ import org.fenixedu.bennu.core.groups.NobodyGroup;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
+
+import com.google.common.base.Strings;
 
 import pt.ist.fenixframework.Atomic;
 
@@ -239,7 +240,7 @@ public class MailTracking extends MailTracking_Base {
     public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
         java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
-        if (StringUtils.isEmpty(key)) {
+        if (Strings.isNullOrEmpty(key)) {
             return entries;
         }
 
