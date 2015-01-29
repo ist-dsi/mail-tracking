@@ -1,15 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>pt.ist</groupId>
-        <artifactId>bennu-project</artifactId>
-        <version>1.1.0</version>
+        <groupId>org.fenixedu</groupId>
+        <artifactId>fenix-framework-project</artifactId>
+        <version>2.2.0</version>
     </parent>
 
-    <groupId>pt.ist</groupId>
+    <groupId>org.fenixedu</groupId>
     <artifactId>mail-tracking</artifactId>
-    <version>1.1.4</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
     <name>mail-tracking</name>
 
@@ -21,45 +22,49 @@
     </scm>
 
     <properties>
-        <version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
-        <version.pt.ist.content>1.1.0</version.pt.ist.content>
-        <version.pt.ist.organization>1.1.0</version.pt.ist.organization>
-        <version.pt.ist.file.support>1.1.0</version.pt.ist.file.support>
-        <version.pt.ist.scheduler>1.1.0</version.pt.ist.scheduler>
+        <version.org.fenixedu.bennu>3.4.1</version.org.fenixedu.bennu>
+        <version.org.fenixedu.organization>2.0.0</version.org.fenixedu.organization>
+        <version.org.webjars.jquery-ui>1.11.1</version.org.webjars.jquery-ui>
+        <version.org.webjars.jquery-ui-themes>1.11.0</version.org.webjars.jquery-ui-themes>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>pt.ist</groupId>
+            <groupId>org.fenixedu</groupId>
             <artifactId>bennu-core</artifactId>
-            <version>${version.pt.ist.bennu.core}</version>
+            <version>${version.org.fenixedu.bennu}</version>
         </dependency>
         <dependency>
-            <groupId>pt.ist</groupId>
-            <artifactId>content</artifactId>
-            <version>${version.pt.ist.content}</version>
-        </dependency>
-        <dependency>
-            <groupId>pt.ist</groupId>
+            <groupId>org.fenixedu</groupId>
             <artifactId>organization</artifactId>
-            <version>${version.pt.ist.organization}</version>
+            <version>${version.org.fenixedu.organization}</version>
         </dependency>
         <dependency>
-            <groupId>pt.ist</groupId>
-            <artifactId>file-support</artifactId>
-            <version>${version.pt.ist.file.support}</version>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-io</artifactId>
+            <version>${version.org.fenixedu.bennu}</version>
         </dependency>
         <dependency>
-            <groupId>pt.ist</groupId>
-            <artifactId>scheduler</artifactId>
-            <version>${version.pt.ist.scheduler}</version>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-scheduler</artifactId>
+            <version>${version.org.fenixedu.bennu}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>${version.org.webjars.jquery-ui}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui-themes</artifactId>
+            <version>${version.org.webjars.jquery-ui-themes}</version>
         </dependency>
     </dependencies>
 
     <repositories>
         <repository>
-            <id>fenix-ashes-maven-repository</id>
-            <url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
+            <id>fenixedu-maven-repository</id>
+            <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
         </repository>
     </repositories>
 </project>

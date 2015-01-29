@@ -27,8 +27,9 @@ package module.mailtracking.domain;
 import java.util.Collections;
 import java.util.List;
 
+import org.fenixedu.commons.StringNormalizer;
+
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
  * 

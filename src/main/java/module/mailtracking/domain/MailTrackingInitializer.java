@@ -24,61 +24,28 @@
  */
 package module.mailtracking.domain;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
 import module.mailtracking.presentationTier.MailTrackingView;
 import module.organization.presentationTier.actions.OrganizationModelAction;
-import pt.ist.bennu.core.domain.ModuleInitializer;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.fenixframework.Atomic;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class MailTrackingInitializer extends MailTrackingInitializer_Base implements ModuleInitializer {
-    private static boolean isInitialized = false;
+@WebListener
+public class MailTrackingInitializer implements ServletContextListener {
 
-    private static ThreadLocal<MailTrackingInitializer> init = null;
-
-    public static MailTrackingInitializer getInstance() {
-        if (init != null) {
-            return init.get();
-        }
-
-        if (!isInitialized) {
-            initialize();
-        }
-        final MyOrg myOrg = MyOrg.getInstance();
-        return myOrg.getMailTrackingInitializer();
-    }
-
-    @Atomic
-    public synchronized static void initialize() {
-        if (!isInitialized) {
-            try {
-                final MyOrg myOrg = MyOrg.getInstance();
-                final MailTrackingInitializer initializer = myOrg.getMailTrackingInitializer();
-                if (initializer == null) {
-                    new MailTrackingInitializer();
-                }
-                init = new ThreadLocal<MailTrackingInitializer>();
-                init.set(myOrg.getMailTrackingInitializer());
-
-                isInitialized = true;
-            } finally {
-                init = null;
-            }
-        }
-    }
-
-    public MailTrackingInitializer() {
-        super();
-        setMyOrg(MyOrg.getInstance());
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        OrganizationModelAction.partyViewHookManager.register(new MailTrackingView());
     }
 
     @Override
-    public void init(MyOrg root) {
-        OrganizationModelAction.partyViewHookManager.register(new MailTrackingView());
+    public void contextDestroyed(ServletContextEvent sce) {
     }
 
 }

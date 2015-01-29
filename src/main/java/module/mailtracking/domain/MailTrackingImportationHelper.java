@@ -27,14 +27,14 @@ package module.mailtracking.domain;
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.mailtracking.presentationTier.renderers.converters.LocalDateConverter;
 
-import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.components.converters.ConversionException;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.core.WriteOnReadError;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -77,19 +77,12 @@ public class MailTrackingImportationHelper {
                 CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.SENT, null);
                 entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[SENT_ID_IDX]));
 
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_OK));
+                resultEntry.setState(BundleUtil.getString("resources/MailTrackingResources", MESSAGE_LINE_IMPORTATION_OK));
             } catch (WriteOnReadError e) {
                 throw e;
             } catch (Exception e) {
                 errorOcurred = true;
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_ERROR));
-                resultEntry.setReason(e.getMessage());
-            } catch (DomainException e) {
-                errorOcurred = true;
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_ERROR));
+                resultEntry.setState(BundleUtil.getString("resources/MailTrackingResources", MESSAGE_LINE_IMPORTATION_ERROR));
                 resultEntry.setReason(e.getMessage());
             }
 
@@ -97,7 +90,7 @@ public class MailTrackingImportationHelper {
         }
 
         if (errorOcurred) {
-            throw new ImportationErrorException();
+            throw new MailTrackingDomainException("error.important.error.exception");
         }
     }
 
@@ -142,19 +135,12 @@ public class MailTrackingImportationHelper {
                 CorrespondenceEntry entry = mailTracking.createNewEntry(bean, CorrespondenceType.RECEIVED, null);
                 entry.setReference(String.format("%s/%s", entry.getYear().getName(), fields[RECEIVED_ID_IDX].trim()));
 
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_OK));
+                resultEntry.setState(BundleUtil.getString("resources/MailTrackingResources", MESSAGE_LINE_IMPORTATION_OK));
             } catch (WriteOnReadError e) {
                 throw e;
             } catch (Exception e) {
                 errorOcurred = true;
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_ERROR));
-                resultEntry.setReason(e.getMessage());
-            } catch (DomainException e) {
-                errorOcurred = true;
-                resultEntry.setState(BundleUtil.getStringFromResourceBundle("resources/MailTrackingResources",
-                        MESSAGE_LINE_IMPORTATION_ERROR));
+                resultEntry.setState(BundleUtil.getString("resources/MailTrackingResources", MESSAGE_LINE_IMPORTATION_ERROR));
                 resultEntry.setReason(e.getMessage());
             }
 
@@ -162,12 +148,12 @@ public class MailTrackingImportationHelper {
         }
 
         if (errorOcurred) {
-            throw new ImportationErrorException();
+            throw new MailTrackingDomainException("error.important.error.exception");
         }
     }
 
     private static LocalDate convertToLocalDate(String value, Boolean allowEmpty) throws ConversionException {
-        if (StringUtils.isEmpty(value.trim())) {
+        if (Strings.isNullOrEmpty(value.trim())) {
             return null;
         }
 
@@ -220,21 +206,5 @@ public class MailTrackingImportationHelper {
             this.state = state;
         }
 
-    }
-
-    public static class ImportationErrorException extends DomainException {
-
-        /**
-	 * 
-	 */
-        private static final long serialVersionUID = 1L;
-
-        public ImportationErrorException() {
-            super();
-        }
-
-        public ImportationErrorException(String key, String... args) {
-            super(key, args);
-        }
     }
 }

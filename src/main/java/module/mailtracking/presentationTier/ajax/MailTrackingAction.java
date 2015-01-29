@@ -33,16 +33,14 @@ import module.mailtracking.domain.CorrespondenceEntryVisibility.CustomEnum;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.exception.PermissionDeniedException;
-import module.mailtracking.presentationTier.layout.EmptyContextLayout;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.struts.annotations.Mapping;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.presentationTier.Context;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/ajax-mailtracking")
 /**
@@ -63,7 +61,7 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
             bean.setWhenReceived(new LocalDate());
         }
 
-        return forward(request, "/mailtracking/ajax/createNewEntry.jsp");
+        return forward("/mailtracking/ajax/createNewEntry.jsp");
     }
 
     @Override
@@ -94,7 +92,7 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
             HttpServletResponse response) {
         super.viewEntry(mapping, form, request, response);
 
-        return forward(request, "/mailtracking/ajax/viewCorrespondenceEntry.jsp");
+        return forward("/mailtracking/ajax/viewCorrespondenceEntry.jsp");
     }
 
     public ActionForward prepareCopyEntry(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -134,12 +132,12 @@ public class MailTrackingAction extends module.mailtracking.presentationTier.Mai
         readCorrespondenceEntryBean(request);
         setAssociateDocumentBean(request, null);
 
-        return forward(request, "/mailtracking/ajax/createNewEntry.jsp");
+        return forward("/mailtracking/ajax/createNewEntry.jsp");
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-        return new EmptyContextLayout();
-    }
+//    @Override
+//    public Context createContext(String contextPathString, HttpServletRequest request) {
+//        return new EmptyContextLayout();
+//    }
 
 }

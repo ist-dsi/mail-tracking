@@ -24,27 +24,24 @@
  */
 package module.mailtracking.presentationTier.layout;
 
-import org.apache.struts.action.ActionForward;
-
-import pt.ist.bennu.core.presentationTier.Context;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class EmptyContextLayout extends Context {
+public class EmptyContextLayout /* extends Context */{
 
     public EmptyContextLayout() {
         super();
     }
-
-    public EmptyContextLayout(String path) {
-        super(path);
-    }
-
-    @Override
-    public ActionForward forward(String forward) {
-        return new ActionForward(forward);
-    }
+//
+//    public EmptyContextLayout(String path) {
+//        super(path);
+//    }
+//
+//    @Override
+//    public ActionForward forward(String forward) {
+//        return new ActionForward(forward);
+//    }
 }

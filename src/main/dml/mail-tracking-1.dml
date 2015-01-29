@@ -26,14 +26,10 @@ class CorrespondenceEntry {
 	String reference;
 }
 
-class MailTracking implements .pt.ist.bennu.core.domain.VirtualHostAware {
-	MultiLanguageString name;
+class MailTracking {
+	LocalizedString name;
 	Boolean active;
 }
-
-class MailTrackingInitializer {
-}
-
 
 class Year {
 	String name;
