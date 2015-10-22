@@ -101,6 +101,10 @@ public enum CorrespondenceEntryVisibility {
                 "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".received.entry.description");
     }
 
+    public String getVisibilityDescriptionForEntry() {
+        return "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".entry.description";
+    }
+
     public abstract boolean isUserAbleToView(CorrespondenceEntry entry, User user);
 
     public abstract boolean isUserAbleToEdit(CorrespondenceEntry entry, User user);
@@ -129,6 +133,10 @@ public enum CorrespondenceEntryVisibility {
 
         public String getVisibilityDescriptionForReceivedEntry() {
             return customEnum.getVisibilityDescriptionForReceivedEntry();
+        }
+
+        public String getVisibilityDescriptionForEntry() {
+            return customEnum.getVisibilityDescriptionForEntry();
         }
 
         public void setCustomEnum(CorrespondenceEntryVisibility value) {

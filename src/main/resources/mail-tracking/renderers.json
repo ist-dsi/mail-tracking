@@ -1,0 +1,8 @@
+{
+  "resources": {
+    "bundles": [
+	"MailTrackingResources"
+    ],
+    "defaultBundle": "MailTrackingResources"
+  }
+}

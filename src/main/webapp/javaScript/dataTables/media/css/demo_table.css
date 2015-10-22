@@ -62,15 +62,15 @@
 }
 
 .dataTables_info {
-	width: 60%;
-	float: left;
+  clear: both;
+  float: left;
+  padding-top: 0.755em;
 }
 
 .dataTables_paginate {
-	width: 44px;
-	* width: 50px;
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
+  padding-top: 0.25em;
 }
 
 .saviourDiv {
