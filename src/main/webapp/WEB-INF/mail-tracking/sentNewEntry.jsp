@@ -117,11 +117,13 @@ final String contextPath = request.getContextPath();
  <script>
  $("#f2").validate({
 	 rules:{
+		 whenSent:'required',
 		 sender: 'required',
 		 recipient:'required',
 		 subject: 'required'
 	 },
 	 messages:{
+		 whenSent:'Campo Obrigatório',
 		 sender: 'Campo Obrigatório',
 		 recipient: 'Campo Obrigatório',
 		 subject: 'Campo Obrigatório'

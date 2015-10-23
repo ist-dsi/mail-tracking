@@ -65,7 +65,7 @@
 
 <spring:url var="submitUrl"
 	value="/mail-tracking/management/createCopyEntry/" />
-<form:form commandName="entryBean" class="form-horizontal"
+<form:form id="sent" commandName="entryBean" class="form-horizontal"
 	method="POST" action="${submitUrl}" >
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
@@ -212,6 +212,24 @@ $( ".datepickers" ).datepicker({
  autoclose: true,
  dateFormat: 'yy-mm-dd'
  }).val();
+ 
+$("#sent").validate({
+	 rules:{
+		 whenSent:'required',
+		 sender: 'required',
+		 recipient:'required',
+		 subject: 'required'
+	 },
+	 messages:{
+		 whenSent:'Campo Obrigatório',
+		 sender: 'Campo Obrigatório',
+		 recipient: 'Campo Obrigatório',
+		 subject: 'Campo Obrigatório'
+		 },
+	 submitHandler: function(form) {
+           form.submit();
+	 }
+});
 });
 </script>
 

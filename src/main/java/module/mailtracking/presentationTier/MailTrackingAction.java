@@ -58,14 +58,14 @@ import org.fenixedu.bennu.struts.portal.StrutsApplication;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import org.joda.time.DateTime;
 
-import com.google.common.base.Strings;
-
 import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixframework.FenixFramework;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -119,7 +119,8 @@ public class MailTrackingAction extends BaseAction {
         MailTracking mailTracking = readMailTracking(request);
 
         if (mailTracking != null) {
-            if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking()) {
+            if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking() || !mailTracking.isCurrentUserAbleToManageUsers()
+                    || !mailTracking.isCurrentUserAbleToEditMailTrackingAttributes()) {
                 return forward("/mailtracking/permissionDenied.jsp");
             }
 

@@ -85,12 +85,12 @@
 
 	
 	<div class="form-group">
-		<form:label class="control-label col-sm-2" path="entry.type" id='type' ><spring:message
+		<form:label class="control-label col-sm-2" path="entry.type"  ><spring:message
 				code="label.mailTracking.table.mail"
 				text="label.mailTracking.table.mail" />
 		</form:label>
 		<div class="col-sm-10">
-			<form:input class="form-control" path="entry.type.description" disabled="true"/>
+			<form:input id='type' class="form-control" path="entry.type.description" disabled="true"/>
 		</div>
 	</div>
 
@@ -383,11 +383,41 @@
 		   
 		   $("#editForm").validate({
 				 rules:{
+					 whenSent:{
+						 'required':{
+							 depends:function()
+						        {
+							          var sel =$('#type').val();
+						           
+							          if(sel =='Expedido' ){
+							        	return true;  
+							          }else{
+							        	 return false;
+							          }
+						          }
+						 		}
+							 },
+					 whenReceived: {
+						 'required':{
+						 depends:function()
+					        {
+						          var sel =$('#type').val();
+					           
+						          if(sel =='Recebido' ){
+						        	return true;  
+						          }else{
+						        	 return false;
+						          }
+					          }
+					 		}
+						 },
 					 sender: 'required',
 					 recipient:'required',
 					 subject: 'required'
 				 },
 				 messages:{
+					 whenSent:'Campo Obrigatório',
+					 whenRecieved: 'Campo Obrigatório',
 					 sender: 'Campo Obrigatório',
 					 recipient: 'Campo Obrigatório',
 					 subject: 'Campo Obrigatório'

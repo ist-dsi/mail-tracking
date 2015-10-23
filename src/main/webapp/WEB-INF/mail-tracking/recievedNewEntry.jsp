@@ -153,11 +153,13 @@ final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getA
 
  $("#f1").validate({
 	 rules:{
+		 whenReceived:'required',
 		 sender: 'required',
 		 recipient:'required',
 		 subject: 'required'
 	 },
 	 messages:{
+		 whenReceived:'Campo Obrigatório',
 		 sender: 'Campo Obrigatório',
 		 recipient: 'Campo Obrigatório',
 		 subject: 'Campo Obrigatório'
