@@ -43,7 +43,8 @@
 
 <div class="page-header">
 	<h1>
-	<spring:message code="title.mail.tracking.edit.entry" text="title.mail.tracking.edit.entry" />
+	<spring:message code="title.mail.tracking.application"
+			text="Gestão de Correspondência" />
 	</h1>
 </div>
 <br>
@@ -333,9 +334,12 @@
 
 
 		    $( ".datepickers" ).datepicker({
-			 autoclose: true,
-			 dateFormat: 'yy-mm-dd'
-			 }).val();
+			 autoclose: true,			 
+			 dateFormat: 'yy-mm-dd',
+			 onClose: function(){
+				 $(this).valid();
+			 }
+			 });
 
 		   $('.autocompi').autocomplete({
 			   
@@ -380,47 +384,82 @@
 				return false;
 			}
 		});
-		   
+		   $.validator.addMethod(
+				      "fmtDate",
+				      function (value, element) {
+				    	 
+				        if(value==""){
+				        	return true;
+				        } 
+				    	
+				    	var dt= value.match(/((20)[0-9]{2})[-]((0[1-9])|(1[0-2]))[-]((0[1-9])|(1[0-9])|(2[0-9])|(3[0-1]))/);
+				    	if(dt==null){
+				    		return false;
+				    	}else{
+				    		return true;
+				    		}
+				      },"Data inválida");
+
 		   $("#editForm").validate({
 				 rules:{
 					 whenSent:{
 						 'required':{
 							 depends:function()
 						        {
-							          var sel =$('#type').val();
-						           
+							          var sel =$('#type').val();						           
 							          if(sel =='Expedido' ){
 							        	return true;  
 							          }else{
 							        	 return false;
 							          }
 						          }
-						 		}
+						 		},
+						 		'fmtDate':true
 							 },
+						
 					 whenReceived: {
 						 'required':{
 						 depends:function()
 					        {
-						          var sel =$('#type').val();
-					           
+						          var sel =$('#type').val();					           
 						          if(sel =='Recebido' ){
 						        	return true;  
 						          }else{
 						        	 return false;
 						          }
 					          }
-					 		}
+					 		},
+					 		'fmtDate':true
 						 },
 					 sender: 'required',
 					 recipient:'required',
 					 subject: 'required'
 				 },
 				 messages:{
-					 whenSent:'Campo Obrigatório',
-					 whenRecieved: 'Campo Obrigatório',
+					 whenSent:{
+						 required:'Campo Obrigatório'
+					 },
+					 whenReceived:{
+						 required:'Campo Obrigatório'
+
+					 	 },				
 					 sender: 'Campo Obrigatório',
 					 recipient: 'Campo Obrigatório',
 					 subject: 'Campo Obrigatório'
+					 },
+				 submitHandler: function(form) {
+			            form.submit();
+				 }
+			});
+		   
+		   $("#associateDoc").validate({
+				 rules:{
+					 stream:'required',
+					 description: 'required'
+				 },
+				 messages:{
+					 stream: 'Campo Obrigatório',
+					 description: 'Campo Obrigatório'
 					 },
 				 submitHandler: function(form) {
 			            form.submit();

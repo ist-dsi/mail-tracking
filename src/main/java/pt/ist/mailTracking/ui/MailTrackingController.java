@@ -416,8 +416,13 @@ public class MailTrackingController {
             model.addAttribute("message", e.getMessage());
             return prepareDeleteEntry(entryId, check, request, model);
         }
+        MailTracking mailTracking = entry.getMailTracking();
+        Year year = entry.getYear();
 
-        return viewEntry(entry.getExternalId(), check, model);
+        String contextpath =
+                "/mail-tracking/management/chooseMailTracking?mailTrackingId=" + mailTracking.getExternalId() + "&YearId="
+                        + year.getExternalId() + "&check=" + check;
+        return redirect(contextpath, null, null);
     }
 
     @RequestMapping(value = "/downLoad/{fileId}/{entryId}", method = RequestMethod.GET)
@@ -534,7 +539,7 @@ public class MailTrackingController {
                     mailTracking
                             .createNewEntry(bean, readCorrespondenceTypeView(request.getParameter("entry.type"), model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
-            return viewEntry(newEntry.getExternalId(), check, model);
+            return prepareEditEntry(newEntry.getExternalId(), check, model);
         } catch (Exception e) {
             String message = e.getMessage();
 
@@ -613,7 +618,7 @@ public class MailTrackingController {
         try {
             CorrespondenceEntry newEntry = mailTracking.createNewEntry(bean, readCorrespondenceTypeView(type, model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
-            return viewEntry(newEntry.getExternalId(), check, model);
+            return prepareEditEntry(newEntry.getExternalId(), check, model);
         } catch (MailTrackingDomainException e) {
             String message = e.getMessage();
 
@@ -646,6 +651,9 @@ public class MailTrackingController {
 
     private String redirect(String url, CorrespondenceEntryBean bean, RedirectAttributes ra) {
 
+        if (bean == null && ra == null) {
+            return "redirect:" + url;
+        }
         ra.addAttribute("reference", bean.getReference());
         if (bean.getWhenReceived() != null) {
             ra.addAttribute("whenReceived", new LocalDate(bean.getWhenReceived().getYear(), bean.getWhenReceived()
@@ -744,9 +752,7 @@ public class MailTrackingController {
     }
 
     private static class DocumentUploadException extends java.lang.Exception {
-        /**
-     * 
-     */
+
         private static final long serialVersionUID = 1L;
 
         public DocumentUploadException(String message) {

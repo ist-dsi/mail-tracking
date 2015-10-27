@@ -24,7 +24,8 @@
 %>
 
 <div class="page-header">
-	<h1><spring:message code="title.mail.tracking.correspondence.entry.delete" text="Remove Correspondence" />
+	<h1><spring:message code="title.mail.tracking.application"
+			text="Gestão de Correspondência" />
 	</h1>
 </div>
 <br>

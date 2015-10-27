@@ -120,7 +120,7 @@
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div id="yearVisibility" class="form-group" hidden="true">
 		<label class="control-label col-sm-2" for="year"> <spring:message
 				code="label.mailTracking.year" text="label.mailTracking.year" />
 		</label>
@@ -129,7 +129,7 @@
 		<c:if test='${ano=="" }'>
 			<select class="form-control" id="year" name="year" 
 				disabled="disabled">
-				<option value=""><spring:message code="option.mailTracking.select.year" text="option.mailTracking.select.year"/></option>
+				<option value=""></option>
 			</select>
 		</c:if>	
 		<c:if test='${ano!="" }'>
@@ -139,7 +139,7 @@
 		</c:if>	
 		</div>
 	</div>
-<div id="processing_message" style="display:none" title="Processing">Please wait while your request is being processed...</div>	
+
 <div id="demo" hidden='true' >
 
 	<div id="criar" hidden="true">
@@ -171,7 +171,7 @@
             <spring:message code="label.mailTracking.table.reference" text="Nº"/>
           </label>
         </th>
-          <th scope="col" class=""  width="46px">
+          <th scope="col" class=""  width="52px">
         <label for="Data" title="Data">
              <spring:message code="label.mailTracking.table.data" text="Data"/>
           </label>
@@ -312,6 +312,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 				},
 				function(j) {
 					if (j.length > 0) {
+						
 						$("#year")
 								.removeAttr(
 										"disabled");
@@ -328,6 +329,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 						if(!is_undefined(yearaux)){
 							$("#year option[value="+yearaux+"]").attr('selected','selected');
 						};
+						$("#yearVisibility").removeAttr('hidden');
 						$("#year").trigger('change');
 					} else {
 						$("#year").attr(
@@ -336,6 +338,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 						$("#year")
 								.html(
 										'<option value="">Year</option>');
+						$("#yearVisibility").attr('hidden','true');
 						$("#demo").attr('hidden','true');
 						return false;
 					}
@@ -437,6 +440,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 				e.preventDefault();
 				$("#demo").attr('hidden','true');
 				if (this.selectedIndex == 0) {
+					$("#yearVisibility").attr('hidden','true');
 					$("#year").attr('disabled', 'disabled');
 					$("#year").html(
 							'<option value="">Year</option>');

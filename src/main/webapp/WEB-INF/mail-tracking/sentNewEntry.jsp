@@ -115,9 +115,40 @@ final String contextPath = request.getContextPath();
 </form:form>
 
  <script>
+ 
+ $.validator.addMethod(
+	      "fmtDate",
+	      function (value, element) {
+	    	 
+	        if(value==""){
+	        	return true;
+	        } 
+	    	
+	    	var dt= value.match(/((20)[0-9]{2})[-]((0[1-9])|(1[0-2]))[-]((0[1-9])|(1[0-9])|(2[0-9])|(3[0-1]))/);
+	    	if(dt==null){
+	    		return false;
+	    	}else{
+	    		return true;
+	    		}
+	      },"Data inválida - Formato: YYYY-MM-DD");
+
+
  $("#f2").validate({
 	 rules:{
-		 whenSent:'required',
+		 whenSent:{
+			 'required':{
+				 depends:function()
+			        {
+				          var sel =$('#type').val();						           
+				          if(sel =='Expedido' ){
+				        	return true;  
+				          }else{
+				        	 return false;
+				          }
+			          }
+			 		},
+			 		'fmtDate':true
+				 },
 		 sender: 'required',
 		 recipient:'required',
 		 subject: 'required'

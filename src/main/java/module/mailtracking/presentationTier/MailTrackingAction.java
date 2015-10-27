@@ -119,8 +119,7 @@ public class MailTrackingAction extends BaseAction {
         MailTracking mailTracking = readMailTracking(request);
 
         if (mailTracking != null) {
-            if (!mailTracking.isCurrentUserWithSomeRoleOnThisMailTracking() || !mailTracking.isCurrentUserAbleToManageUsers()
-                    || !mailTracking.isCurrentUserAbleToEditMailTrackingAttributes()) {
+            if (!mailTracking.isCurrentUserAbleToManageUsers() || !mailTracking.isCurrentUserAbleToEditMailTrackingAttributes()) {
                 return forward("/mailtracking/permissionDenied.jsp");
             }
 
