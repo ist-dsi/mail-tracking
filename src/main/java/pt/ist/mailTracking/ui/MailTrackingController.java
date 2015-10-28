@@ -800,9 +800,6 @@ public class MailTrackingController {
         return entryBean;
     }
 
-    private static final Integer MAX_SENDER_SIZE = 50;
-    private static final Integer MAX_RECIPIENT_SIZE = 50;
-
     protected boolean preValidate(CorrespondenceEntryBean correspondenceEntryBean, HttpServletRequest request,
             CorrespondenceType correspondenceType, Model model) {
 
@@ -811,18 +808,8 @@ public class MailTrackingController {
             return false;
         }
 
-        if (correspondenceEntryBean.getSender().length() > MAX_SENDER_SIZE) {
-            addMessage(model, "error.mail.tracking.sender.length.must.be.less.than", new String[] { MAX_SENDER_SIZE.toString() });
-        }
-
         if (Strings.isNullOrEmpty(correspondenceEntryBean.getRecipient())) {
             addMessage(model, "error.mail.tracking.recipient.is.required", null);
-            return false;
-        }
-
-        if (correspondenceEntryBean.getRecipient().length() > MAX_RECIPIENT_SIZE) {
-            addMessage(model, "error.mail.tracking.recipient.length.must.be.less.than",
-                    new String[] { MAX_RECIPIENT_SIZE.toString() });
             return false;
         }
 
@@ -879,7 +866,7 @@ public class MailTrackingController {
 
         final JsonObject o = new JsonObject();
         o.addProperty("id", u.getPerson().getExternalId());
-        o.addProperty("name", u.getPerson().getName());
+        o.addProperty("name", u.getPerson().getPresentationName());
         result.add(o);
     }
 
