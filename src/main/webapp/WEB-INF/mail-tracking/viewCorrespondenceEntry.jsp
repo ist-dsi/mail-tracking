@@ -195,7 +195,7 @@
 									</td>
 									<td>
 										<span><a href="<%=contextPath%>/mail-tracking/management/downLoad/<%=doc.getExternalId()%>/<%=entry.getEntry().getExternalId() %>">
-										<img src="/dot/images/view.gif" alt="Visualizar"></img></a></span>
+										<img src="<%= contextPath %>/images/view.gif" alt="Visualizar"></img></a></span>
 												
 									</td>
 			<%} %>

@@ -19,26 +19,26 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
 
+
+<%
+        final String contextPath = request.getContextPath();
+        final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getAttribute("entryBean");
+        final AssociateDocumentBean doc =(AssociateDocumentBean)request.getAttribute("associateDocumentBean");
+        final String mailTrackingId=entryBean.getMailTracking().getExternalId();
+        final String entryId=entryBean.getEntry().getExternalId();
+        String message=(String)request.getParameter("message");
+       	final Boolean check = Boolean.valueOf(request.getAttribute("check").toString());
+
+       	final CorrespondenceType correspondenceType=entryBean.getEntry().getType();
+
+%>
+
 <style>
-.ui-autocomplete-loading{background: url(/dot/images/spinner.gif) no-repeat right center}
+.ui-autocomplete-loading{background: url(<%= contextPath %>/images/spinner.gif) no-repeat right center}
 </style>
 
 
 
-
-
-<%
-	final String contextPath = request.getContextPath();
- 	final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getAttribute("entryBean");
-	final AssociateDocumentBean doc =(AssociateDocumentBean)request.getAttribute("associateDocumentBean");
-	final String mailTrackingId=entryBean.getMailTracking().getExternalId();
-	final String entryId=entryBean.getEntry().getExternalId();
-	String message=(String)request.getParameter("message");
-	final Boolean check = Boolean.valueOf(request.getAttribute("check").toString());
- 	
-	final CorrespondenceType correspondenceType=entryBean.getEntry().getType();
-	
-%>
 <script src='<%= contextPath + "/webjars/jquery-ui/1.11.1/jquery-ui.js" %>'></script>
 
 <div class="page-header">
@@ -196,7 +196,7 @@ label.error {
   color:#FB3A3A;
   font-weight:bold;
 }
-.ui-autocomplete-loading{background: url(/dot/images/spinner.gif) no-repeat right center}
+.ui-autocomplete-loading{background: url(<%= contextPath %>/images/spinner.gif) no-repeat right center}
 </style>
 
 <script type="text/javascript">

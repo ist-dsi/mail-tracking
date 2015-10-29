@@ -512,7 +512,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 							    },
 							    
 
-							'sAjaxSource': "/dot/mail-tracking/management/getCurrMailTracking/json?term="+term+"&year="+year+"&check="+check,
+							'sAjaxSource': contextPath + "/mail-tracking/management/getCurrMailTracking/json?term="+term+"&year="+year+"&check="+check,
 							"fnServerData": function ( sSource, aoData, fnCallback ) {
 					            $.ajax( {
 					                dataType: 'json',
@@ -632,15 +632,15 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 												
 													var links='';
 													if(row.View!= 'permission_not_granted')
-						 							links += "<" + "a href='"+row.View+"'><img src='/dot/images/view.gif' alt='Visualizar' /></a> "
+						 							links += "<" + "a href='"+row.View+"'><img src='" + contextPath + "/images/view.gif' alt='Visualizar' /></a> "
 						 							if(row.Edit!= 'permission_not_granted')
- 						 							links += "<" + "a href='"+row.Edit+"'><img src='/dot/images/edit.gif' alt='Editar' /></a> "
+ 						 							links += "<" + "a href='"+row.Edit+"'><img src='" + contextPath + "/images/edit.gif' alt='Editar' /></a> "
 													if(row.Delete!= 'permission_not_granted')
- 						 							links += "<" + "a href='"+row.Delete+"'><img src='/dot/images/delete.gif' alt='Remover' /></a> "
+ 						 							links += "<" + "a href='"+row.Delete+"'><img src='" + contextPaht + "/images/delete.gif' alt='Remover' /></a> "
 													if(row.Document!= 'permission_not_granted')
- 						 							links += "<" + "a href='"+row.Document+"'><img src='/dot/images/document.gif' alt='Visualizar Documento' /></a> "
+ 						 							links += "<" + "a href='"+row.Document+"'><img src='" + contextPath + "/images/document.gif' alt='Visualizar Documento' /></a> "
 													if(row.CopyEntry!= 'permission_not_granted')
- 						 							links += "<" + "a href='"+row.CopyEntry+"'><img src='/dot/images/copyEntry.gif' alt='Copiar' /></a>"
+ 						 							links += "<" + "a href='"+row.CopyEntry+"'><img src='" + contextPath + "/images/copyEntry.gif' alt='Copiar' /></a>"
 													return links;
 													},
 										"aTargets": [13]					  	  															

@@ -85,7 +85,7 @@ label.error {
   color:#FB3A3A;
   font-weight:bold;
 }
-.ui-autocomplete-loading{background: url(/dot/images/spinner.gif) no-repeat right center}
+.ui-autocomplete-loading{background: url(<%=contextPath%>/images/spinner.gif) no-repeat right center}
 </style>
 
 <script type="text/javascript">	

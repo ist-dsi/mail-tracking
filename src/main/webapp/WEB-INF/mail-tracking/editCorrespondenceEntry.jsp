@@ -38,7 +38,7 @@
 <script src='<%= contextPath + "/webjars/jquery-ui/1.11.1/jquery-ui.js" %>'></script>
 
 <style>
-.ui-autocomplete-loading{background: url(/dot/images/spinner.gif) no-repeat right center}
+.ui-autocomplete-loading{background: url(<%= contextPath %>/images/spinner.gif) no-repeat right center}
 </style>
 
 <div class="page-header">
@@ -284,8 +284,8 @@
 									</td>
 									<td>
 										<span><a href="<%=contextPath%>/mail-tracking/management/downLoad/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
-										<img src="/dot/images/view.gif" alt="Visualizar"></img></a> <a href="<%=contextPath%>/mail-tracking/management/deleteDocument/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
-										<img src="/dot/images/delete.gif" alt="Eliminar"></img></a></span>	
+										<img src="<% contextPath %>/images/view.gif" alt="Visualizar"></img></a> <a href="<%=contextPath%>/mail-tracking/management/deleteDocument/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
+										<img src="<%= contextPath %>/images/delete.gif" alt="Eliminar"></img></a></span>	
 									</td>
 			<%} %>
 		</tbody>
