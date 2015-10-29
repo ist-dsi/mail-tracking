@@ -284,7 +284,7 @@
 									</td>
 									<td>
 										<span><a href="<%=contextPath%>/mail-tracking/management/downLoad/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
-										<img src="<% contextPath %>/images/view.gif" alt="Visualizar"></img></a> <a href="<%=contextPath%>/mail-tracking/management/deleteDocument/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
+										<img src="<%= contextPath %>/images/view.gif" alt="Visualizar"></img></a> <a href="<%=contextPath%>/mail-tracking/management/deleteDocument/<%=document.getExternalId()%>/<%=entryBean.getEntry().getExternalId() %>">
 										<img src="<%= contextPath %>/images/delete.gif" alt="Eliminar"></img></a></span>	
 									</td>
 			<%} %>
