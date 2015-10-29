@@ -636,7 +636,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 						 							if(row.Edit!= 'permission_not_granted')
  						 							links += "<" + "a href='"+row.Edit+"'><img src='" + contextPath + "/images/edit.gif' alt='Editar' /></a> "
 													if(row.Delete!= 'permission_not_granted')
- 						 							links += "<" + "a href='"+row.Delete+"'><img src='" + contextPaht + "/images/delete.gif' alt='Remover' /></a> "
+ 						 							links += "<" + "a href='"+row.Delete+"'><img src='" + contextPath + "/images/delete.gif' alt='Remover' /></a> "
 													if(row.Document!= 'permission_not_granted')
  						 							links += "<" + "a href='"+row.Document+"'><img src='" + contextPath + "/images/document.gif' alt='Visualizar Documento' /></a> "
 													if(row.CopyEntry!= 'permission_not_granted')
