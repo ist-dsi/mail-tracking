@@ -21,6 +21,7 @@
 	final CorrespondenceType correspondenceType=entryBean.getEntry().getType();
 	final Boolean check = Boolean.valueOf(request.getAttribute("check").toString());
 	final String message=(String)request.getAttribute("message");
+	final String options=(String)request.getAttribute("options");
 %>
 
 <div class="page-header">
@@ -31,7 +32,7 @@
 <br>
 
 <p>
-	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>' >
+	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<spring:message code="label.back" text="Go Back" />
 	</a>
 </p>
@@ -122,6 +123,7 @@
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
+<input type="hidden" name="options" value="<%=options%>"/>
 <form:hidden path="entry.type"/>
 	<div class="form-group">
 		<form:label class="control-label col-sm-2" path="deletionReason" id='deletionReason' ><spring:message

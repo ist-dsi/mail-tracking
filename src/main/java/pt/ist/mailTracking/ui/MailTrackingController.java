@@ -96,13 +96,15 @@ public class MailTrackingController {
         Collection<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
         model.addAttribute("mailTrackings", mailTrackings);
         model.addAttribute("check", false);
+        model.addAttribute("options", "");
 
         return "mail-tracking/chooseMailTracking";
     }
 
     @RequestMapping(value = "/chooseMailTracking", method = RequestMethod.GET)
     public final String chooseMailTracking(@RequestParam String mailTrackingId, @RequestParam String YearId,
-            @RequestParam Boolean check, HttpServletRequest request, final Model model) throws Exception {
+            @RequestParam Boolean check, @RequestParam String options, HttpServletRequest request, final Model model)
+            throws Exception {
         final User currentUser = Authenticate.getUser();
         Collection<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
 
@@ -116,6 +118,7 @@ public class MailTrackingController {
         model.addAttribute("mailTracking", mailTracking);
         model.addAttribute("year", year);
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
 
         return "mail-tracking/chooseMailTracking";
     }
@@ -136,7 +139,7 @@ public class MailTrackingController {
     @RequestMapping(value = "/getCurrMailTracking/json", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public @ResponseBody String populateMailTracking(@RequestParam(required = false, value = "term") String term, @RequestParam(
             required = false, value = "year") String year, @RequestParam(required = false, value = "check") Boolean check,
-            HttpServletRequest request, final Model model) {
+            @RequestParam(required = false, value = "options") String options, HttpServletRequest request, final Model model) {
 
         if (Strings.isNullOrEmpty(term) || Strings.isNullOrEmpty(year)) {
             return null;
@@ -152,7 +155,7 @@ public class MailTrackingController {
         Set<CorrespondenceEntry> entries = chosenYear.getEntriesSet();
 
         entries.stream().filter(e -> match(check, e)).collect(Collectors.toSet())
-                .forEach(u -> addCorrespondenceToJson(result, u, request, mailTracking.getExternalId(), check));
+                .forEach(u -> addCorrespondenceToJson(result, u, request, mailTracking.getExternalId(), check, options));
         StringBuilder stringBuilder = new StringBuilder("{");
         stringBuilder.append("\"aaData\": ").append(result.toString()).append("\n");
         stringBuilder.append("}");
@@ -205,7 +208,7 @@ public class MailTrackingController {
     }
 
     private void addCorrespondenceToJson(JsonArray result, CorrespondenceEntry u, HttpServletRequest request,
-            String mailTrackingId, Boolean check) {
+            String mailTrackingId, Boolean check, String options) {
 
         final JsonObject o = new JsonObject();
 
@@ -222,22 +225,23 @@ public class MailTrackingController {
 
         o.addProperty(
                 "View",
-                u.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request, u, check) : "permission_not_granted");
+                u.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request, u, check, options) : "permission_not_granted");
         o.addProperty(
                 "Edit",
                 u.isUserAbleToEdit(Authenticate.getUser()) && u.isActive() ? generateLinkForCorrespondenceEntryEdition(request,
-                        u, check) : "permission_not_granted");
+                        u, check, options) : "permission_not_granted");
         o.addProperty(
                 "Delete",
                 u.isUserAbleToDelete(Authenticate.getUser()) && u.isActive() ? generateLinkForCorrespondenceEntryRemoval(request,
-                        u, check) : "permission_not_granted");
+                        u, check, options) : "permission_not_granted");
         o.addProperty(
                 "Document",
                 u.isUserAbleToViewMainDocument(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryMainDocument(request,
                         u) : "permission_not_granted");
         o.addProperty(
                 "CopyEntry",
-                u.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request, u, check) : "permission_not_granted");
+                u.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request, u, check,
+                        options) : "permission_not_granted");
         result.add(o);
     }
 
@@ -251,33 +255,37 @@ public class MailTrackingController {
 
     }
 
-    private String generateLinkForCorrespondenceEntryView(HttpServletRequest request, CorrespondenceEntry entry, Boolean check) {
+    private String generateLinkForCorrespondenceEntryView(HttpServletRequest request, CorrespondenceEntry entry, Boolean check,
+            String options) {
         String contextPath = request.getContextPath();
 
         String realLink =
                 contextPath
-                        + String.format("/mail-tracking/management/viewEntry?entryId=%s&amp;check=%s", entry.getExternalId(),
-                                check);
+                        + String.format("/mail-tracking/management/viewEntry?entryId=%s&amp;check=%s&amp;options=%s",
+                                entry.getExternalId(), check, options);
 
         return realLink;
     }
 
-    private String generateLinkForCorrespondenceEntryEdition(HttpServletRequest request, CorrespondenceEntry entry, Boolean check) {
+    private String generateLinkForCorrespondenceEntryEdition(HttpServletRequest request, CorrespondenceEntry entry,
+            Boolean check, String options) {
         String contextPath = request.getContextPath();
         String realLink =
                 contextPath
-                        + String.format("/mail-tracking/management/prepareEditEntry?entryId=%s&amp;check=%s",
-                                entry.getExternalId(), check);
+                        + String.format("/mail-tracking/management/prepareEditEntry?entryId=%s&amp;check=%s&amp;options=%s",
+                                entry.getExternalId(), check, options);
 
         return realLink;
     }
 
-    private String generateLinkForCorrespondenceEntryCopy(HttpServletRequest request, CorrespondenceEntry entry, Boolean check) {
+    private String generateLinkForCorrespondenceEntryCopy(HttpServletRequest request, CorrespondenceEntry entry, Boolean check,
+            String options) {
         String contextPath = request.getContextPath();
         String realLink =
                 contextPath
-                        + String.format("/mail-tracking/management/prepareCopyEntry/?entryId=%s&amp;check=%s&amp;message=%s",
-                                entry.getExternalId(), check, "");
+                        + String.format(
+                                "/mail-tracking/management/prepareCopyEntry/?entryId=%s&amp;check=%s&amp;message=%s&amp;options=%s",
+                                entry.getExternalId(), check, "", options);
         return realLink;
     }
 
@@ -291,19 +299,20 @@ public class MailTrackingController {
         return realLink;
     }
 
-    private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry, boolean check) {
+    private String generateLinkForCorrespondenceEntryRemoval(HttpServletRequest request, CorrespondenceEntry entry,
+            boolean check, String options) {
         String contextPath = request.getContextPath();
         String realLink =
                 contextPath
-                        + String.format("/mail-tracking/management/prepareDeleteEntry?entryId=%s&amp;check=%s",
-                                entry.getExternalId(), check);
+                        + String.format("/mail-tracking/management/prepareDeleteEntry?entryId=%s&amp;check=%s&amp;options=%s",
+                                entry.getExternalId(), check, options);
 
         return realLink;
     }
 
     @RequestMapping(value = "/viewEntry", method = RequestMethod.GET)
     public String viewEntry(@RequestParam(required = true) String entryId, @RequestParam(required = true) Boolean check,
-            final Model model) {
+            @RequestParam(required = true) String options, final Model model) {
 
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(Authenticate.getUser()) || !entry.isUserAbleToView()) {
@@ -314,13 +323,14 @@ public class MailTrackingController {
 
         model.addAttribute("correspondenceEntryBean", entry.createBean());
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
         return "mail-tracking/viewCorrespondenceEntry";
 
     }
 
     @RequestMapping(value = "/prepareEditEntry", method = RequestMethod.GET)
     public String prepareEditEntry(@RequestParam(required = true) String entryId, @RequestParam(required = false) Boolean check,
-            final Model model) {
+            @RequestParam(required = false) String options, final Model model) {
         final User u = Authenticate.getUser();
         CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToEdit(u)) {
@@ -333,6 +343,7 @@ public class MailTrackingController {
 
         model.addAttribute("visibilities", provideEntryVisibility());
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
 
         setAssociateDocumentBean(model, entry);
 
@@ -353,6 +364,7 @@ public class MailTrackingController {
         MailTracking mailTracking = entry.getMailTracking();
 
         Boolean check = Boolean.valueOf(request.getParameter("check"));
+        String opt = request.getParameter("options");
 
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToEdit(u)) {
             return "/mail-tracking/permissionDenied";
@@ -379,13 +391,13 @@ public class MailTrackingController {
         } catch (MailTrackingDomainException e) {
             addMessage(model, e.getMessage(), null);
         }
-        return prepareEditEntry(entry.getExternalId(), Boolean.valueOf(request.getParameter("check")), model);
+        return prepareEditEntry(entry.getExternalId(), Boolean.valueOf(request.getParameter("check")), opt, model);
 
     }
 
     @RequestMapping(value = "/prepareDeleteEntry", method = RequestMethod.GET)
     public final String prepareDeleteEntry(@RequestParam(required = true) String entryId, boolean check,
-            HttpServletRequest request, final Model model) {
+            @RequestParam String options, HttpServletRequest request, final Model model) {
         final User u = Authenticate.getUser();
         CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToDelete(u)) {
@@ -394,6 +406,7 @@ public class MailTrackingController {
         CorrespondenceEntryBean entryBean = entry.createBean();
         model.addAttribute("correspondenceEntryBean", entryBean);
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
 
         return "mail-tracking/deleteCorrespondenceEntry";
     }
@@ -403,9 +416,10 @@ public class MailTrackingController {
         final String entryId = request.getParameter("entryId");
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         Boolean check = Boolean.valueOf(request.getParameter("check"));
+        String opt = request.getParameter("options");
         model.addAttribute("check", check);
         model.addAttribute("entryId", entryId);
-
+        model.addAttribute("options", opt);
         if (!entry.isUserAbleToDelete(Authenticate.getUser())) {
             return "/mail-tracking/permissionDenied";
         }
@@ -414,15 +428,12 @@ public class MailTrackingController {
             entry.delete(request.getParameter("deletionReason"));
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return prepareDeleteEntry(entryId, check, request, model);
+            return prepareDeleteEntry(entryId, check, opt, request, model);
         }
         MailTracking mailTracking = entry.getMailTracking();
         Year year = entry.getYear();
 
-        String contextpath =
-                "/mail-tracking/management/chooseMailTracking?mailTrackingId=" + mailTracking.getExternalId() + "&YearId="
-                        + year.getExternalId() + "&check=" + check;
-        return redirect(contextpath, null, null);
+        return chooseMailTracking(mailTracking.getExternalId(), year.getExternalId(), check, opt, request, model);
     }
 
     @RequestMapping(value = "/downLoad/{fileId}/{entryId}", method = RequestMethod.GET)
@@ -453,7 +464,7 @@ public class MailTrackingController {
         doc.getCorrespondenceEntry().deleteDocument(doc);
 
         return prepareEditEntry(doc.getCorrespondenceEntry().getExternalId(), Boolean.valueOf(request.getParameter("check")),
-                model);
+                request.getParameter("options"), model);
     }
 
     @RequestMapping(value = "/associateDocument", method = RequestMethod.POST)
@@ -478,12 +489,14 @@ public class MailTrackingController {
 
         setAssociateDocumentBean(model, entry);
 
-        return prepareEditEntry(entry.getExternalId(), Boolean.valueOf(request.getParameter("check")), model);
+        return prepareEditEntry(entry.getExternalId(), Boolean.valueOf(request.getParameter("check")),
+                request.getParameter("options"), model);
     }
 
     @RequestMapping(value = "/prepareCopyEntry", method = RequestMethod.GET)
     public String prepareCopyEntry(@RequestParam(required = true) String entryId, @RequestParam Boolean check, @RequestParam(
-            value = "message") String message, final HttpServletRequest request, final Model model) {
+            value = "message") String message, @RequestParam(value = "options") String options, final HttpServletRequest request,
+            final Model model) {
         final User u = Authenticate.getUser();
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToCopyEntry(u)) {
@@ -493,6 +506,7 @@ public class MailTrackingController {
 
         model.addAttribute("entryBean", bean);
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
         setAssociateDocumentBean(model, entry);
 
         if (entry.getType().getSimpleName().equals("RECEIVED")) {
@@ -502,7 +516,7 @@ public class MailTrackingController {
         }
 
         addMessage(model, "erro", null);
-        return viewEntry(entry.getExternalId(), check, model);
+        return viewEntry(entry.getExternalId(), check, options, model);
 
     }
 
@@ -514,6 +528,7 @@ public class MailTrackingController {
         CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
 
         Boolean check = Boolean.valueOf(request.getParameter("check"));
+        String opt = request.getParameter("options");
         model.addAttribute("check", check);
 
         CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request, mailTracking, model);
@@ -529,7 +544,8 @@ public class MailTrackingController {
 
             setAssociateDocumentBean(model, null);
             String contextpath =
-                    "/mail-tracking/management/prepareCopyEntry?entryId=" + entryId + "&check=" + check + "&message=" + message;
+                    "/mail-tracking/management/prepareCopyEntry?entryId=" + entryId + "&check=" + check + "&message=" + message
+                            + "&options=" + opt;
             return redirect(contextpath, bean, ra);
 
         }
@@ -539,7 +555,7 @@ public class MailTrackingController {
                     mailTracking
                             .createNewEntry(bean, readCorrespondenceTypeView(request.getParameter("entry.type"), model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
-            return prepareEditEntry(newEntry.getExternalId(), check, model);
+            return prepareEditEntry(newEntry.getExternalId(), check, opt, model);
         } catch (Exception e) {
             String message = e.getMessage();
 
@@ -555,7 +571,7 @@ public class MailTrackingController {
     public String prepareCreateNewEntry(@RequestParam(required = true, value = "mailTrackingId") String mailTraclingId,
             @RequestParam(value = "check") Boolean check, @RequestParam(value = "yearId") String yearId, @RequestParam(
                     value = "type") String type, @RequestParam(value = "message") String message,
-            final HttpServletRequest request, Model model) {
+            @RequestParam(value = "options") String options, final HttpServletRequest request, Model model) {
         final User u = Authenticate.getUser();
         final MailTracking mailTracking = FenixFramework.getDomainObject(mailTraclingId);
         if (!mailTracking.isUserAbleToViewMailTracking(u) || !mailTracking.isUserAbleToCreateEntries(u)) {
@@ -579,6 +595,7 @@ public class MailTrackingController {
 
         model.addAttribute("check", check);
         model.addAttribute("yearId", yearId);
+        model.addAttribute("options", options);
 
         return "mail-tracking/createNewEntry";
     }
@@ -598,6 +615,7 @@ public class MailTrackingController {
         Year year = FenixFramework.getDomainObject(yearId);
 
         Boolean check = Boolean.valueOf(request.getParameter("check"));
+        String opt = request.getParameter("options");
         CorrespondenceEntryBean bean = new CorrespondenceEntryBean(mailTracking);
         bean = readCorrespondenceEntryBean(request, mailTracking, model);
 
@@ -611,20 +629,20 @@ public class MailTrackingController {
             setAssociateDocumentBean(model, null);
             String contextpath =
                     "/mail-tracking/management/prepareCreateNewEntry?mailTrackingId=" + mailTrackingId + "&check=" + check
-                            + "&yearId=" + yearId + "&type=" + type + "&message=" + message;
+                            + "&yearId=" + yearId + "&type=" + type + "&message=" + message + "&options=" + opt;
             return redirect(contextpath, bean, ra);
 
         }
         try {
             CorrespondenceEntry newEntry = mailTracking.createNewEntry(bean, readCorrespondenceTypeView(type, model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
-            return prepareEditEntry(newEntry.getExternalId(), check, model);
+            return prepareEditEntry(newEntry.getExternalId(), check, opt, model);
         } catch (MailTrackingDomainException e) {
             String message = e.getMessage();
 
             String contextpath =
                     "/mail-tracking/management/prepareCreateNewEntry?mailTrackingId=" + mailTrackingId + "&check=" + check
-                            + "&yearId=" + yearId + "&type=" + type + "&message=" + message;
+                            + "&yearId=" + yearId + "&type=" + type + "&message=" + message + "&options=" + opt;
 
             return redirect(contextpath, bean, ra);
 
@@ -652,6 +670,7 @@ public class MailTrackingController {
     private String redirect(String url, CorrespondenceEntryBean bean, RedirectAttributes ra) {
 
         if (bean == null && ra == null) {
+
             return "redirect:" + url;
         }
         ra.addAttribute("reference", bean.getReference());
@@ -677,7 +696,7 @@ public class MailTrackingController {
     @RequestMapping(value = "/prepareSetReferenceCounters", method = RequestMethod.GET)
     public String prepareSetReferenceCounters(@RequestParam(required = true, value = "mailTrackingId") String mailTrackingId,
             @RequestParam(value = "check") Boolean check, @RequestParam(required = true, value = "yearId") String yearId,
-            final HttpServletRequest request, Model model) {
+            @RequestParam(required = false, value = "options") String options, final HttpServletRequest request, Model model) {
         MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
 
         if (!mailTracking.isUserAbleToSetReferenceCounters(Authenticate.getUser())) {
@@ -692,14 +711,15 @@ public class MailTrackingController {
         model.addAttribute("chosenYear", chosenYear);
         model.addAttribute("yearId", yearId);
         model.addAttribute("check", check);
+        model.addAttribute("options", options);
 
         return "/mail-tracking/setReferenceCounters";
     }
 
     @RequestMapping(value = "/setReferenceCounters", method = RequestMethod.POST)
     public String setReferenceCounters(@RequestParam(value = "mailTrackingId") String mailTrackingId, @RequestParam(
-            value = "check") Boolean check, @RequestParam(required = true, value = "yearId") String yearId,
-            final HttpServletRequest request, Model model) throws Exception {
+            value = "check") Boolean check, @RequestParam(required = true, value = "yearId") String yearId, @RequestParam(
+            required = false, value = "options") String options, final HttpServletRequest request, Model model) throws Exception {
         final MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
         if (!mailTracking.isUserAbleToSetReferenceCounters(Authenticate.getUser())) {
             return "/mail-tracking/permissionDenied";
@@ -716,14 +736,10 @@ public class MailTrackingController {
 
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return prepareSetReferenceCounters(mailTrackingId, check, yearId, request, model);
+            return prepareSetReferenceCounters(mailTrackingId, check, yearId, options, request, model);
         }
 
-        String contextpath =
-                "/mail-tracking/management/chooseMailTracking?mailTrackingId=" + mailTrackingId + "&YearId=" + yearId + "&check="
-                        + check;
-
-        return "redirect:" + contextpath;
+        return chooseMailTracking(mailTrackingId, yearId, check, options, request, model);
     }
 
     private static final String DOCUMENT_NOT_SPECIFIED_MESSAGE = "error.correspondence.entry.document.not.specified";

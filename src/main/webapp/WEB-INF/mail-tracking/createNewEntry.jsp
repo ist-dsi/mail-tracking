@@ -32,6 +32,7 @@ final String contextPath = request.getContextPath();
 	final String yearId = (String)request.getAttribute("yearId");
 
 	final String type=(String)request.getParameter("type");
+	final String  options=(String)request.getAttribute("options");
 	
 	String str="checked";
 	
@@ -46,7 +47,7 @@ final String contextPath = request.getContextPath();
 <br>
 <p>
 <span style="margin-right: 30px;">
-	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>' >
+	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<spring:message code="label.back" text="Go Back" />
 	</a>
 	</span>
@@ -108,27 +109,28 @@ $(function() {
 	var mailId='<%=mailTrackingId%>';
 	var t='<%=type%>';
 	var value='';
+	var opt='<%=options%>';
 	
 	
 
 	
 	 
-	 if(!is_undefined(t)){
+	 if(!is_undefined(opt)){
 		
-			if(t === 'RECEIVED'){
+			if(opt === 'Recebido'){
 				$("input#rec").focus();
 				$("input#rec").attr('checked','true');
 				
-			    $("#tipo").val(t);
+			    $("#tipo").val('RECEIVED');
 			    $("#enviar").css("display", "none"); 
 			
 				$("#receber").css("display", "block"); 
 				
 			
-			}else if(t === 'SENT'){
+			}else if(opt ==='Expedido' ){
 				$("input#env").focus();
 				$("input#env").attr('checked','true');						 
-				 $("#tipo").val(t);
+				 $("#tipo").val('SENT');
 				
 				 $("#receber").css("display", "none"); 
 			

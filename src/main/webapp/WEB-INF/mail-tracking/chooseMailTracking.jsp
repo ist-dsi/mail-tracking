@@ -1,7 +1,7 @@
 
 <%@page import="javax.swing.text.StyledEditorKit.BoldAction"%>
 <%@page import="java.util.Collection"%>
-
+<%@ page import="module.mailtracking.domain.CorrespondenceType" %>
 <%@page import="module.mailtracking.domain.MailTracking"%>
 <%@page import="module.mailtracking.domain.Year"%>
 <%@page import="module.organization.domain.Unit"%>
@@ -30,6 +30,7 @@
 	final Collection<MailTracking> mailTrackings = (Collection<MailTracking>) request.getAttribute("mailTrackings");
 	final Year year = (Year) request.getAttribute("year");
 	final Boolean check = Boolean.valueOf(request.getAttribute("check").toString());
+	final String options = (String)request.getAttribute("options");
 	final MailTracking mailTracking = (MailTracking) request.getAttribute("mailTracking");
 %>
 <script src='<%=contextPath + "/webjars/jquery-ui/1.11.1/jquery-ui.js"%>'></script>
@@ -157,6 +158,19 @@
    <input style='vertical-align: text-bottom;' type='checkbox'  id='viewDeleted' name='viewDeleted' value="<%=check %>" onclick='viewCheck()' />
 				<span><spring:message code="check.mailTracking.allCorrespondence" text="check.mailTracking.allCorrespondence"/></span>
    </div>
+   <p/><p/><p/>
+   <div class='options' id="checkOptions" >
+   <label><spring:message code="label.type.receive" text="label.type.receive" /></label>
+   
+	<input id="rec" type="radio" name="entryType" value="Recebido" >
+
+	<label><spring:message code="label.type.sent" text="label.type.sent" /></label>
+	<input id = "env" type="radio" name=entryType value="Expedido" >
+	
+	<label><spring:message code="label.both" text="label.both" /></label>  
+	<input id="both" type="radio" name="entryType" value="">
+   </div>
+    <p></p>
     <p></p>
 <table style="width:100%;table-layout:fixed;" class="tstyle3 mtop05 mbottom05 ajax-table table">
     <thead>
@@ -243,6 +257,8 @@ var contextPath = '<%=contextPath%>';
 var unit = $("#mailTracking").val();
 var yearaux = $("#year").val();
 var c = '<%=check%>';
+var opt='<%=options%>';
+
 var type="";
 var msg ="";
 
@@ -278,6 +294,47 @@ function is_undefined(value) {
 		data;
 		};
 
+		$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
+		{
+		    if ( typeof sNewSource != 'undefined' && sNewSource != null )
+		    {
+		        oSettings.sAjaxSource = sNewSource;
+		    }
+		    this.oApi._fnProcessingDisplay( oSettings, true );
+		    var that = this;
+		    var iStart = oSettings._iDisplayStart;
+		      
+		    oSettings.fnServerData( oSettings.sAjaxSource, [], function(json) {
+		        /* Clear the old information from the table */
+		        that.oApi._fnClearTable( oSettings );
+		          
+		        /* Got the data - add it to the table */
+		        var aData =  (oSettings.sAjaxDataProp !== "") ?
+		            that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
+		          
+		        for ( var i=0 ; i<json.aaData.length ; i++ )
+		        {
+		            that.oApi._fnAddData( oSettings, json.aaData[i] );
+		        }
+		          
+		        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+		        that.fnDraw();
+		          
+		        if ( typeof bStandingRedraw != 'undefined' && bStandingRedraw === true )
+		        {
+		            oSettings._iDisplayStart = iStart;
+		            that.fnDraw( false );
+		        }
+		          
+		        that.oApi._fnProcessingDisplay( oSettings, true );
+		          
+		        /* Callback user function - for event handlers etc */
+		        if ( typeof fnCallback == 'function' && fnCallback != null )
+		        {
+		            fnCallback( oSettings );
+		        }
+		    }, oSettings );
+		};		
 
 jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 {
@@ -295,7 +352,12 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 	};
 	
 	
-	
+	function viewOpt(t,term,year,check,opt){
+		t.fnFilter( opt, 0, true, false );		
+		
+		createEntry(term,year);
+		createSetCounter(term,year);
+	};
 
 	function viewCheck() {
 		c=$("#viewDeleted").prop('checked');
@@ -354,7 +416,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 		    success: function(data){     	
 				if(data === "true" && ano!=""){
 			 
-				     var newEntry = contextPath +"/mail-tracking/management/prepareCreateNewEntry?mailTrackingId="+value+"&check="+c+"&yearId="+ano+"&type="+type+"&message="+msg;
+				     var newEntry = contextPath +"/mail-tracking/management/prepareCreateNewEntry?mailTrackingId="+value+"&check="+c+"&yearId="+ano+"&type="+type+"&message="+msg+"&options="+opt;
 		        	  $("#newEntry").attr('href',newEntry);
 		        	  $("#criar").removeAttr("hidden");
 		       	  
@@ -376,7 +438,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 		    type: 'GET',
 		    success: function(data){ 
 		    	if(data === "true" && ano!=""){
-		        	  var counter = contextPath +'/mail-tracking/management/prepareSetReferenceCounters?mailTrackingId='+value+"&check="+c+"&yearId="+ano;
+		        	  var counter = contextPath +'/mail-tracking/management/prepareSetReferenceCounters?mailTrackingId='+value+"&check="+c+"&yearId="+ano+"&options="+opt;
 						 $("#setCounter").attr('href',counter);
 						 $("#set").removeAttr("hidden");
 			        	 
@@ -417,12 +479,32 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 	$(document).ready(function () {
 		
 		
-	    
+		var table;
+		
 		if(c=='true'){
 			$("#viewDeleted").attr('checked','checked');
 		}else{
 			$("#viewDeleted").removeAttr('checked');
 		};
+		
+		
+		if(opt==''){
+       		$("input#both").focus();
+			$("input#both").attr('checked','true');
+		};
+			if(opt=='Expedido'){			
+				$("input#env").attr('checked','true');
+				$("input#env").focus();
+				
+			};
+			if(opt=='Recebido'){			
+				$("input#rec").attr('checked','true');
+				$("input#rec").focus();
+			};
+			
+		
+		
+		
 		
 
 		if(!is_undefined(unit)){
@@ -433,8 +515,14 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 			
 		};
 		
+		$("#checkOptions input:radio").on('click',function(){
+			 opt=this.value;
+			 table.fnReloadAjax(contextPath + "/mail-tracking/management/getCurrMailTracking/json?term="+term+"&year="+year+"&check="+check+"&options="+opt);
+			 viewOpt(table,$('#mailTracking').val(),$('#year').val(),$("#viewDeleted").prop('checked'),opt);
+			 return true;
+			 
+		});
 		
-       
 		
 		$("#mailTracking").change(function(e) {
 				e.preventDefault();
@@ -447,26 +535,30 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 					return false;
 				};
 				yearaux="";
+			
 				getListYears($(this).val());
-				
-
-						
+				table.fnFilter('');
+			
 		});
 		
-		var table;
+		var check;
+		var term;
+		var year;
 		
 		$("#year").on("change",function(){							
-			
-						var check =$("#viewDeleted").prop('checked');
-						var term =$('#mailTracking').val();
-						var year=$('#year').val();
+						
+						check =$("#viewDeleted").prop('checked');
+						term =$('#mailTracking').val();
+						year=$('#year').val();
+						
 						createEntry(term,year);
 						createSetCounter(term,year);
 						
 						table=$(".ajax-table").dataTable({
-							"dom": '<lf<t>ip>',
 							'bDestroy': true,
+							"dom": '<lf<t>ip>',
 							"bStateSave": false,
+							
 							'bPaginate': true,
 							'bProcessing': true,
 							'bServerSide': false,
@@ -476,8 +568,8 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 							'bDeferRender':true,
 
 							'oLanguage': {
-								"sEmptyTable": "Nenhum registro encontrado",
 								'sProcessing': 'A processar...',
+								"sEmptyTable": "loading...",
 								'sLengthMenu': 'Mostrar _MENU_ registos',
 								'sInfo': '_START_ - _END_ de _TOTAL_',
 								"sInfoThousands": "",
@@ -492,7 +584,8 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 								}
 							},
 							
-							'aaSorting': [[2,'desc']],
+							
+							'aaSorting': [[1,'desc']],
 							'fnFormatNumber': function ( iIn ) {
 							      if ( iIn < 1000 ) {
 							        return iIn;
@@ -512,7 +605,7 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 							    },
 							    
 
-							'sAjaxSource': contextPath + "/mail-tracking/management/getCurrMailTracking/json?term="+term+"&year="+year+"&check="+check,
+							'sAjaxSource': contextPath + "/mail-tracking/management/getCurrMailTracking/json?term="+term+"&year="+year+"&check="+check+"&options="+opt,
 							"fnServerData": function ( sSource, aoData, fnCallback ) {
 					            $.ajax( {
 					                dataType: 'json',
@@ -531,9 +624,10 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 						    	if(aData.State == "DELETED") {
 									$(nRow).addClass("entry_deleted");
 								}
+								 
 								 return nRow;
 						         },
-				           
+
 					      
 					        "aoColumns":[
 									{ "mData":'Type',
@@ -648,21 +742,22 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
  					  			   ]				      
 				
 						});	
-						$('div.dataTables_filter input').unbind();
+						
 						$('div.dataTables_filter input').keyup( function (e) {  
 					        table.fnFilter(
 					            jQuery.fn.DataTable.ext.type.search.string(this.value)
 					        );
-					    } );  
+					    } );
+						
+						viewOpt(table,term,year,check,opt);
+					
 						
 						$("#demo").removeAttr(
 						"hidden");
 					
     
 			});
-
-		
-		 
+			jQuery.fn.DataTable.ext.type.search.string('');
 		
 	});
 

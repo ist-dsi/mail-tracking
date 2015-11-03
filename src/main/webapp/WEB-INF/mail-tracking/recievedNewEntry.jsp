@@ -29,6 +29,7 @@ final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getA
 
 	final Boolean check = ((Boolean)request.getAttribute("check"));
 	final String yearId = (String)request.getAttribute("yearId");
+	final String  options=(String)request.getAttribute("options");
     
 	final String type=(String)request.getParameter("type");
 	String str="checked";
@@ -45,6 +46,7 @@ final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getA
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
+<input type="hidden" name="options" value="<%=options%>"/>
 <input type="hidden" name="owner" value="<%=entryBean.getOwner()!=null?entryBean.getOwner().getExternalId():""%>"/>
 <input type="hidden" name="type" id="tipo" value="<%=CorrespondenceType.RECEIVED%>"/>
 <input type="hidden" name="yearId" value="<%=yearId%>"/>  
@@ -140,7 +142,7 @@ final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getA
   <div class="form-group">
 	<div class="col-sm-2">
 	<input id="submitRecieve" class="btn btn-default" type="submit" value="<spring:message code="mailTracking.button.save" text=""/>" /> 
-	<a id='cancelar' href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>' >
+	<a id='cancelar' href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<input class="btn btn-default" type="button" value="<spring:message code="mailTracking.button.cancel" text=""/>"/>
 		</a>
 	</div>

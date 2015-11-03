@@ -21,6 +21,7 @@ final MailTracking mailTracking = (MailTracking)request.getAttribute("mailTracki
 final String message=(String)request.getAttribute("message");
 final YearBean yearBean=(YearBean)request.getAttribute("yearBean");
 final Boolean check = ((Boolean)request.getAttribute("check"));
+final String options=(String)request.getAttribute("options");
 %>
 
 
@@ -53,6 +54,7 @@ final Boolean check = ((Boolean)request.getAttribute("check"));
 		<input type="hidden" name="yearId" id="yearId" value="<%=yearId%>" />
 		<input type="hidden" name="yearBean" id="yearBean" value="<%=yearBean%>" />
 		<input type="hidden" name="check" id="check" value="<%=check%>" />
+		<input type="hidden" name="options" id="check" value="<%=options%>" />
 		
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="year"> <spring:message
@@ -86,7 +88,7 @@ final Boolean check = ((Boolean)request.getAttribute("check"));
 		<div class="form-group">
 		<div class="col-sm-2">
 		<input class="btn btn-default" type="submit" value="<spring:message code="mailTracking.button.save" text=""/>">
-		<a id='cancelar' href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTracking.getExternalId()%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>' >
+		<a id='cancelar' href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTracking.getExternalId()%>&amp;YearId=<%=yearId%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<input class="btn btn-default" type="button" value="<spring:message code="mailTracking.button.cancel" text=""/>"/>
 		</a>			
 		</div>

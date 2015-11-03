@@ -17,6 +17,8 @@
 	final String mailTrackingId=entry.getMailTracking().getExternalId();
 	final String entryId=entry.getEntry().getExternalId();
 	final Boolean check = ((Boolean)request.getAttribute("check"));
+	final String options = (String)request.getAttribute("options");
+
 %>
 
 <div class="page-header">
@@ -27,13 +29,13 @@
 <br>
 <p>
 <span style="margin-right: 30px;">
-	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entry.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>' >
+	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entry.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<spring:message code="label.back" text="Go Back" />
 	</a>
 	</span>
 	<%if(entry.getEntry().isUserAbleToEdit() && entry.getEntry().isActive() ){ %>
 		<span style="margin-right: 30px;">
-		<a id="edit" href='<%=contextPath %>/mail-tracking/management/prepareEditEntry?entryId=<%=entryId %>&check=<%=check%>'>
+		<a id="edit" href='<%=contextPath %>/mail-tracking/management/prepareEditEntry?entryId=<%=entryId %>&check=<%=check%>&amp;options=<%=options %>'>
 		<spring:message code="label.edit" text="Edit" /></a>
 		</span>
 	<%} %>

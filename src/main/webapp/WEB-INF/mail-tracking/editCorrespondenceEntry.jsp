@@ -32,6 +32,7 @@
 	final List<CustomEnum> entryVisibility = (List<CustomEnum>) request.getAttribute("visibilities");
 	final String message=(String)request.getAttribute("message");
 	final Boolean check = Boolean.valueOf(request.getAttribute("check").toString());
+	final String options = (String)request.getAttribute("options");
 %>
 
 
@@ -50,7 +51,7 @@
 <br>
 <p>
 <span style="margin-right: 30px;">
-	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>' >
+	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 		<spring:message code="label.back" text="Go Back" />
 	</a>
 	</span>
@@ -78,6 +79,7 @@
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
+<input type="hidden" name="options" value="<%=options%>"/>
 <input type="hidden" name="owner" value="<%=entryBean.getOwner()!=null?entryBean.getOwner().getExternalId():""%>"/>
 <input type="hidden" name="reference" value="<%=entryBean.getReference()%>"/>  
 <form:hidden path="entry.type"/>
@@ -248,7 +250,7 @@
 <div class="form-group">
 	<div class="col-sm-2">
 	<input class="btn btn-default" type="submit" value="<spring:message code="mailTracking.button.save" text=""/>">
-	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>' >
+	<a id="back" href='<%=contextPath %>/mail-tracking/management/chooseMailTracking?mailTrackingId=<%=mailTrackingId %>&amp;YearId=<%=entryBean.getEntry().getYear().getExternalId()%>&amp;check=<%=check %>&amp;options=<%=options %>' >
 	<input class="btn btn-default" type="button" value="<spring:message code="mailTracking.button.cancel" text=""/>"/>
 	</a>	
 	</div>
@@ -302,6 +304,7 @@
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
+<input type="hidden" name="options" value="<%=options%>"/>
 <input type="hidden" name="entryId" value="<%=entryBean.getEntry().getExternalId()%>"/>
 	<div class="mtop05">
   <div class="form-group">
