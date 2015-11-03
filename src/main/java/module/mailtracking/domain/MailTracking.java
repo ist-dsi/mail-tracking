@@ -29,10 +29,6 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
 
-import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
-import module.organization.domain.Person;
-import module.organization.domain.Unit;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.fenixedu.bennu.core.domain.Bennu;
@@ -46,6 +42,9 @@ import org.joda.time.DateTime;
 
 import com.google.common.base.Strings;
 
+import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import module.organization.domain.Person;
+import module.organization.domain.Unit;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -121,11 +120,8 @@ public class MailTracking extends MailTracking_Base {
         mailTracking.setViewersGroup(NobodyGroup.get());
         mailTracking.addViewer(authenticatedUser);
 
-        for (Person person : unit.getChildPersons()) {
-            if (person.getUser() != null) {
-                mailTracking.addViewer(person.getUser());
-            }
-        }
+        unit.getChildAccountabilityStream().map(a -> a.getChild()).filter(p -> p.isPerson()).map(p -> (Person) p)
+                .map(p -> p.getUser()).filter(u -> u != null).forEach(u -> mailTracking.addViewer(u));;
 
         return mailTracking;
     }
@@ -237,7 +233,8 @@ public class MailTracking extends MailTracking_Base {
         return activeEntries;
     }
 
-    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
+    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key,
+            boolean onlyActiveEntries) {
         java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
         if (Strings.isNullOrEmpty(key)) {
@@ -278,8 +275,8 @@ public class MailTracking extends MailTracking_Base {
     public static class MailTrackingBean implements java.io.Serializable {
 
         /**
-	 * 
-	 */
+        * 
+        */
         private static final long serialVersionUID = 1L;
 
         private LocalizedString name;
