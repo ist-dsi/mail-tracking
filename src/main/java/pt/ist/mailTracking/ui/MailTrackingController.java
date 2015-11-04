@@ -803,7 +803,7 @@ public class MailTrackingController {
         entryBean.setSenderLetterNumber(request.getParameter("senderLetterNumber"));
         entryBean.setSubject(request.getParameter("subject"));
         entryBean.setRecipient(request.getParameter("recipient"));
-        entryBean.setDispatchedToWhom(request.getParameter("dispathToWhom"));
+        entryBean.setDispatchedToWhom(request.getParameter("dispatchedToWhom"));
         entryBean.setObservations(request.getParameter("observations"));
         CustomEnum customEnum = entryBean.getVisibility();
         if (!Strings.isNullOrEmpty(request.getParameter("entry.visibility"))) {
