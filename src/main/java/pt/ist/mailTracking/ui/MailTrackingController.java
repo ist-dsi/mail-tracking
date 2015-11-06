@@ -378,6 +378,7 @@ public class MailTrackingController {
 
             model.addAttribute("visibilities", provideEntryVisibility());
             model.addAttribute("check", check);
+            model.addAttribute("options", opt);
 
             setAssociateDocumentBean(model, entry);
 
@@ -386,6 +387,7 @@ public class MailTrackingController {
         }
 
         model.addAttribute("check", check);
+        model.addAttribute("options", opt);
         try {
             mailTracking.editEntry(bean);
         } catch (MailTrackingDomainException e) {
@@ -530,6 +532,7 @@ public class MailTrackingController {
         Boolean check = Boolean.valueOf(request.getParameter("check"));
         String opt = request.getParameter("options");
         model.addAttribute("check", check);
+        model.addAttribute("options", opt);
 
         CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request, mailTracking, model);
         if (!mailTracking.isUserAbleToCreateEntries(Authenticate.getUser())) {
@@ -541,6 +544,7 @@ public class MailTrackingController {
 
             model.addAttribute("visibilities", provideEntryVisibility());
             model.addAttribute("check", check);
+            model.addAttribute("options", opt);
 
             setAssociateDocumentBean(model, null);
             String contextpath =
@@ -555,6 +559,11 @@ public class MailTrackingController {
                     mailTracking
                             .createNewEntry(bean, readCorrespondenceTypeView(request.getParameter("entry.type"), model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
+
+            if (newEntry.getType().equals(CorrespondenceType.SENT)) {
+                return chooseMailTracking(mailTracking.getExternalId(), newEntry.getYear().getExternalId(), check, opt, request,
+                        model);
+            }
             return prepareEditEntry(newEntry.getExternalId(), check, opt, model);
         } catch (Exception e) {
             String message = e.getMessage();
@@ -625,6 +634,7 @@ public class MailTrackingController {
 
             model.addAttribute("visibilities", provideEntryVisibility());
             model.addAttribute("check", check);
+            model.addAttribute("options", opt);
 
             setAssociateDocumentBean(model, null);
             String contextpath =
@@ -636,6 +646,10 @@ public class MailTrackingController {
         try {
             CorrespondenceEntry newEntry = mailTracking.createNewEntry(bean, readCorrespondenceTypeView(type, model), null);
             model.addAttribute("entryId", newEntry.getExternalId());
+            if (newEntry.getType().equals(CorrespondenceType.SENT)) {
+                return chooseMailTracking(mailTracking.getExternalId(), newEntry.getYear().getExternalId(), check, opt, request,
+                        model);
+            }
             return prepareEditEntry(newEntry.getExternalId(), check, opt, model);
         } catch (MailTrackingDomainException e) {
             String message = e.getMessage();
@@ -842,7 +856,7 @@ public class MailTrackingController {
 
                         return ((CorrespondenceEntry) arg0).getReference().equals(reference)
                                 && ((CorrespondenceEntry) arg0).getYear().getName().equals(year)
-                                && ((CorrespondenceEntry) arg0) != entry && ((CorrespondenceEntry) arg0).getType() == type; // if they are the same
+                                && ((CorrespondenceEntry) arg0) != entry && ((CorrespondenceEntry) arg0).getType() == type;
                     }
                 }).size() >= 1) {
             addMessage(model, "error.mail.tracking.reference.duplicated", null);

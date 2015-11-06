@@ -172,10 +172,10 @@
    </div>
     <p></p>
     <p></p>
-<table style="width:100%;table-layout:fixed;" class="tstyle3 mtop05 mbottom05 ajax-table table">
+<table style="width:100%;table-layout:fixed;word-wrap: break-word;" class="tstyle3 mtop05 mbottom05 ajax-table table">
     <thead>
       <tr>
-      <th scope="col" class="" width="35px">
+      <th scope="col" class="" width="40px">
           <label for="Type" title="Tipo de correspondência" >
             <spring:message code="label.mailTracking.table.mail" text="Correio"/>
           </label>
