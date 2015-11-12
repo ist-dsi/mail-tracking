@@ -455,8 +455,8 @@ public class MailTrackingController {
     }
 
     @RequestMapping(value = "/deleteDocument/{fileId}/{entryId}", method = RequestMethod.GET)
-    public String deleteDocument(@PathVariable String fileId, final @PathVariable String entryId,
-            final HttpServletRequest request, Model model) throws Exception {
+    public String deleteDocument(@PathVariable String fileId, final @PathVariable String entryId, @RequestParam Boolean check,
+            @RequestParam(value = "options") String options, final HttpServletRequest request, Model model) throws Exception {
         final User u = Authenticate.getUser();
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToDelete(u)) {
@@ -465,8 +465,7 @@ public class MailTrackingController {
         final Document doc = FenixFramework.getDomainObject(fileId);
         doc.getCorrespondenceEntry().deleteDocument(doc);
 
-        return prepareEditEntry(doc.getCorrespondenceEntry().getExternalId(), Boolean.valueOf(request.getParameter("check")),
-                request.getParameter("options"), model);
+        return prepareEditEntry(doc.getCorrespondenceEntry().getExternalId(), check, options, model);
     }
 
     @RequestMapping(value = "/associateDocument", method = RequestMethod.POST)
