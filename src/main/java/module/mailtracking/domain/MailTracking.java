@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -35,7 +37,6 @@ import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.groups.DynamicGroup;
 import org.fenixedu.bennu.core.groups.Group;
-import org.fenixedu.bennu.core.groups.NobodyGroup;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
@@ -111,13 +112,13 @@ public class MailTracking extends MailTracking_Base {
         User authenticatedUser = Authenticate.getUser();
         MailTracking mailTracking = new MailTracking(unit);
 
-        mailTracking.setOperatorsGroup(NobodyGroup.get());
+        mailTracking.setOperatorsGroup(Group.nobody());
         mailTracking.addOperator(authenticatedUser);
 
-        mailTracking.setManagersGroup(NobodyGroup.get());
+        mailTracking.setManagersGroup(Group.nobody());
         mailTracking.addManager(authenticatedUser);
 
-        mailTracking.setViewersGroup(NobodyGroup.get());
+        mailTracking.setViewersGroup(Group.nobody());
         mailTracking.addViewer(authenticatedUser);
 
         unit.getChildAccountabilityStream().map(a -> a.getChild()).filter(p -> p.isPerson()).map(p -> (Person) p)
@@ -558,13 +559,12 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public java.util.Set<User> getTotalUsers() {
-        java.util.Set<User> allUsers = new java.util.HashSet<User>();
+        final Stream<User> viewers = getViewersGroup().getMembers();
+        final Stream<User> operators = getOperatorsGroup().getMembers();
+        final Stream<User> managers = getManagersGroup().getMembers();
 
-        allUsers.addAll(this.getViewersGroup().getMembers());
-        allUsers.addAll(this.getOperatorsGroup().getMembers());
-        allUsers.addAll(this.getManagersGroup().getMembers());
-
-        return allUsers;
+        final Stream<User> stream = Stream.concat(Stream.concat(viewers, operators), managers);
+        return stream.collect(Collectors.toSet());
     }
 
     public Year getYearFor(final Integer forYear) {

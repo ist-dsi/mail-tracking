@@ -22,8 +22,8 @@
     </scm>
 
     <properties>
-        <version.org.fenixedu.bennu>3.4.1</version.org.fenixedu.bennu>
-        <version.org.fenixedu.organization>2.1.0</version.org.fenixedu.organization>
+        <version.org.fenixedu.bennu>4.0.0.RC2</version.org.fenixedu.bennu>
+        <version.org.fenixedu.organization>3.0.0.RC1</version.org.fenixedu.organization>
         <version.org.webjars.jquery-ui>1.11.1</version.org.webjars.jquery-ui>
         <version.org.webjars.jquery-ui-themes>1.11.0</version.org.webjars.jquery-ui-themes>
         <version.org.fenixedu.bennu-spring>1.2.0</version.org.fenixedu.bennu-spring>

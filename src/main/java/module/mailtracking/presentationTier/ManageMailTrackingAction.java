@@ -24,14 +24,10 @@
  */
 package module.mailtracking.presentationTier;
 
+import java.util.stream.Stream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import module.mailtracking.domain.MailTracking;
-import module.mailtracking.domain.MailTracking.MailTrackingBean;
-import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
-import module.mailtracking.domain.exception.PermissionDeniedException;
-import module.organization.domain.Person;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -42,6 +38,11 @@ import org.fenixedu.bennu.struts.base.BaseAction;
 import org.fenixedu.bennu.struts.portal.EntryPoint;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 
+import module.mailtracking.domain.MailTracking;
+import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
+import module.mailtracking.domain.exception.PermissionDeniedException;
+import module.organization.domain.Person;
 import pt.ist.fenixframework.FenixFramework;
 
 @StrutsFunctionality(app = MailTrackingAction.class, path = "manageMailTracking", titleKey = "link.sideBar.mailtracking.manage")
@@ -158,12 +159,8 @@ public class ManageMailTrackingAction extends BaseAction {
             User user = User.findByUsername(searchBean.getValue());
             usersResult.add(user);
         } else if (SearchUserBean.SearchUserMode.NAME.equals(searchBean.getMode())) {
-            java.util.List<Person> matchPersons = Person.searchPersons(searchBean.getValue());
-            for (Person person : matchPersons) {
-                if (person.getUser() != null) {
-                    usersResult.add(person.getUser());
-                }
-            }
+            final Stream<Person> matchPersons = Person.searchPersonStream(searchBean.getValue());
+            matchPersons.filter(p -> p.getUser() != null).forEach(p -> usersResult.add(p.getUser()));
         }
 
         if (usersResult.isEmpty()) {

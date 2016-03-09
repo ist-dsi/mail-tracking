@@ -30,14 +30,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import module.mailtracking.domain.MailTracking;
-import module.organization.domain.Party;
-import module.organization.domain.Person;
-
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import org.fenixedu.commons.StringNormalizer;
 
+import module.mailtracking.domain.MailTracking;
+import module.organization.domain.Party;
+import module.organization.domain.Person;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -60,7 +59,7 @@ public class SenderAutoCompleteProvider implements AutoCompleteProvider<Person> 
 
         for (final User user : mailTracking.getTotalUsers()) {
             if (user != null) {
-                final String unitName = StringNormalizer.normalize(user.getPresentationName());
+                final String unitName = StringNormalizer.normalize(user.getDisplayName() + "(" + user.getUsername() + ")");
                 if (hasMatch(input, unitName)) {
                     persons.add(user.getPerson());
                 }
