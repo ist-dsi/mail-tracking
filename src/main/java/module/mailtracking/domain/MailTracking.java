@@ -28,24 +28,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import module.organization.domain.Person;
+import module.organization.domain.Unit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.groups.DynamicGroup;
 import org.fenixedu.bennu.core.groups.Group;
-import org.fenixedu.bennu.core.groups.NobodyGroup;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
 
-import com.google.common.base.Strings;
-
-import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
-import module.organization.domain.Person;
-import module.organization.domain.Unit;
 import pt.ist.fenixframework.Atomic;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -111,13 +111,13 @@ public class MailTracking extends MailTracking_Base {
         User authenticatedUser = Authenticate.getUser();
         MailTracking mailTracking = new MailTracking(unit);
 
-        mailTracking.setOperatorsGroup(NobodyGroup.get());
+        mailTracking.setOperatorsGroup(Group.nobody());
         mailTracking.addOperator(authenticatedUser);
 
-        mailTracking.setManagersGroup(NobodyGroup.get());
+        mailTracking.setManagersGroup(Group.nobody());
         mailTracking.addManager(authenticatedUser);
 
-        mailTracking.setViewersGroup(NobodyGroup.get());
+        mailTracking.setViewersGroup(Group.nobody());
         mailTracking.addViewer(authenticatedUser);
 
         unit.getChildAccountabilityStream().map(a -> a.getChild()).filter(p -> p.isPerson()).map(p -> (Person) p)
@@ -233,8 +233,7 @@ public class MailTracking extends MailTracking_Base {
         return activeEntries;
     }
 
-    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key,
-            boolean onlyActiveEntries) {
+    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
         java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
         if (Strings.isNullOrEmpty(key)) {
@@ -342,7 +341,7 @@ public class MailTracking extends MailTracking_Base {
 
     public static Set<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
 
-        if (user.getPerson() == null && DynamicGroup.get("managers").isMember(Authenticate.getUser())) {
+        if (user.getPerson() == null && Group.dynamic("managers").isMember(Authenticate.getUser())) {
             return Bennu.getInstance().getMailTrackingsSet();
         }
 
@@ -387,7 +386,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public static boolean isBennuManager(final User user) {
-        return DynamicGroup.get("managers").isMember(Authenticate.getUser());
+        return Group.dynamic("managers").isMember(Authenticate.getUser());
     }
 
     public boolean isCurrentUserOperator() {
@@ -560,9 +559,13 @@ public class MailTracking extends MailTracking_Base {
     public java.util.Set<User> getTotalUsers() {
         java.util.Set<User> allUsers = new java.util.HashSet<User>();
 
-        allUsers.addAll(this.getViewersGroup().getMembers());
-        allUsers.addAll(this.getOperatorsGroup().getMembers());
-        allUsers.addAll(this.getManagersGroup().getMembers());
+//        allUsers.addAll(this.getViewersGroup().getMembers());
+//        allUsers.addAll(this.getOperatorsGroup().getMembers());
+//        allUsers.addAll(this.getManagersGroup().getMembers());
+
+        allUsers.addAll(this.getViewersGroup().getMembers().stream().collect(Collectors.toSet()));
+        allUsers.addAll(this.getOperatorsGroup().getMembers().stream().collect(Collectors.toSet()));
+        allUsers.addAll(this.getManagersGroup().getMembers().stream().collect(Collectors.toSet()));
 
         return allUsers;
     }
