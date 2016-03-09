@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
 import module.organization.domain.Person;
@@ -557,17 +558,12 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public java.util.Set<User> getTotalUsers() {
-        java.util.Set<User> allUsers = new java.util.HashSet<User>();
+        final Stream<User> viewers = getViewersGroup().getMembers();
+        final Stream<User> operators = getOperatorsGroup().getMembers();
+        final Stream<User> managers = getManagersGroup().getMembers();
 
-//        allUsers.addAll(this.getViewersGroup().getMembers());
-//        allUsers.addAll(this.getOperatorsGroup().getMembers());
-//        allUsers.addAll(this.getManagersGroup().getMembers());
-
-        allUsers.addAll(this.getViewersGroup().getMembers().stream().collect(Collectors.toSet()));
-        allUsers.addAll(this.getOperatorsGroup().getMembers().stream().collect(Collectors.toSet()));
-        allUsers.addAll(this.getManagersGroup().getMembers().stream().collect(Collectors.toSet()));
-
-        return allUsers;
+        final Stream<User> stream = Stream.concat(Stream.concat(viewers, operators), managers);
+        return stream.collect(Collectors.toSet());
     }
 
     public Year getYearFor(final Integer forYear) {

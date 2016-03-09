@@ -24,8 +24,16 @@
  */
 package module.mailtracking.presentationTier.organization;
 
+import java.util.stream.Stream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.struts.annotations.Mapping;
 
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.MailTracking.MailTrackingBean;
@@ -40,13 +48,6 @@ import module.organization.domain.OrganizationalModel;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
 import module.organization.presentationTier.actions.OrganizationModelAction;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.struts.annotations.Mapping;
-
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -189,12 +190,8 @@ public class ManageMailTrackingOrganizationAction extends OrganizationModelActio
             User user = User.findByUsername(searchBean.getValue());
             usersResult.add(user);
         } else if (SearchUserBean.SearchUserMode.NAME.equals(searchBean.getMode())) {
-            java.util.List<Person> matchPersons = Person.searchPersons(searchBean.getValue());
-            for (Person person : matchPersons) {
-                if (person.getUser() != null) {
-                    usersResult.add(person.getUser());
-                }
-            }
+            final Stream<Person> matchPersons = Person.searchPersonStream(searchBean.getValue());
+            matchPersons.filter(p -> p.getUser() != null).forEach(p -> usersResult.add(p.getUser()));
         }
 
         if (usersResult.isEmpty()) {
