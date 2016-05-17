@@ -24,25 +24,30 @@
  */
 package module.mailtracking.presentationTier;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import module.mailtracking.domain.MailTracking;
+import module.mailtracking.domain.MailTracking.MailTrackingBean;
+import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
+import module.mailtracking.domain.exception.PermissionDeniedException;
+import module.organization.domain.Party;
+import module.organization.domain.Person;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.struts.annotations.Mapping;
 import org.fenixedu.bennu.struts.base.BaseAction;
 import org.fenixedu.bennu.struts.portal.EntryPoint;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
+import org.fenixedu.commons.StringNormalizer;
 
-import module.mailtracking.domain.MailTracking;
-import module.mailtracking.domain.MailTracking.MailTrackingBean;
-import module.mailtracking.domain.MailTrackingImportationHelper.ImportationReportEntry;
-import module.mailtracking.domain.exception.PermissionDeniedException;
-import module.organization.domain.Person;
 import pt.ist.fenixframework.FenixFramework;
 
 @StrutsFunctionality(app = MailTrackingAction.class, path = "manageMailTracking", titleKey = "link.sideBar.mailtracking.manage")
@@ -65,7 +70,15 @@ public class ManageMailTrackingAction extends BaseAction {
             final HttpServletRequest request, final HttpServletResponse response) {
 
         request.setAttribute("searchUserBean", new SearchUserBean());
-        request.setAttribute("mailTrackingBean", readMailTracking(request).createBean());
+        MailTracking mailTracking = readMailTracking(request);
+        request.setAttribute("mailTrackingBean", mailTracking.createBean());
+
+        request.setAttribute("viewers",
+                mailTracking.getViewersGroup().getMembers().sorted(User.COMPARATOR_BY_NAME).collect(Collectors.toList()));
+        request.setAttribute("operators",
+                mailTracking.getOperatorsGroup().getMembers().sorted(User.COMPARATOR_BY_NAME).collect(Collectors.toList()));
+        request.setAttribute("managers",
+                mailTracking.getManagersGroup().getMembers().sorted(User.COMPARATOR_BY_NAME).collect(Collectors.toList()));
 
         return forward("/mailtracking/management/manageUsers.jsp");
     }
@@ -159,7 +172,9 @@ public class ManageMailTrackingAction extends BaseAction {
             User user = User.findByUsername(searchBean.getValue());
             usersResult.add(user);
         } else if (SearchUserBean.SearchUserMode.NAME.equals(searchBean.getMode())) {
+
             final Stream<Person> matchPersons = Person.searchPersonStream(searchBean.getValue());
+            //  final Stream<Person> matchPersons = searchPerson(searchBean.getValue());
             matchPersons.filter(p -> p.getUser() != null).forEach(p -> usersResult.add(p.getUser()));
         }
 
@@ -170,6 +185,31 @@ public class ManageMailTrackingAction extends BaseAction {
         request.setAttribute("searchResults", usersResult);
 
         return prepareUsersManagement(mapping, form, request, response);
+    }
+
+    public static Stream<Person> searchPerson(String value) {
+        final String trimmedValue = value.trim();
+        final String[] input = trimmedValue.split(" ");
+        for (int i = 0; i < input.length; i++) {
+            input[i] = StringNormalizer.normalize(input[i]);
+        }
+
+        final Stream<Person> stream = Bennu.getInstance().getPersonsSet().stream();
+        return stream
+                .filter(p -> p.isPerson())
+                .map(p -> p)
+                .filter(p -> hasMatch(input,
+                        StringNormalizer.normalize(p.getFirstAndLastName() != null ? p.getFirstAndLastName() : "")))
+                .sorted(Party.COMPARATOR_BY_NAME);
+    }
+
+    private static boolean hasMatch(final String[] input, final String unitNameParts) {
+        for (final String namePart : input) {
+            if (unitNameParts.indexOf(namePart) == -1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private MailTrackingBean readMailTrackingBean(final HttpServletRequest request) {

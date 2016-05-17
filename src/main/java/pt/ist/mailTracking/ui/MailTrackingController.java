@@ -90,12 +90,18 @@ public class MailTrackingController {
     }
 
     @RequestMapping
-    public final String prepare(HttpServletRequest request, final Model model) throws Exception {
+    public final String prepare(@RequestParam(required = false, value = "mailTrackingId") String mailTrackingId,
+            HttpServletRequest request, final Model model) throws Exception {
         final User currentUser = Authenticate.getUser();
         Collection<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
         model.addAttribute("mailTrackings", mailTrackings);
         model.addAttribute("check", false);
         model.addAttribute("options", "");
+        if (!Strings.isNullOrEmpty(mailTrackingId)) {
+            final MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
+            model.addAttribute("mailTracking", mailTracking);
+            model.addAttribute("year", mailTracking.getCurrentYear());
+        }
         return "mail-tracking/chooseMailTracking";
     }
 

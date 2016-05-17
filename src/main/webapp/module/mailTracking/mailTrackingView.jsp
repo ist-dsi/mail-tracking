@@ -35,7 +35,7 @@
 		<bean:message key="label.mail.tracking.entries.manage.years" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 	|
-	<html:link action='<%= String.format("/mailtracking.do?method=prepare&mailTrackingId=%s", mailTrackingId) %>'>
+	<html:link href='<%= request.getContextPath() +"/mail-tracking/management?mailTrackingId="+ mailTrackingId %>'>
 		<bean:message key="label.mail.tracking.view.entries" bundle="MAIL_TRACKING_RESOURCES" />
 	</html:link>
 
@@ -47,11 +47,11 @@
 	<bean:define id="mailTrackingId" name="mailTrackingBean" property="mailTracking.externalId" />
 
 	<p><strong><bean:message key="label.viewers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-	<logic:empty name="mailTrackingBean" property="mailTracking.viewersGroup.members">
+	<logic:empty name="viewers">
 		<bean:message key="message.mail.tracking.viewers.empty" bundle="MAIL_TRACKING_RESOURCES" />
 	</logic:empty>
-	<logic:notEmpty name="mailTrackingBean" property="mailTracking.viewersGroup.members" >
-		<fr:view name="mailTrackingBean" property="mailTracking.viewersGroup.members" schema="module.mailtracking.manage.viewers.view">
+	<logic:notEmpty name="viewers" >
+		<fr:view name="viewers"  schema="module.mailtracking.manage.viewers.view">
 			<fr:layout name="tabular">
 				<fr:property name="classes" value="table" />
 			</fr:layout>	
@@ -59,11 +59,11 @@
 	</logic:notEmpty>
 	
 	<p><strong><bean:message key="label.operators" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-	<logic:empty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
+	<logic:empty name="operators" >
 		<bean:message key="message.mail.tracking.operators.empty" bundle="MAIL_TRACKING_RESOURCES" />
 	</logic:empty>
-	<logic:notEmpty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
-		<fr:view name="mailTrackingBean" property="mailTracking.operatorsGroup.members" schema="module.mailtracking.manage.operators.view">
+	<logic:notEmpty name="operators" >
+		<fr:view name="operators" schema="module.mailtracking.manage.operators.view">
 			<fr:layout name="tabular">
 				<fr:property name="classes" value="table" />
 				
@@ -72,10 +72,10 @@
 	</logic:notEmpty>
 
 	<p><strong><bean:message key="label.managers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-	<logic:empty name="mailTrackingBean" property="mailTracking.managersGroup.members" >
+	<logic:empty name="managers" >
 		<bean:message key="message.mail.tracking.managers.empty" bundle="MAIL_TRACKING_RESOURCES" />
 	</logic:empty>
-	<logic:notEmpty name="mailTrackingBean" property="mailTracking.managersGroup.members" >
+	<logic:notEmpty name="managers"  >
 		<fr:view name="mailTrackingBean" property="mailTracking.managersGroup.members" schema="module.mailtracking.manage.managers.view">
 			<fr:layout name="tabular">
 				<fr:property name="classes" value="table" />
@@ -93,4 +93,6 @@
 	</fr:view>
 	
 </logic:equal>
+
+
 
