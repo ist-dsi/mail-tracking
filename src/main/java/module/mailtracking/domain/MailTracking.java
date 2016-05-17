@@ -31,22 +31,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
+import module.organization.domain.Person;
+import module.organization.domain.Unit;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.groups.DynamicGroup;
 import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.joda.time.DateTime;
 
-import com.google.common.base.Strings;
-
-import module.mailtracking.domain.CorrespondenceEntry.CorrespondenceEntryBean;
-import module.organization.domain.Person;
-import module.organization.domain.Unit;
 import pt.ist.fenixframework.Atomic;
+
+import com.google.common.base.Strings;
 
 /**
  * 
@@ -234,8 +234,7 @@ public class MailTracking extends MailTracking_Base {
         return activeEntries;
     }
 
-    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key,
-            boolean onlyActiveEntries) {
+    public java.util.List<CorrespondenceEntry> simpleSearch(CorrespondenceType type, final String key, boolean onlyActiveEntries) {
         java.util.List<CorrespondenceEntry> entries = new java.util.ArrayList<CorrespondenceEntry>();
 
         if (Strings.isNullOrEmpty(key)) {
@@ -343,7 +342,7 @@ public class MailTracking extends MailTracking_Base {
 
     public static Set<MailTracking> getMailTrackingsWhereUserHasSomeRole(final User user) {
 
-        if (user.getPerson() == null && DynamicGroup.get("managers").isMember(Authenticate.getUser())) {
+        if (user.getPerson() == null && Group.dynamic("managers").isMember(Authenticate.getUser())) {
             return Bennu.getInstance().getMailTrackingsSet();
         }
 
@@ -388,7 +387,7 @@ public class MailTracking extends MailTracking_Base {
     }
 
     public static boolean isBennuManager(final User user) {
-        return DynamicGroup.get("managers").isMember(Authenticate.getUser());
+        return Group.dynamic("managers").isMember(Authenticate.getUser());
     }
 
     public boolean isCurrentUserOperator() {
@@ -562,7 +561,6 @@ public class MailTracking extends MailTracking_Base {
         final Stream<User> viewers = getViewersGroup().getMembers();
         final Stream<User> operators = getOperatorsGroup().getMembers();
         final Stream<User> managers = getManagersGroup().getMembers();
-
         final Stream<User> stream = Stream.concat(Stream.concat(viewers, operators), managers);
         return stream.collect(Collectors.toSet());
     }

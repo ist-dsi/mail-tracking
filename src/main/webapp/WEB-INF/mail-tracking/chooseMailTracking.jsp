@@ -1,7 +1,6 @@
-
 <%@page import="javax.swing.text.StyledEditorKit.BoldAction"%>
 <%@page import="java.util.Collection"%>
-<%@ page import="module.mailtracking.domain.CorrespondenceType" %>
+<%@page import="module.mailtracking.domain.CorrespondenceType" %>
 <%@page import="module.mailtracking.domain.MailTracking"%>
 <%@page import="module.mailtracking.domain.Year"%>
 <%@page import="module.organization.domain.Unit"%>
@@ -22,7 +21,7 @@
  
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/1.10.9/filtering/type-based/accent-neutralise.js"/>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/1.10.9/filtering/type-based/accent-neutralise.js"></script>
 
 
 <%
@@ -96,7 +95,7 @@
 			   <%= mailTrackings.iterator().next().getName().getContent() %>
 			   </option>
 			</select>
-			<%}else { %>
+			<%}else {%>
 		    <c:set var="tracking" value='<%= mailTracking==null? "":mailTracking.getExternalId() %>'/>
 			<select class="form-control" id="mailTracking" 
 				name="mailTracking">
@@ -180,7 +179,7 @@
             <spring:message code="label.mailTracking.table.mail" text="Correio"/>
           </label>
         </th>
-        <th scope="col" class=""  width="52px">
+        <th scope="col" class=""  width="60px">
           <label for="Process" title="Reference" >
             <spring:message code="label.mailTracking.table.reference" text="Nº"/>
           </label>
@@ -381,10 +380,8 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 						var options = '';
 						
 						for (var i = 0; i < j.length; i++) {
-							
 							options += '<option value="' + j[i].id + '">'+ j[i].name+ '</option>';
-							
-						}
+						};
 						
 						$("#year").html(
 								options);
@@ -642,11 +639,24 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 					  	             "sClass":'dt-body-left'
 									},
 					  	            { "mData": 'Recipient',
-					  	              "sClass":'dt-body-left'
+					  	              "sClass":'dt-body-left',
+					  	              "mRender": function( data, type, row ){
+					  	            	  if(row.AvatUrlRec !== null){ 					  	            		  
+					  	            		  return '<img class="img-circle" width="30" height="30" src="'+row.AvatUrlRec+'"/>&nbsp;&nbsp;'+ row.Recipient;					  	            		   
+					  	            	  }else{
+					  	            		  return data;
+					  	            	  }
+					  	              }
 					  	            },
 					  	            { "mData": 'Sender',
-					  	              "sClass":'dt-body-left'
-					  	            	
+					  	              "sClass":'dt-body-left',
+					  	            	"mRender": function( data, type, row ){
+					  	            	  if(row.AvatUrlSend !== null){
+					  	            			return'<img class="img-circle" width="30" height="30" src="'+row.AvatUrlSend+'"/>&nbsp;&nbsp;'+ row.Sender;					  	           		 
+					  	            	  }else{
+					  	            		  return data;
+					  	            	  }
+					  	              }	
 					  	            },
 					  	            { "mData": 'SenderLetterNumber',
 					  	            	"sClass": 'dt-body-left'
@@ -747,18 +757,13 @@ jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 					        table.fnFilter(
 					            jQuery.fn.DataTable.ext.type.search.string(this.value)
 					        );
-					    } );
-						
-						viewOpt(table,term,year,check,opt);
-					
-						
+					    } );					
+						viewOpt(table,term,year,check,opt);						
 						$("#demo").removeAttr(
 						"hidden");
-					
-    
+
 			});
 			jQuery.fn.DataTable.ext.type.search.string('');
-		
 	});
 
 

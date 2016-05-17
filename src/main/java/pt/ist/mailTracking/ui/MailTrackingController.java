@@ -74,7 +74,6 @@ public class MailTrackingController {
 
     protected MailTracking readMailTracking(String mailTStringId) {
         MailTracking mailTracking = FenixFramework.getDomainObject(mailTStringId);
-
         return mailTracking;
     }
 
@@ -91,13 +90,18 @@ public class MailTrackingController {
     }
 
     @RequestMapping
-    public final String prepare(HttpServletRequest request, final Model model) throws Exception {
+    public final String prepare(@RequestParam(required = false, value = "mailTrackingId") String mailTrackingId,
+            HttpServletRequest request, final Model model) throws Exception {
         final User currentUser = Authenticate.getUser();
         Collection<MailTracking> mailTrackings = MailTracking.getMailTrackingsWhereUserHasSomeRole(currentUser);
         model.addAttribute("mailTrackings", mailTrackings);
         model.addAttribute("check", false);
         model.addAttribute("options", "");
-
+        if (!Strings.isNullOrEmpty(mailTrackingId)) {
+            final MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
+            model.addAttribute("mailTracking", mailTracking);
+            model.addAttribute("year", mailTracking.getCurrentYear());
+        }
         return "mail-tracking/chooseMailTracking";
     }
 
@@ -110,7 +114,7 @@ public class MailTrackingController {
 
         final MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
         if (!mailTracking.isUserAbleToViewMailTracking(currentUser)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         final Year year = FenixFramework.getDomainObject(YearId);
 
@@ -130,6 +134,7 @@ public class MailTrackingController {
             final JsonArray result = new JsonArray();
             final MailTracking mailTracking = FenixFramework.getDomainObject(term);
             mailTracking.getYearsSet().forEach(y -> addYearToJson(result, y));
+
             model.addAttribute("mailTracking", mailTracking);
             return result.toString();
         }
@@ -148,7 +153,7 @@ public class MailTrackingController {
         final Year chosenYear = FenixFramework.getDomainObject(year);
         final MailTracking mailTracking = FenixFramework.getDomainObject(term);
         if (!mailTracking.isUserAbleToViewMailTracking(Authenticate.getUser())) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         final JsonArray result = new JsonArray();
@@ -217,7 +222,13 @@ public class MailTrackingController {
         o.addProperty("Data", (u.getType() == CorrespondenceType.SENT ? u.getWhenSent().toString("yyyy-MM-dd") : u
                 .getWhenReceived().toString("yyyy-MM-dd")));
         o.addProperty("Recipient", u.getRecipient());
+
+        o.addProperty("AvatUrlRec", findUserByName(u.getRecipient()));
+
         o.addProperty("Sender", u.getSender());
+
+        o.addProperty("AvatUrlSend", findUserByName(u.getSender()));
+
         o.addProperty("SenderLetterNumber", u.getSenderLetterNumber());
         o.addProperty("Subject", u.getSubject());
 
@@ -243,6 +254,21 @@ public class MailTrackingController {
                 u.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request, u, check,
                         options) : "permission_not_granted");
         result.add(o);
+    }
+
+    private String findUserByName(String recipient) {
+        String avatarUrl = null;
+        int ini = recipient.indexOf("(ist");
+        if (ini == -1) {
+            return avatarUrl;
+        }
+        int fim = recipient.indexOf(')');
+
+        if (ini != -1 && fim != -1) {
+            User u = User.findByUsername(recipient.substring(ini + 1, fim));
+            avatarUrl = u.getProfile().getAvatarUrl();
+        }
+        return avatarUrl;
     }
 
     private void addYearToJson(JsonArray result, Year u) {
@@ -316,7 +342,7 @@ public class MailTrackingController {
 
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(Authenticate.getUser()) || !entry.isUserAbleToView()) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         entry.logView();
@@ -334,7 +360,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToEdit(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         CorrespondenceEntryBean bean = entry.createBean();
@@ -367,7 +393,7 @@ public class MailTrackingController {
         String opt = request.getParameter("options");
 
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToEdit(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request, mailTracking, model);
@@ -403,7 +429,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToDelete(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         CorrespondenceEntryBean entryBean = entry.createBean();
         model.addAttribute("correspondenceEntryBean", entryBean);
@@ -423,7 +449,7 @@ public class MailTrackingController {
         model.addAttribute("entryId", entryId);
         model.addAttribute("options", opt);
         if (!entry.isUserAbleToDelete(Authenticate.getUser())) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         try {
@@ -444,7 +470,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
 
         final Document document = FenixFramework.getDomainObject(fileId);
@@ -460,7 +486,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToDelete(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         final Document doc = FenixFramework.getDomainObject(fileId);
         doc.getCorrespondenceEntry().deleteDocument(doc);
@@ -501,7 +527,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         final CorrespondenceEntry entry = FenixFramework.getDomainObject(entryId);
         if (!entry.getMailTracking().isUserAbleToViewMailTracking(u) || !entry.isUserAbleToCopyEntry(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         final CorrespondenceEntryBean bean = entry.createBean();
 
@@ -535,7 +561,7 @@ public class MailTrackingController {
 
         CorrespondenceEntryBean bean = readCorrespondenceEntryBean(request, mailTracking, model);
         if (!mailTracking.isUserAbleToCreateEntries(Authenticate.getUser())) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         if (ifRefExist(mailTracking, entry.getType(), bean.getReference(), entry.getYear())) {
             String message = "error.mail.tracking.reference.duplicated";
@@ -583,7 +609,7 @@ public class MailTrackingController {
         final User u = Authenticate.getUser();
         final MailTracking mailTracking = FenixFramework.getDomainObject(mailTraclingId);
         if (!mailTracking.isUserAbleToViewMailTracking(u) || !mailTracking.isUserAbleToCreateEntries(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         CorrespondenceEntryBean bean = (CorrespondenceEntryBean) request.getAttribute("entryBean");
 
@@ -616,7 +642,7 @@ public class MailTrackingController {
         MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
 
         if (!mailTracking.isUserAbleToViewMailTracking(u) || !mailTracking.isUserAbleToCreateEntries(u)) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         String type = request.getParameter("type");
         CorrespondenceType c = CorrespondenceType.valueOf(type);
@@ -713,7 +739,7 @@ public class MailTrackingController {
         MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
 
         if (!mailTracking.isUserAbleToSetReferenceCounters(Authenticate.getUser())) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         Year chosenYear = FenixFramework.getDomainObject(yearId);
 
@@ -735,7 +761,7 @@ public class MailTrackingController {
             required = false, value = "options") String options, final HttpServletRequest request, Model model) throws Exception {
         final MailTracking mailTracking = FenixFramework.getDomainObject(mailTrackingId);
         if (!mailTracking.isUserAbleToSetReferenceCounters(Authenticate.getUser())) {
-            return "/mail-tracking/permissionDenied";
+            return "mail-tracking/permissionDenied";
         }
         Year chosenYear = FenixFramework.getDomainObject(request.getParameter("yearId"));
 

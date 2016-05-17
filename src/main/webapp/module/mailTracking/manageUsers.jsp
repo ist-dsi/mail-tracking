@@ -23,11 +23,11 @@
 
 <logic:equal name="existsMailTrackingForUnit" value="true">
 <p><strong><bean:message key="label.viewers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-<logic:empty name="mailTrackingBean" property="mailTracking.viewersGroup.members">
+<logic:empty name="viewers" >
 	<bean:message key="message.mail.tracking.viewers.empty" bundle="MAIL_TRACKING_RESOURCES" />
 </logic:empty>
-<logic:notEmpty name="mailTrackingBean" property="mailTracking.viewersGroup.members" >
-	<fr:view name="mailTrackingBean" property="mailTracking.viewersGroup.members" schema="module.mailtracking.manage.viewers.view">
+<logic:notEmpty name="viewers"  >
+	<fr:view name="viewers" schema="module.mailtracking.manage.viewers.view">
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
@@ -42,11 +42,11 @@
 </logic:notEmpty>
 
 <p><strong><bean:message key="label.operators" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-<logic:empty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
+<logic:empty name="operators"  >
 	<bean:message key="message.mail.tracking.operators.empty" bundle="MAIL_TRACKING_RESOURCES" />
 </logic:empty>
-<logic:notEmpty name="mailTrackingBean" property="mailTracking.operatorsGroup.members" >
-	<fr:view name="mailTrackingBean" property="mailTracking.operatorsGroup.members" schema="module.mailtracking.manage.operators.view">
+<logic:notEmpty name="operators"  >
+	<fr:view name="operators"  schema="module.mailtracking.manage.operators.view">
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			
@@ -61,11 +61,11 @@
 </logic:notEmpty>
 
 <p><strong><bean:message key="label.managers" bundle="MAIL_TRACKING_RESOURCES" /></strong></p>
-<logic:empty name="mailTrackingBean" property="mailTracking.managersGroup.members" >
+<logic:empty name="managers"  >
 	<bean:message key="message.mail.tracking.managers.empty" bundle="MAIL_TRACKING_RESOURCES" />
 </logic:empty>
-<logic:notEmpty name="mailTrackingBean" property="mailTracking.managersGroup.members" >
-	<fr:view name="mailTrackingBean" property="mailTracking.managersGroup.members" schema="module.mailtracking.manage.managers.view">
+<logic:notEmpty name="managers"  >
+	<fr:view name="managers" schema="module.mailtracking.manage.managers.view">
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="table" />
 			

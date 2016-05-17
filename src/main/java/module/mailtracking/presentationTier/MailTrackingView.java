@@ -31,7 +31,7 @@ import module.organization.domain.Party;
 import module.organization.domain.Unit;
 import module.organization.presentationTier.actions.PartyViewHook;
 
-import org.fenixedu.bennu.core.groups.DynamicGroup;
+import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.core.security.Authenticate;
 
@@ -69,7 +69,8 @@ public class MailTrackingView extends PartyViewHook {
 
     @Override
     public boolean isAvailableFor(final Party party) {
-        return (party instanceof Unit) && DynamicGroup.get("managers").isMember(Authenticate.getUser());
+
+        return (party instanceof Unit) && Group.dynamic("managers").isMember(Authenticate.getUser());
     }
 
 }

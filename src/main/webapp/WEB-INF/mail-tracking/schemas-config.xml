@@ -259,15 +259,15 @@
 </schema>
 
 <schema name="module.mailtracking.manage.viewers.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="presentationName" key="label.name" />
+	<slot name="person.presentationName" key="label.name" type="java.lang.String"/>
 </schema>
 
 <schema name="module.mailtracking.manage.operators.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="presentationName" key="label.name" />
+	<slot name="person.presentationName" key="label.name" />
 </schema>
 
 <schema name="module.mailtracking.manage.managers.view" type="org.fenixedu.bennu.core.domain.User" bundle="MAIL_TRACKING_RESOURCES">
-	<slot name="presentationName" key="label.name" />
+	<slot name="person.presentationName" key="label.name" />
 </schema>
 
 <schema name="module.mailtracking.manage.operators.search" type="module.mailtracking.presentationTier.SearchUserBean" bundle="MAIL_TRACKING_RESOURCES">
