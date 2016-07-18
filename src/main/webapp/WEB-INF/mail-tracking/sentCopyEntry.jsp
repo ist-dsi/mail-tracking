@@ -67,6 +67,7 @@
 	value="/mail-tracking/management/createCopyEntry/" />
 <form:form id="sent" commandName="entryBean" class="form-horizontal"
 	method="POST" action="${submitUrl}" >
+	${csrf.field()}
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
@@ -179,7 +180,8 @@ $(function() {
 		open    : function(){$(this).removeClass('ui-autocomplete-loading');},
 		close    : function(){$(this).removeClass('ui-autocomplete-loading');},
 		source : function(request,response){
-			$.post(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
+			request.term=encodeURIComponent(request.term);
+			$.get(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
 				response($.map(result,function(item) {
 					if(!result) return;
 					return{

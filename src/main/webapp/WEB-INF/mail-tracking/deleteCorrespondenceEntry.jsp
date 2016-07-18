@@ -119,12 +119,14 @@
 	value="/mail-tracking/management/deleteEntry/" />
 <form:form id="delForm" modelAttribute="correspondenceEntryBean" class="form-horizontal"
 	method="POST" action="${submitUrl}">
+	${csrf.field()}
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
 <input type="hidden" name="options" value="<%=options%>"/>
 <form:hidden path="entry.type"/>
+
 	<div class="form-group">
 		<form:label class="control-label col-sm-2" path="deletionReason" id='deletionReason' ><spring:message
 				code="label.deletionReason"

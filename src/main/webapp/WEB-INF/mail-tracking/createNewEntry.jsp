@@ -61,6 +61,7 @@ final String contextPath = request.getContextPath();
 
 
 <form class="form-horizontal" id="selectType">
+${csrf.field()}
 <p><spring:message code="title.mailTracking.select.correspence.type" text="Seleccione o Tipo de correspondência que pretende criar"></spring:message></p>
 
 <label><spring:message code="label.type.receive" text="label.type.receive" /></label>
@@ -193,7 +194,8 @@ $('.autocompi').autocomplete({
 	open    : function(){$(this).removeClass('ui-autocomplete-loading');},
 	close    : function(){$(this).removeClass('ui-autocomplete-loading');},
 	source : function(request,response){
-		$.post(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
+		request.term=encodeURIComponent(request.term);
+		$.get(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
 			response($.map(result,function(item) {
 				if(!result) return;
 				return{
