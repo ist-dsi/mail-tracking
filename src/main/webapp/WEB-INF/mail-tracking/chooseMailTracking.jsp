@@ -83,7 +83,7 @@
 
 
 <form class="form-horizontal">
-
+${csrf.field()}
 	<div class="form-group" >
 		<label class="control-label col-sm-2" for="mailTracking"> <spring:message
 				code="label.mailTracking.unit" text="label.mailTracking.unit" />

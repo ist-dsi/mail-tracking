@@ -75,6 +75,7 @@
 	value="/mail-tracking/management/editEntry/" />
 <form:form id="editForm" modelAttribute="entryBean" class="form-horizontal"
 	method="POST" action="${submitUrl}" >
+	${csrf.field()}
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryId" value="<%=entryId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
@@ -301,6 +302,7 @@
 <spring:url var="newDocumentURL" value="/mail-tracking/management/associateDocument/" />
 
 <form id="associateDoc" action='${newDocumentURL}' enctype="multipart/form-data" method="post">
+${csrf.field()}
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>
@@ -335,7 +337,7 @@
 	
 	$(function() {
 
-
+			
 		    $( ".datepickers" ).datepicker({
 			 autoclose: true,			 
 			 dateFormat: 'yy-mm-dd',
@@ -345,7 +347,7 @@
 			 });
 
 		   $('.autocompi').autocomplete({
-			   
+			
 			focus: function(event, ui) {				
  				return false;
  			},
@@ -355,7 +357,8 @@
 			open    : function(){$(this).removeClass('ui-autocomplete-loading');},
 			close    :function(){$(this).removeClass('ui-autocomplete-loading');},
 			source : function(request,response){
-				$.post(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
+				request.term=encodeURIComponent(request.term);
+				$.get(pageContext + "/mail-tracking/management/populate/json/"+mailId, request,function(result) {
 					response($.map(result,function(item) {
 						if(!result) return;
 						return{

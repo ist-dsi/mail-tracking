@@ -43,6 +43,7 @@ final CorrespondenceEntryBean entryBean = (CorrespondenceEntryBean) request.getA
 
 <form:form id="f1" commandName="entryBean" class="form-horizontal validar"
 	method="POST" action="${submitUrl}" >
+	${csrf.field()}
 <input type="hidden" name="mailTrackingId" value="<%=mailTrackingId%>"/>
 <input type="hidden" name="entryBean" value="<%=entryBean%>"/>
 <input type="hidden" name="check" value="<%=check%>"/>

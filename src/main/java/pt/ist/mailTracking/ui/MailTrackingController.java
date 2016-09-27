@@ -3,6 +3,8 @@ package pt.ist.mailTracking.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -895,16 +897,18 @@ public class MailTrackingController {
         model.addAttribute("message", string);
     }
 
-    @RequestMapping(value = "/populate/json/{mailId}", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/populate/json/{mailId}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public @ResponseBody String populate(@PathVariable String mailId,
             @RequestParam(required = false, value = "term") String term, final Model model) {
         final JsonArray result = new JsonArray();
-        final String trimmedValue = term.trim();
-        final String[] input = StringNormalizer.normalize(trimmedValue).split(" ");
-
-        findPeople(result, input);
-
-        return result.toString();
+        try {
+            final String trimmedValue = URLDecoder.decode(term, "UTF-8").trim();
+            final String[] input = StringNormalizer.normalize(trimmedValue).split(" ");
+            findPeople(result, input);
+            return result.toString();
+        } catch (UnsupportedEncodingException e) {
+            throw new Error(e);
+        }
     }
 
     private void findPeople(JsonArray result, String[] input) {

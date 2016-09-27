@@ -50,6 +50,7 @@ final String options=(String)request.getAttribute("options");
 
 	<form id="setCounter" class="form-horizontal" role="form"
 		action="${setCounterURL}" method="POST">
+		${csrf.field()}
 		<input type="hidden" name="mailTrackingId" id="mailTrackingId" value="<%=mailTracking.getExternalId()%>" /> 
 		<input type="hidden" name="yearId" id="yearId" value="<%=yearId%>" />
 		<input type="hidden" name="yearBean" id="yearBean" value="<%=yearBean%>" />
