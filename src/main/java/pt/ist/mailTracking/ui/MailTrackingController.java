@@ -268,7 +268,7 @@ public class MailTrackingController {
 
         if (ini != -1 && fim != -1) {
             User u = User.findByUsername(recipient.substring(ini + 1, fim));
-            avatarUrl = u.getProfile().getAvatarUrl();
+            avatarUrl = (u == null ? null : u.getProfile().getAvatarUrl());
         }
         return avatarUrl;
     }
