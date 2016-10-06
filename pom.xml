@@ -10,7 +10,7 @@
 
     
     <artifactId>mail-tracking</artifactId>
-    <version>DEV-SNAPSHOT</version>
+    <version>2.2.1</version>
     <packaging>jar</packaging>
     <name>mail-tracking</name>
 
