@@ -95,8 +95,8 @@ public class MailTracking extends MailTracking_Base {
         return getViewersAccessGroup() == null ? null : getViewersAccessGroup().toGroup();
     }
 
-    public void setManagersGroup(Group viewersGroup) {
-        setManagersAccessGroup(viewersGroup.toPersistentGroup());
+    public void setManagersGroup(Group managersGroup) {
+        setManagersAccessGroup(managersGroup.toPersistentGroup());
     }
 
     public Group getManagersGroup() {
