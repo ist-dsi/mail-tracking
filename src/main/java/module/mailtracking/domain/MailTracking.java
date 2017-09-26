@@ -121,8 +121,8 @@ public class MailTracking extends MailTracking_Base {
         mailTracking.setViewersGroup(Group.nobody());
         mailTracking.addViewer(authenticatedUser);
 
-        unit.getChildAccountabilityStream().map(a -> a.getChild()).filter(p -> p.isPerson()).map(p -> (Person) p)
-                .map(p -> p.getUser()).filter(u -> u != null).forEach(u -> mailTracking.addViewer(u));;
+        unit.getChildAccountabilityStream().filter(a -> a.isActiveNow()).map(a -> a.getChild()).filter(p -> p.isPerson())
+                .map(p -> (Person) p).map(p -> p.getUser()).filter(u -> u != null).forEach(u -> mailTracking.addViewer(u));;
 
         return mailTracking;
     }
