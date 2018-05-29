@@ -22,18 +22,17 @@
     </scm>
 
     <properties>
-        <version.org.fenixedu.bennu>5.0.0</version.org.fenixedu.bennu>
+        <version.org.fenixedu.bennu>5.1.1</version.org.fenixedu.bennu>
         <version.org.fenixedu.organization>3.2.0</version.org.fenixedu.organization>
         <version.org.webjars.jquery-ui>1.11.1</version.org.webjars.jquery-ui>
         <version.org.webjars.jquery-ui-themes>1.11.0</version.org.webjars.jquery-ui-themes>
-        <version.org.fenixedu.bennu-spring>1.2.0</version.org.fenixedu.bennu-spring>
     </properties>
 
     <dependencies>
     <dependency>
 			<groupId>org.fenixedu</groupId>
 			<artifactId>bennu-spring</artifactId>
-			<version>${version.org.fenixedu.bennu-spring}</version>
+			<version>${version.org.fenixedu.bennu}</version>
 		</dependency>
         <dependency>
             <groupId>org.fenixedu</groupId>
