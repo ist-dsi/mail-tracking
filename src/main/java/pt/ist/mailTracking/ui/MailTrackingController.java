@@ -8,6 +8,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -129,14 +130,21 @@ public class MailTrackingController {
         return "mail-tracking/chooseMailTracking";
     }
 
+    public static final Comparator<Year> SORT_BY_NAME_COMPARATOR = new Comparator<Year>() {
+
+        @Override
+        public int compare(Year o1, Year o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
     @RequestMapping(value = "/getYearByUnit/json", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public @ResponseBody String populateYear(@RequestParam(required = false, value = "term") String term, final Model model) {
 
         if (term != null) {
             final JsonArray result = new JsonArray();
             final MailTracking mailTracking = FenixFramework.getDomainObject(term);
-            mailTracking.getYearsSet().forEach(y -> addYearToJson(result, y));
-
+            mailTracking.getYearsSet().stream().sorted(SORT_BY_NAME_COMPARATOR.reversed()).forEach(y -> addYearToJson(result, y));
             model.addAttribute("mailTracking", mailTracking);
             return result.toString();
         }
@@ -264,11 +272,13 @@ public class MailTrackingController {
         if (ini == -1) {
             return avatarUrl;
         }
-        int fim = recipient.indexOf(')');
+        if (ini > 0) {
+            int fim = recipient.indexOf(')', ini);
 
-        if (ini != -1 && fim != -1) {
-            User u = User.findByUsername(recipient.substring(ini + 1, fim));
-            avatarUrl = (u == null ? null : u.getProfile().getAvatarUrl());
+            if (ini != -1 && fim != -1) {
+                User u = User.findByUsername(recipient.substring(ini + 1, fim));
+                avatarUrl = (u == null ? null : u.getProfile().getAvatarUrl());
+            }
         }
         return avatarUrl;
     }
@@ -278,7 +288,8 @@ public class MailTrackingController {
         final JsonObject o = new JsonObject();
         o.addProperty("id", u.getExternalId());
         o.addProperty("name", u.getName());
-        o.addProperty("current", u.getMailTracking().getCurrentYear().getName());
+        o.addProperty("current",
+                u.getMailTracking().getCurrentYear() != null ? u.getMailTracking().getCurrentYear().getName() : "");
         result.add(o);
 
     }
