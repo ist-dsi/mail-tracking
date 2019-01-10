@@ -21,7 +21,7 @@
         <tag>HEAD</tag>
     </scm>
 
-    <isueManagement>
+    <issueManagement>
         <system>JIRA</system>
         <url>https://jira.fenixedu.org/browse/DMT</url>
     </issueManagement>
